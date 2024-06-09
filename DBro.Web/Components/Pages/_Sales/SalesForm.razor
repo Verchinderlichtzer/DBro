@@ -1,0 +1,103 @@
+﻿@inherits SalesFormBase
+
+<MudDialog Class="vw-80 min-w-400">
+    <DialogContent>
+        <MudContainer Class="vh-60 overflow-y-auto">
+            <MudStack Row>
+                <MudStack Class="flex-1">
+                    @foreach (Diskon diskon in _sales.Diskon)
+                    {
+                        <MudCard Elevation="0" Class="border-solid border mud-border min-h-150">
+                            <MudCardHeader>
+                                <CardHeaderContent>
+                                    <MudStack Row="true">
+                                        <MudText Typo="Typo.h6">Diskon # @(_sales.Diskon.IndexOf(diskon) + 1)</MudText>
+                                        <MudSpacer />
+                                        <MudIconButton Variant="Variant.Filled" Size="Size.Small" Icon="@Icons.Material.Filled.DeleteForever" Color="Color.Error" OnClick="e => _sales.Diskon.Remove(diskon)" tabindex="-1" />
+                                    </MudStack>
+                                </CardHeaderContent>
+                            </MudCardHeader>
+                            <MudDivider />
+                            <MudCardContent>
+                                <MudForm Model="diskon">
+                                    <MudStack Row>
+                                        <div class="flex-1">
+                                            <MudAutocomplete Label="Menu" T="Menu" @bind-Value="diskon.Menu" @bind-Value:after="() => diskon.IdMenu = diskon.Menu.Id" Dense CoerceText SearchFunc="SearchMenuAsync" ToStringFunc="x => x == null ? null : x.Nama" MaxItems="128" />
+                                        </div>
+                                        <div class="w-75">
+                                            <MudNumericField Immediate HideSpinButtons T="decimal" @bind-Value="diskon.Nilai" Format="N0" Label="Diskon" Min="1" Max="99" Adornment="Adornment.End" AdornmentText="%" />
+                                        </div>
+                                    </MudStack>
+                                    <MudDateRangePicker Label="Jangka Waktu" PickerVariant="PickerVariant.Dialog" DateRange="_isNew ? new() { Start = DateTime.Today, End = DateTime.Today.AddDays(7) } : new() { Start = diskon.TanggalMulai, End = diskon.TanggalAkhir }" DateRangeChanged="e => { diskon.TanggalMulai = e.Start; diskon.TanggalAkhir = e.End; }" DateFormat="dd MMM yyyy" tabindex="-1" />
+                                </MudForm>
+                            </MudCardContent>
+                        </MudCard>
+                    }
+                    <MudIconButton Class="border-dashed border mud-border-success min-h-200" Size="Size.Large" Icon="@Icons.Material.Filled.Add" Variant="Variant.Outlined" Color="Color.Success" OnClick="AddDiskon" />
+                </MudStack>
+                <MudStack Class="flex-1">
+                    @foreach (Promo promo in _sales.Promo)
+                    {
+                        <MudCard Elevation="0" Class="border-solid border mud-border min-h-150">
+                            <MudCardHeader>
+                                <CardHeaderContent>
+                                    <MudStack Row="true">
+                                        <MudText Typo="Typo.h6">Promo # @(_sales.Promo.IndexOf(promo) + 1)</MudText>
+                                        <MudSpacer />
+                                        <MudIconButton Variant="Variant.Filled" Size="Size.Small" Icon="@Icons.Material.Filled.DeleteForever" Color="Color.Error" OnClick="e => _sales.Promo.Remove(promo)" tabindex="-1" />
+                                    </MudStack>
+                                </CardHeaderContent>
+                            </MudCardHeader>
+                            <MudDivider />
+                            <MudCardContent>
+                                <MudForm Model="promo">
+                                    <MudStack Row Spacing="1">
+                                        <div class="w-50">
+                                            <MudNumericField Immediate T="int" @bind-Value="promo.JumlahDibeli" Label="Beli" Min="1" Max="99" />
+                                        </div>
+                                        <div class="flex-1">
+                                            <MudAutocomplete T="Menu" @bind-Value="promo.MenuDibeli" @bind-Value:after="() => promo.IdMenuDibeli = promo.MenuDibeli.Id" Dense CoerceText SearchFunc="SearchMenuAsync" ToStringFunc="x => x == null ? null : x.Nama" MaxItems="128" />
+                                        </div>
+                                        <div class="w-50">
+                                            <MudNumericField Immediate T="int" @bind-Value="promo.JumlahDidapat" Label="Gratis" Min="1" Max="99" />
+                                        </div>
+                                        <div class="flex-1">
+                                            <MudAutocomplete T="Menu" @bind-Value="promo.MenuDidapat" @bind-Value:after="() => promo.IdMenuDidapat = promo.MenuDidapat.Id" Dense CoerceText SearchFunc="SearchMenuAsync" ToStringFunc="x => x == null ? null : x.Nama" MaxItems="128" />
+                                        </div>
+                                    </MudStack>
+                                    <MudDateRangePicker Label="Jangka Waktu" PickerVariant="PickerVariant.Dialog" DateRange="_isNew ? new() { Start = DateTime.Today, End = DateTime.Today.AddDays(7) } : new() { Start = promo.TanggalMulai, End = promo.TanggalAkhir }" DateRangeChanged="e => { promo.TanggalMulai = e.Start; promo.TanggalAkhir = e.End; }" DateFormat="dd MMM yyyy" tabindex="-1" />
+                                </MudForm>
+                            </MudCardContent>
+                        </MudCard>
+                    }
+                    <MudIconButton Class="border-dashed border mud-border-success min-h-200" Size="Size.Large" Icon="@Icons.Material.Filled.Add" Variant="Variant.Outlined" Color="Color.Success" OnClick="AddPromo" />
+                </MudStack>
+            </MudStack>
+        </MudContainer>
+    </DialogContent>
+    <DialogActions>
+        <div>
+            <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Help" @onmouseenter="e => _isValidationRuleShow = true" @onmouseleave="e => _isValidationRuleShow = false" />
+            <MudPopover Open="_isValidationRuleShow" AnchorOrigin="Origin.TopCenter" TransformOrigin="Origin.BottomLeft" Fixed Class="px-4">
+                <MudStack Spacing="0" Class="pb-2">
+                    <MudText Typo="Typo.button" Class="pt-2">Id :</MudText>
+                    <div>▪ Tidak boleh duplikat</div>
+                    <div>▪ Tidak boleh kosong</div>
+                    <MudText Typo="Typo.button" Class="pt-2">Nama :</MudText>
+                    <div>▪ Tidak boleh kosong</div>
+                    <MudText Typo="Typo.button" Class="pt-2">Alamat :</MudText>
+                    <div>▪ Tidak boleh kosong</div>
+                    <MudText Typo="Typo.button" Class="pt-2">Telepon :</MudText>
+                    <div>▪ Tidak boleh kosong</div>
+                    <MudText Typo="Typo.button" Class="pt-2">Status :</MudText>
+                    <div>▪ Status sales akan berubah secara otomatis sesuai dengan peminjaman yang terjadi. Tidak disarankan mengubah status sales secara langsung.</div>
+                </MudStack>
+            </MudPopover>
+        </div>
+        <MudSpacer />
+        <MudStack Row Class="w-300">
+            <MudButton Variant="Variant.Filled" Size="Size.Small" Color="_isNew ? Color.Success : Color.Warning" OnClick="SaveAsync" Class="flex-1">Simpan</MudButton>
+            <MudButton Size="Size.Small" OnClick="Cancel" Class="flex-1">Kembali</MudButton>
+        </MudStack>
+    </DialogActions>
+</MudDialog>

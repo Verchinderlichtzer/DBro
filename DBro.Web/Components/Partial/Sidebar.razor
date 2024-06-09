@@ -1,0 +1,23 @@
+﻿<MudNavMenu>
+    <MudLink Href="/" Underline="Underline.None">
+        <MudImage Src="images/logo_dashboard.png" Width="240" Height="150" ObjectFit="ObjectFit.Cover" />
+    </MudLink>
+
+    <MudNavGroup Title="Akun" Expanded>
+        <MudNavLink Icon="@Icons.Material.Filled.AssignmentInd" Href="/user" Match="NavLinkMatch.Prefix">User</MudNavLink>
+        <MudNavLink Icon="@Icons.Material.Filled.Article" Href="/aktivitas" Match="NavLinkMatch.Prefix">Aktivitas</MudNavLink>
+    </MudNavGroup>
+
+    <MudNavGroup Title="Master" Expanded>
+        <MudNavLink Icon="@Icons.Material.Filled.Fastfood" Href="/menu" Match="NavLinkMatch.Prefix">Menu</MudNavLink>
+        <MudNavLink Icon="@Icons.Material.Filled.Percent" Href="/sales" Match="NavLinkMatch.Prefix">Diskon & Promo</MudNavLink>
+    </MudNavGroup>
+
+    <MudNavGroup Title="Transaksi" Expanded>
+        <MudNavLink Icon="@Icons.Material.Filled.BookmarkBorder" Href="/pesanan" Match="NavLinkMatch.Prefix">Pesanan</MudNavLink>
+    </MudNavGroup>
+
+    <MudNavGroup Title="Laporan" Expanded>
+        <MudNavLink Icon="@Icons.Material.Filled.BarChart" Href="/laporan" Match="NavLinkMatch.Prefix">Laporan</MudNavLink>
+    </MudNavGroup>
+</MudNavMenu>

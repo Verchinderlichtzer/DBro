@@ -1,0 +1,72 @@
+﻿@inherits MenuFormBase
+
+<MudDialog Class="w-600">
+    <DialogContent>
+        <MudContainer Class="h-350 overflow-y-auto">
+            <MudForm Model="_menu" @ref="_form" Validation="((MenuValidator)Validator).ValidateValue" @onkeypress="OnKeyPressAsync">
+                <MudStack Row>
+                    <div class="flex-2">
+                        <MudSelect Dense @bind-Value="_menu.JenisMenu" Label="Jenis Menu">
+                            @foreach (JenisMenu x in Enum.GetValues(typeof(JenisMenu)))
+                            {
+                                <MudSelectItem Value="x">
+                                    @x.GetDescription()
+                                </MudSelectItem>
+                            }
+                        </MudSelect>
+                        <MudTextField OnlyValidateIfDirty Label="Nama" @bind-Value="_menu.Nama" MaxLength="64" For="() => _menu.Nama" />
+                        <MudNumericField Immediate HideSpinButtons T="int" @bind-Value="_menu.Harga" Format="N0" Label="Harga" Max="10000000" Adornment="Adornment.Start" AdornmentText="Rp" />
+                    </div>
+                    <div class="flex-1">
+                        <div class="d-flex flex-column align-center gap-1">
+                            <div class="w-200 h-200 d-flex align-center justify-center">
+                                <MudImage Src="@(_menu.Gambar != null ? string.Format($"data:image/gif;base64,{Convert.ToBase64String(_menu.Gambar)}") : "/images/piring_kosong.png")" Fluid Alt="Gambar" ObjectFit="ObjectFit.Cover" Class="rounded-lg" />
+                            </div>
+                            <div>
+                                <MudFileUpload T="IBrowserFile" Accept=".jpg, .png, .webp" FilesChanged="UploadFile">
+                                    <ButtonTemplate>
+                                        <MudButton HtmlTag="label" Variant="Variant.Filled" Size="Size.Small" Color="Color.Success" StartIcon="@Icons.Material.Filled.CloudUpload" for="@context" @onmouseenter="e => _isKetentuanUploadShow = true" @onmouseleave="e => _isKetentuanUploadShow = false">
+                                            Upload
+                                        </MudButton>
+                                    </ButtonTemplate>
+                                </MudFileUpload>
+                                <MudPopover Open="_isKetentuanUploadShow" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter" Fixed Class="px-4 opacity-75">
+                                    <MudStack Spacing="0" Class="pb-2">
+                                        <MudText Typo="Typo.button" Class="pt-2">Ketentuan :</MudText>
+                                        <div>▪ Ekstensi file harus jpg/png/webp</div>
+                                        <div>▪ Ukuran maksimal 1 MB</div>
+                                    </MudStack>
+                                </MudPopover>
+                            </div>
+                        </div>
+                    </div>
+                </MudStack>
+            </MudForm>
+        </MudContainer>
+    </DialogContent>
+    <DialogActions>
+        <div>
+            <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Help" @onmouseenter="e => _isValidationRuleShow = true" @onmouseleave="e => _isValidationRuleShow = false" />
+            <MudPopover Open="_isValidationRuleShow" AnchorOrigin="Origin.TopCenter" TransformOrigin="Origin.BottomLeft" Fixed Class="px-4">
+                <MudStack Spacing="0" Class="pb-2">
+                    <MudText Typo="Typo.button" Class="pt-2">Id :</MudText>
+                    <div>▪ Tidak boleh duplikat</div>
+                    <div>▪ Tidak boleh kosong</div>
+                    <MudText Typo="Typo.button" Class="pt-2">Nama :</MudText>
+                    <div>▪ Tidak boleh kosong</div>
+                    <MudText Typo="Typo.button" Class="pt-2">Alamat :</MudText>
+                    <div>▪ Tidak boleh kosong</div>
+                    <MudText Typo="Typo.button" Class="pt-2">Deskripsi :</MudText>
+                    <div>▪ Tidak boleh kosong</div>
+                    <MudText Typo="Typo.button" Class="pt-2">Status :</MudText>
+                    <div>▪ Status menu akan berubah secara otomatis sesuai dengan peminjaman yang terjadi. Tidak disarankan mengubah status menu secara langsung.</div>
+                </MudStack>
+            </MudPopover>
+        </div>
+        <MudSpacer />
+        <MudStack Row Class="w-300">
+            <MudButton Variant="Variant.Filled" Size="Size.Small" Color="_isNew ? Color.Success : Color.Warning" OnClick="SaveAsync" Class="flex-1">Simpan</MudButton>
+            <MudButton Size="Size.Small" OnClick="Cancel" Class="flex-1">Kembali</MudButton>
+        </MudStack>
+    </DialogActions>
+</MudDialog>

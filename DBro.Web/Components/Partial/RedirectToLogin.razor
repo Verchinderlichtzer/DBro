@@ -1,0 +1,14 @@
+﻿@using System.Net;
+@inject NavigationManager NavManager
+
+@code {
+    [Parameter] public string ReturnUrl { get; set; } = string.Empty;
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        ReturnUrl = WebUtility.UrlEncode($"/{ReturnUrl}"); // DENGAN RETURN URL
+        NavManager.NavigateTo($"/Account/Login?returnUrl={ReturnUrl}", forceLoad: true); // DENGAN RETURN URL
+
+        //NavManager.NavigateTo("/Account/Login", forceLoad: true); // TANPA RETURN URL
+    }
+}

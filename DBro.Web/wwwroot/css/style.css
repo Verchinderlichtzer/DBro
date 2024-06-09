@@ -1,0 +1,24 @@
+﻿@font-face {
+    font-family: "Roboto";
+    src: url("/fonts/Roboto-Regular.ttf") format("truetype");
+    font-weight: 400;
+}
+
+html, body {
+    font-family: 'Roboto', Helvetica, Arial, sans-serif;
+}
+
+.mud-progress-circular {
+    position: absolute;
+    top: calc(50% - 20px);
+    left: calc(50% - 20px);
+}
+
+.mud-table-cell {
+    padding: 6px 12px 6px 12px !important;
+}
+
+.mud-chart-line {
+    overflow: visible;
+}
+

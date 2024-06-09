@@ -1,0 +1,101 @@
+﻿@page "/sales"
+@inherits SalesListBase
+
+<PageTitle>Diskon & Promo</PageTitle>
+
+@if (!_hasLoaded)
+{
+    <MudProgressCircular Indeterminate />
+}
+else
+{
+    <MudStack Row Spacing="2">
+        <MudText Typo="Typo.h5">Diskon & Promo</MudText>
+        <MudTooltip Text="Tambah data" Arrow Placement="Placement.Bottom">
+            <MudIconButton Variant="Variant.Filled" Size="Size.Small" Icon="@Icons.Material.Filled.Add" Color="Color.Success" OnClick="e => _isVisibleSales = true" />
+        </MudTooltip>
+        @if (!isNew)
+        {
+            <MudTooltip Text="Edit data terpilih" Arrow Placement="Placement.Bottom">
+                <MudIconButton Variant="Variant.Filled" Size="Size.Small" Icon="@Icons.Material.Filled.Edit" Color="Color.Warning" OnClick="OpenFormSalesAsync" />
+            </MudTooltip>
+            <MudTooltip Text="Hapus data terpilih" Arrow Placement="Placement.Bottom">
+                <MudIconButton Variant="Variant.Filled" Size="Size.Small" Icon="@Icons.Material.Filled.DeleteForever" Color="Color.Error" OnClick="DeletesAsync" />
+            </MudTooltip>
+            <MudTooltip Text="Refresh" Arrow Placement="Placement.Bottom">
+                <MudIconButton Variant="Variant.Filled" Size="Size.Small" Color="Color.Dark" Icon="@Icons.Material.Filled.Refresh" OnClick="LoadDataAsync" />
+            </MudTooltip>
+        }
+    </MudStack>
+    <MudStack Row Class="mt-3">
+        <div class="flex-1">
+            <MudDataGrid Items="_sales.Diskon" MultiSelection @bind-SelectedItems="_selectedDiskon" @bind-SelectedItems:after="() => isNew = _selectedDiskon.Count == 0 && _selectedPromo.Count == 0" Elevation="2" Dense Bordered QuickFilter="FilterSearchDiskon" ShowColumnOptions="false" Height="calc(100vh - 200px)">
+                <ToolBarContent>
+                    <MudStack Row Spacing="2">
+                        <MudText Typo="Typo.h5">Daftar Diskon</MudText>
+                    </MudStack>
+                    <MudSpacer />
+                    <MudTextField Immediate @bind-Value="_searchDiskonTerms" Placeholder="Cari diskon..." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0" />
+                </ToolBarContent>
+                <Columns>
+                    <SelectColumn T="Diskon" />
+                    <PropertyColumn Property="x => x.Id" HeaderClass="w-0" />
+                    <PropertyColumn Property="x => x.Menu.Nama" Title="Menu" />
+                    <PropertyColumn Property="x => x.Nilai" HeaderClass="w-0" Title="Diskon" Format="P0" />
+                    <PropertyColumn Property="@(x => $"{x.TanggalMulai:dd/MM/yy} → {x.TanggalAkhir:dd/MM/yy}")" HeaderClass="w-175" SortBy="x => x.TanggalMulai" Title="Jangka Waktu" />
+                </Columns>
+            </MudDataGrid>
+        </div>
+        <div class="flex-1">
+            <MudDataGrid Items="_sales.Promo" MultiSelection @bind-SelectedItems="_selectedPromo" @bind-SelectedItems:after="() => isNew = _selectedDiskon.Count == 0 && _selectedPromo.Count == 0" Elevation="2" Dense Bordered QuickFilter="FilterSearchPromo" ShowColumnOptions="false" Height="calc(100vh - 200px)">
+                <ToolBarContent>
+                    <MudStack Row Spacing="2">
+                        <MudText Typo="Typo.h5">Daftar Promo</MudText>
+                    </MudStack>
+                    <MudSpacer />
+                    <MudTextField Immediate @bind-Value="_searchPromoTerms" Placeholder="Cari promo..." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0" />
+                </ToolBarContent>
+                <Columns>
+                    <SelectColumn T="Promo" />
+                    <PropertyColumn Property="x => x.Id" HeaderClass="w-0" />
+                    <TemplateColumn Title="Keterangan">
+                        <CellTemplate>
+                            @((MarkupString)KeteranganPromo(context.Item))
+                        </CellTemplate>
+                    </TemplateColumn>
+                    <PropertyColumn Property="@(x => $"{x.TanggalMulai:dd/MM/yy} → {x.TanggalAkhir:dd/MM/yy}")" HeaderClass="w-175" SortBy="x => x.TanggalMulai" Title="Jangka Waktu" />
+                </Columns>
+            </MudDataGrid>
+        </div>
+    </MudStack>
+}
+
+<MudMessageBox @ref="_deleteConfirmation" Title="Konfirmasi Hapus">
+    <MessageContent>
+        <MudPaper Elevation="0" MinWidth="300px" Class="mx-5">
+            @_deleteMessage
+        </MudPaper>
+    </MessageContent>
+    <NoButton>
+        <MudButton Variant="Variant.Filled" Class="ma-1" Color="Color.Error" Size="Size.Small">Ya</MudButton>
+    </NoButton>
+    <YesButton>
+        <MudButton Class="ma-1" Size="Size.Small">Tidak</MudButton>
+    </YesButton>
+</MudMessageBox>
+
+<MudDialog @bind-IsVisible="_isVisibleSales">
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            Masukkan Jumlah
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudNumericField Label="Diskon" T="int" @bind-Value="_jumlahDiskon" Min="0" Max="100" Immediate AutoFocus />
+        <MudNumericField Label="Promo" T="int" @bind-Value="_jumlahPromo" Min="0" Max="100" Immediate />
+    </DialogContent>
+    <DialogActions>
+        <MudButton Class="w-75" Color="Color.Primary" OnClick="ShowModalAsync">Ok</MudButton>
+        <MudButton Class="w-75" OnClick="_ => _isVisibleSales = false">Batal</MudButton>
+    </DialogActions>
+</MudDialog>

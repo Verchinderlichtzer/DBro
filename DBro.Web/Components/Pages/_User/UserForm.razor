@@ -1,0 +1,47 @@
+﻿@inherits UserFormBase
+
+<MudDialog Class="w-600">
+    <DialogContent>
+        <MudContainer Class="h-350 overflow-y-auto">
+            <MudForm Model="_user" @ref="_form" Validation="((UserValidator)Validator).ValidateValue" @onkeypress="OnKeyPressAsync">
+                <MudTextField AutoFocus OnlyValidateIfDirty InputType="InputType.Email" Label="Email" @bind-Value="_user.Email" MaxLength="64" For="() => _user.Email" ReadOnly="!_isNew" />
+                <MudTextField OnlyValidateIfDirty Label="Nama" @bind-Value="_user.Nama" MaxLength="64" For="() => _user.Nama" />
+                <MudStack Class="mt-4">
+                    <MudText>Status User :</MudText>
+                    <MudRadioGroup T="JenisKelamin" @bind-Value="_user.JenisKelamin" Class="mt-n1 ml-2" For="() => _user.JenisKelamin">
+                        <MudRadio Value="JenisKelamin.Pria" Color="Color.Success" Dense>Laki-laki</MudRadio>
+                        <MudRadio Value="JenisKelamin.Wanita" Color="Color.Error" Dense>Perempuan</MudRadio>
+                    </MudRadioGroup>
+                </MudStack>
+                <MudDatePicker Label="Tanggal Lahir" @bind-Date="_user.TanggalLahir" PickerVariant="PickerVariant.Dialog" DateFormat="dd MMM yyyy" tabindex="-1" />
+                <MudTextField OnlyValidateIfDirty Lines="4" Label="Alamat" @bind-Value="_user.Alamat" MaxLength="450" For="() => _user.Alamat" />
+                <MudTextField OnlyValidateIfDirty Label="Telepon" @bind-Value="_user.Telepon" MaxLength="32" For="() => _user.Telepon" />
+            </MudForm>
+        </MudContainer>
+    </DialogContent>
+    <DialogActions>
+        <div>
+            <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Help" @onmouseenter="e => _isValidationRuleShow = true" @onmouseleave="e => _isValidationRuleShow = false" />
+            <MudPopover Open="_isValidationRuleShow" AnchorOrigin="Origin.TopCenter" TransformOrigin="Origin.BottomLeft" Fixed Class="px-4">
+                <MudStack Spacing="0" Class="pb-2">
+                    <MudText Typo="Typo.button" Class="pt-2">Email :</MudText>
+                    <div>▪ Tidak boleh duplikat</div>
+                    <div>▪ Tidak boleh kosong</div>
+                    <MudText Typo="Typo.button" Class="pt-2">Nama :</MudText>
+                    <div>▪ Tidak boleh kosong</div>
+                    <MudText Typo="Typo.button" Class="pt-2">Alamat :</MudText>
+                    <div>▪ Tidak boleh kosong</div>
+                    <MudText Typo="Typo.button" Class="pt-2">Telepon :</MudText>
+                    <div>▪ Tidak boleh kosong</div>
+                    <MudText Typo="Typo.button" Class="pt-2">Status :</MudText>
+                    <div>▪ Status user akan berubah secara otomatis sesuai dengan peminjaman yang terjadi. Tidak disarankan mengubah status user secara langsung.</div>
+                </MudStack>
+            </MudPopover>
+        </div>
+        <MudSpacer />
+        <MudStack Row Class="w-300">
+            <MudButton Variant="Variant.Filled" Size="Size.Small" Color="_isNew ? Color.Success : Color.Warning" OnClick="SaveAsync" Class="flex-1">Simpan</MudButton>
+            <MudButton Size="Size.Small" OnClick="Cancel" Class="flex-1">Kembali</MudButton>
+        </MudStack>
+    </DialogActions>
+</MudDialog>

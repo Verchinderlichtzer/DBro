@@ -1,0 +1,44 @@
+﻿@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+@inherits LayoutComponentBase
+@inject ProtectedLocalStorage ProtectedLocalStore
+
+<MudThemeProvider Theme="_theme" />
+<MudDialogProvider MaxWidth="MaxWidth.Large" />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar Dense>
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Edge="Edge.Start" OnClick="e => _isDrawerOpen = !_isDrawerOpen" />
+        <MudBreadcrumbs Items="BreadcrumbItems">
+            <ItemTemplate Context="item">
+                <MudLink Href="@item.Href">@item.Text</MudLink>
+            </ItemTemplate>
+        </MudBreadcrumbs>
+        <MudSpacer />
+        <div class="mt-n4 w-200 mr-4">
+            <MudAutocomplete T="KeyValuePair<string, string>" @ref="_menuList" Dense ValueChanged="PilihMenu" SearchFunc="CariMenu" ToStringFunc="x => x.Key" MaxItems="64" Placeholder="Cari menu..." Adornment="Adornment.Start" ResetValueOnEmptyText AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" />
+        </div>
+
+        <MudMenu Label="@CurrentUser.Nama" Dense ActivationEvent="MouseEvent.MouseOver" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter">
+            <MudMenuItem Href="@($"/info-user/{CurrentUser.Email}")">Info User</MudMenuItem>
+            <MudMenuItem Href="/logout" ForceLoad>Logout</MudMenuItem>
+        </MudMenu>
+    </MudAppBar>
+    <MudDrawer Breakpoint="Breakpoint.Lg" @bind-Open="_isDrawerOpen">
+        <Sidebar />
+    </MudDrawer>
+
+    <MudMainContent Class="relative" Style="min-height: 100vh;">
+        <MudContainer MaxWidth="MaxWidth.ExtraLarge" Style="padding: 20px 24px; min-height: calc(100vh - 64px);">
+            <CascadingValue Value="this">
+                @Body
+            </CascadingValue>
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+<div id="blazor-error-ui">
+    Terjadi error / kesalahan pada program. Cek errornya pada Dev Tools (Tekan F12 di Browser) atau Visual Studio (Pada kodingan, tab error atau tab output)
+    <a href="" class="reload">Reload</a>
+    <a class="dismiss">🗙</a>
+</div>

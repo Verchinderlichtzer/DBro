@@ -1,0 +1,32 @@
+﻿@page "/"
+@using System.Security.Claims
+@attribute [Authorize]
+
+@inject NavigationManager NavManager
+
+@code {
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthenticationState { get; set; } = null!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        //await base.OnInitializedAsync();
+        ClaimsPrincipal cp = (await AuthenticationState).User;
+        JenisUser jenis = (cp.FindFirstValue(ClaimTypes.Role)!).ToEnum<JenisUser>();
+        NavManager.NavigateTo(jenis == JenisUser.Admin || jenis == JenisUser.Karyawan ? "/dashboard" : "/home");
+    }
+
+    // protected override async Task OnAfterRenderAsync(bool firstRender)
+    // {
+    //     ClaimsPrincipal cp = (await AuthenticationState).User;
+    //     if (!cp.Identity!.IsAuthenticated)
+    //     {
+    //         NavManager.NavigateTo("/login");
+    //     }
+    //     else
+    //     {
+    //         JenisUser jenis = (cp.FindFirstValue(ClaimTypes.Role)!).ToEnum<JenisUser>();
+    //         NavManager.NavigateTo(jenis == JenisUser.Pelanggan ? "/home" : "/dashboard");
+    //     }
+    // }
+}

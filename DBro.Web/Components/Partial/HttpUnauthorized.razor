@@ -1,0 +1,13 @@
+﻿@page "/unauthorized"
+@layout NoLayout
+
+<PageTitle>Tidak Memiliki Akses</PageTitle>
+
+<MudStack Spacing="0" AlignItems="AlignItems.Center" Justify="Justify.Center" Class="text-center" Style="height: 80vh;">
+    <MudImage Src="/img/401.png" Width="256" ObjectFit="ObjectFit.Cover" />
+    <MudText Typo="Typo.h5" Class="my-2">Anda tidak memiliki hak akses</MudText>
+    <MudStack Spacing="0">
+        <MudLink Href="/">Kembali ke home</MudLink>
+        <MudLink Href="/Account/Logout">Login menggunakan akun lain</MudLink>
+    </MudStack>
+</MudStack>

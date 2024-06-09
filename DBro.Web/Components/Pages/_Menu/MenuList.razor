@@ -1,0 +1,74 @@
+﻿@page "/menu"
+@inherits MenuListBase
+
+<PageTitle>Menu</PageTitle>
+
+@if (!_hasLoaded)
+{
+    <MudProgressCircular Indeterminate />
+}
+else
+{
+    <MudStack Row Spacing="2">
+        <MudText Typo="Typo.h5">Daftar Menu</MudText>
+        <MudTooltip Text="Refresh" Arrow Placement="Placement.Bottom">
+            <MudIconButton Variant="Variant.Filled" Size="Size.Small" Color="Color.Dark" Icon="@Icons.Material.Filled.Refresh" OnClick="LoadDataAsync" />
+        </MudTooltip>
+        <MudTooltip Text="Tambah Menu" Arrow Placement="Placement.Bottom">
+            <MudIconButton Variant="Variant.Filled" Size="Size.Small" Icon="@Icons.Material.Filled.Add" Color="Color.Success" OnClick="async e => await OpenFormAsync()" />
+        </MudTooltip>
+    </MudStack>
+    <MudSpacer />
+    <MudTextField Immediate @bind-Value="_searchTerms" @bind-Value:after="SearchData" Placeholder="Cari menu makanan..." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0" Disabled="!_hasLoaded" />
+
+    <div class="mt-3 grid">
+        @foreach (Menu menu in _displayedList)
+        {
+            <MudCard Class="relative">
+                <MudCardMedia Style="background-size: 100% 100%;" Image="@(menu.Gambar != null ? string.Format($"data:image/gif;base64,{Convert.ToBase64String(menu.Gambar!)}") : "/images/piring_kosong.png")" Height="200" />
+                <MudCardContent Class="mb-12">
+                    <MudText Typo="Typo.subtitle1">@menu.Nama</MudText>
+                    <MudText Typo="Typo.caption" Style="color: grey;">@menu.JenisMenu.GetDescription()</MudText>
+                </MudCardContent>
+                <MudCardActions Class="wp-100 absolute mt-12" Style="bottom: 0">
+                    <MudStack Row Spacing="1" Class="flex-1" Justify="Justify.Center">
+                        <MudText Typo="Typo.subtitle1">@menu.Harga.ToString("C0")</MudText>
+                        <MudSpacer />
+                        <MudIconButton Variant="Variant.Filled" Size="Size.Small" Icon="@Icons.Material.Filled.Grain" Color="Color.Info" OnClick="async e => await OpenVarianAsync(menu)" />
+                        <MudIconButton Variant="Variant.Filled" Size="Size.Small" Icon="@Icons.Material.Filled.Edit" Color="Color.Warning" OnClick="async e => await OpenFormAsync(menu)" />
+                        <MudIconButton Variant="Variant.Filled" Size="Size.Small" Icon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="async e => await DeleteAsync(menu)" />
+                    </MudStack>
+                </MudCardActions>
+            </MudCard>
+        }
+    </div>
+    <MudStack Row Justify="Justify.SpaceBetween" Class="mt-4">
+        <div class="flex-1">
+            <MudSelect Dense @bind-Value="_dataPerPage" Label="Data per Halaman">
+                <MudSelectItem Value="20">20</MudSelectItem>
+                <MudSelectItem Value="50">50</MudSelectItem>
+                <MudSelectItem Value="100">100</MudSelectItem>
+            </MudSelect>
+        </div>
+        <div class="w-300 d-flex justify-center">
+            <MudPagination BoundaryCount="2" MiddleCount="5" ShowFirstButton ShowLastButton ShowPreviousButton="false" ShowNextButton="false" @bind-Selected="_currentPage" @bind-Selected:after="() => ShowData()" Count="@((_filteredList.Count() + _dataPerPage - 1) / _dataPerPage)" />
+        </div>
+        <div class="flex-1 d-flex justify-end">
+            <MudText Typo="Typo.h6">Menampilkan @((_dataPerPage * (_currentPage - 1)) + 1) - @(_dataPerPage * _currentPage < _filteredList.Count() ? _dataPerPage * _currentPage : _filteredList.Count()) dari @_filteredList.Count() menu</MudText>
+        </div>
+    </MudStack>
+}
+
+<MudMessageBox @ref="_deleteConfirmation" Title="Konfirmasi Hapus">
+    <MessageContent>
+        <MudPaper Elevation="0" MinWidth="300px" Class="mx-5">
+            @_deleteMessage
+        </MudPaper>
+    </MessageContent>
+    <NoButton>
+        <MudButton Variant="Variant.Filled" Class="ma-1" Color="Color.Error" Size="Size.Small">Ya</MudButton>
+    </NoButton>
+    <YesButton>
+        <MudButton Class="ma-1" Size="Size.Small">Tidak</MudButton>
+    </YesButton>
+</MudMessageBox>

@@ -1,0 +1,69 @@
+﻿@inherits VarianFormBase
+
+<MudDialog Class="vw-40 min-w-400">
+    <DialogContent>
+        <MudContainer Class="vh-50 overflow-y-auto">
+            <MudStack>
+                @foreach (VarianMenu varian in _menu.VarianMenu)
+                {
+                    <MudCard Elevation="0" Class="border-solid border mud-border min-h-150">
+                        <MudCardHeader>
+                            <CardHeaderContent>
+                                <MudStack Row="true">
+                                    <MudText Typo="Typo.h6">Varian # @(_menu.VarianMenu.IndexOf(varian) + 1)</MudText>
+                                    <MudSpacer />
+                                    <MudIconButton Variant="Variant.Filled" Size="Size.Small" Icon="@Icons.Material.Filled.DeleteForever" Color="Color.Error" Disabled="!varian.Removable" OnClick="e => RemoveVarian(varian)" tabindex="-1" />
+                                </MudStack>
+                            </CardHeaderContent>
+                        </MudCardHeader>
+                        <MudDivider />
+                        <MudCardContent>
+                            <MudForm Model="varian" Class="d-flex gap-3">
+                                <div class="w-175">
+                                    <MudSelect Dense @bind-Value="varian.JenisVarian" Label="Jenis Varian">
+                                        @foreach (JenisVarian x in Enum.GetValues(typeof(JenisVarian)))
+                                        {
+                                            <MudSelectItem Value="x">
+                                                @x.GetDescription()
+                                            </MudSelectItem>
+                                        }
+                                    </MudSelect>
+                                </div>
+                                <div class="flex-3">
+                                    <MudTextField OnlyValidateIfDirty Label="Nama" @bind-Value="varian.Nama" MaxLength="64" For="() => varian.Nama" Required RequiredError="Nama tidak boleh kosong" />
+                                </div>
+                                <div class="w-125">
+                                    <MudNumericField Immediate HideSpinButtons T="int" @bind-Value="varian.Harga" Format="N0" Label="Harga" Max="10000000" Adornment="Adornment.Start" AdornmentText="Rp" />
+                                </div>
+                            </MudForm>
+                        </MudCardContent>
+                    </MudCard>
+                }
+                <MudIconButton Class="border-dashed border mud-border-success min-h-150" Size="Size.Large" Icon="@Icons.Material.Filled.Add" Variant="Variant.Outlined" Color="Color.Success" OnClick="AddVarian" />
+            </MudStack>
+        </MudContainer>
+    </DialogContent>
+    <DialogActions>
+        <div>
+            <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Help" @onmouseenter="e => _isValidationRuleShow = true" @onmouseleave="e => _isValidationRuleShow = false" />
+            <MudPopover Open="_isValidationRuleShow" AnchorOrigin="Origin.TopCenter" TransformOrigin="Origin.BottomLeft" Fixed Class="px-4">
+                <MudStack Spacing="0" Class="pb-2">
+                    <MudText Typo="Typo.button" Class="pt-2">Id :</MudText>
+                    <div>▪ Tidak boleh duplikat</div>
+                    <div>▪ Tidak boleh kosong</div>
+                    <MudText Typo="Typo.button" Class="pt-2">Nama :</MudText>
+                    <div>▪ Tidak boleh kosong</div>
+                    <MudText Typo="Typo.button" Class="pt-2">Alamat :</MudText>
+                    <div>▪ Tidak boleh kosong</div>
+                    <MudText Typo="Typo.button" Class="pt-2">Deskripsi :</MudText>
+                    <div>▪ Tidak boleh kosong</div>
+                </MudStack>
+            </MudPopover>
+        </div>
+        <MudSpacer />
+        <MudStack Row Class="w-300">
+            <MudButton Variant="Variant.Filled" Size="Size.Small" Color="Color.Warning" OnClick="SaveAsync" Class="flex-1">Simpan</MudButton>
+            <MudButton Size="Size.Small" OnClick="Cancel" Class="flex-1">Kembali</MudButton>
+        </MudStack>
+    </DialogActions>
+</MudDialog>
