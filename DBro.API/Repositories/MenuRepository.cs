@@ -3,7 +3,7 @@
 /// <summary>
 /// GET Includable :
 /// <br/>
-/// • One to Many - <see cref="VarianMenu"/>
+/// • One to Many - <see cref="MenuPromoPesanan"/>
 /// <br/>
 /// • One to Many - <see cref="DetailPesanan"/>
 /// </summary>
@@ -23,11 +23,13 @@ public interface IMenuRepository
 
     #endregion Menu
 
-    #region Varian Menu
+    //#region Varian Menu
 
-    Task<bool?> UpdatesVarianAsync(string idEditor, List<VarianMenu> menu);
+    //Task<List<VarianMenu>> GetVarianAsync(List<string> includes = null!);
 
-    #endregion Varian Menu
+    //Task<bool?> UpdatesVarianAsync(string idEditor, List<VarianMenu> menu);
+
+    //#endregion Varian Menu
 }
 
 public class MenuRepository(AppDbContext appDbContext) : IMenuRepository
@@ -42,7 +44,8 @@ public class MenuRepository(AppDbContext appDbContext) : IMenuRepository
 
             if (includes != null)
             {
-                if (includes.Contains(nameof(VarianMenu))) models = models.Include(x => x.VarianMenu);
+                //if (includes.Contains(nameof(VarianMenu))) models = models.Include(x => x.VarianMenu);
+                if (includes.Contains(nameof(MenuPromoPesanan))) models = models.Include(x => x.MenuPromoPesanan);
                 if (includes.Contains(nameof(DetailPesanan))) models = models.Include(x => x.DetailPesanan);
             }
 
@@ -62,7 +65,8 @@ public class MenuRepository(AppDbContext appDbContext) : IMenuRepository
 
             if (includes != null)
             {
-                if (includes.Contains(nameof(VarianMenu))) model = model.Include(x => x.VarianMenu);
+                //if (includes.Contains(nameof(VarianMenu))) model = model.Include(x => x.VarianMenu);
+                if (includes.Contains(nameof(MenuPromoPesanan))) model = model.Include(x => x.MenuPromoPesanan);
                 if (includes.Contains(nameof(DetailPesanan))) model = model.Include(x => x.DetailPesanan);
             }
 
@@ -169,30 +173,50 @@ public class MenuRepository(AppDbContext appDbContext) : IMenuRepository
 
     #endregion Menu
 
-    #region Varian Menu
+    //#region Varian Menu
 
-    public async Task<bool?> UpdatesVarianAsync(string idEditor, List<VarianMenu> menu)
-    {
-        try
-        {
-            appDbContext.VarianMenu.RemoveRange(await appDbContext.VarianMenu.Where(x => x.IdMenu == menu[0].IdMenu).ToListAsync());
-            await appDbContext.VarianMenu.AddRangeAsync(menu);
-            await appDbContext.Aktivitas.AddAsync(new()
-            {
-                Email = idEditor,
-                JenisLog = JenisLog.Edit,
-                Entitas = Entitas.Menu,
-                IdEntitas = menu[0].IdMenu
-            });
-            int rowsAffected = await appDbContext.SaveChangesAsync();
+    //public async Task<List<VarianMenu>> GetVarianAsync(List<string> includes = null!)
+    //{
+    //    try
+    //    {
+    //        IQueryable<VarianMenu> models = appDbContext.VarianMenu;
 
-            return rowsAffected > 0;
-        }
-        catch (Exception)
-        {
-            return null;
-        }
-    }
+    //        if (includes != null)
+    //        {
+    //            if (includes.Contains(nameof(Menu))) models = models.Include(x => x.Menu);
+    //            if (includes.Contains(nameof(DetailPesanan))) models = models.Include(x => x.DetailPesanan);
+    //        }
 
-    #endregion Varian Menu
+    //        return await models.OrderBy(x => x.Nama).ToListAsync();
+    //    }
+    //    catch (Exception)
+    //    {
+    //        return null!;
+    //    }
+    //}
+
+    //public async Task<bool?> UpdatesVarianAsync(string idEditor, List<VarianMenu> menu)
+    //{
+    //    try
+    //    {
+    //        appDbContext.VarianMenu.RemoveRange(await appDbContext.VarianMenu.Where(x => x.IdMenu == menu[0].IdMenu).ToListAsync());
+    //        await appDbContext.VarianMenu.AddRangeAsync(menu);
+    //        await appDbContext.Aktivitas.AddAsync(new()
+    //        {
+    //            Email = idEditor,
+    //            JenisLog = JenisLog.Edit,
+    //            Entitas = Entitas.Menu,
+    //            IdEntitas = menu[0].IdMenu
+    //        });
+    //        int rowsAffected = await appDbContext.SaveChangesAsync();
+
+    //        return rowsAffected > 0;
+    //    }
+    //    catch (Exception)
+    //    {
+    //        return null;
+    //    }
+    //}
+
+    //#endregion Varian Menu
 }

@@ -21,8 +21,4 @@
     <ProjectReference Include="..\DBro.Shared\DBro.Shared.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="wwwroot\" />
-  </ItemGroup>
-
 </Project>

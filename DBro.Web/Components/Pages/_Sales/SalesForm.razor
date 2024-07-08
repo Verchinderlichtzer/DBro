@@ -56,13 +56,13 @@
                                             <MudNumericField Immediate T="int" @bind-Value="promo.JumlahDibeli" Label="Beli" Min="1" Max="99" />
                                         </div>
                                         <div class="flex-1">
-                                            <MudAutocomplete T="Menu" @bind-Value="promo.MenuDibeli" @bind-Value:after="() => promo.IdMenuDibeli = promo.MenuDibeli.Id" Dense CoerceText SearchFunc="SearchMenuAsync" ToStringFunc="x => x == null ? null : x.Nama" MaxItems="128" />
+                                            <MudAutocomplete Label="Beli" T="Menu" @bind-Value="promo.MenuDibeli" @bind-Value:after="() => promo.IdMenuDibeli = promo.MenuDibeli.Id" Dense CoerceText SearchFunc="SearchMenuAsync" ToStringFunc="x => x == null ? null : x.Nama" MaxItems="128" />
                                         </div>
                                         <div class="w-50">
                                             <MudNumericField Immediate T="int" @bind-Value="promo.JumlahDidapat" Label="Gratis" Min="1" Max="99" />
                                         </div>
                                         <div class="flex-1">
-                                            <MudAutocomplete T="Menu" @bind-Value="promo.MenuDidapat" @bind-Value:after="() => promo.IdMenuDidapat = promo.MenuDidapat.Id" Dense CoerceText SearchFunc="SearchMenuAsync" ToStringFunc="x => x == null ? null : x.Nama" MaxItems="128" />
+                                            <MudAutocomplete Label="Gratis" T="Menu" @bind-Value="promo.MenuDidapat" @bind-Value:after="() => promo.IdMenuDidapat = promo.MenuDidapat.Id" Dense CoerceText SearchFunc="SearchMenuAsync" ToStringFunc="x => x == null ? null : x.Nama" MaxItems="128" />
                                         </div>
                                     </MudStack>
                                     <MudDateRangePicker Label="Jangka Waktu" PickerVariant="PickerVariant.Dialog" DateRange="_isNew ? new() { Start = DateTime.Today, End = DateTime.Today.AddDays(7) } : new() { Start = promo.TanggalMulai, End = promo.TanggalAkhir }" DateRangeChanged="e => { promo.TanggalMulai = e.Start; promo.TanggalAkhir = e.End; }" DateFormat="dd MMM yyyy" tabindex="-1" />

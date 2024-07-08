@@ -1,5 +1,120 @@
-﻿<h3>PesananForm</h3>
+﻿@page "/pesanan/form"
+@page "/pesanan/form/{id}"
+@inherits PesananFormBase
 
-@code {
+<PageTitle>Pesanan Langsung</PageTitle>
 
+@if (!_hasLoaded)
+{
+    <MudProgressCircular Indeterminate />
 }
+else
+{
+    <MudContainer Fixed>
+        
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@(_isNew ? Icons.Material.Filled.Add : Icons.Material.Filled.Edit)" Class="mr-3 mb-n1" />
+            @(_isNew ? "Tambah Pesanan (Langsung)" : "Edit Pesanan")
+        </MudText>
+        
+        <MudForm Model="_pesanan" @ref="_form" Validation="((PesananValidator)Validator).ValidateValue">
+            <MudStack Class="wp-100">
+                @* <MudAutocomplete AutoFocus Label="Email Pembeli" T="User" @bind-Value="_pesanan.User" @bind-Value:after="() => _pesanan.Email = _pesanan.User.Email" Dense CoerceText SearchFunc="SearchUserAsync" ToStringFunc="x => x == null ? null : x.Nama" MaxItems="128" /> *@
+                <MudField Label="Email">@_pesanan.Email</MudField>
+                <MudDatePicker Label="Tanggal" @bind-Date="_pesanan.Tanggal" PickerVariant="PickerVariant.Dialog" DateFormat="dd MMM yyyy" tabindex="-1" />
+                <MudField Label="Subtotal" Adornment="Adornment.Start" AdornmentText="Rp">@_pesanan.Subtotal</MudField>
+                <MudField Label="Potongan" Adornment="Adornment.Start" AdornmentText="Rp">@_pesanan.Potongan</MudField>
+                <MudField Label="Total" Adornment="Adornment.Start" AdornmentText="Rp">@_pesanan.Total</MudField>
+                <MudNumericField Immediate HideSpinButtons T="int" @bind-Value="_pesanan.Bayar" Format="N0" Label="Bayar" Adornment="Adornment.Start" AdornmentText="Rp" />
+                <MudField Label="Sisa" Adornment="Adornment.Start" AdornmentText="Rp">@_pesanan.Sisa</MudField>
+            </MudStack>
+            <MudDataGrid Items="_pesanan.DetailPesanan" Elevation="2" Dense Bordered ShowColumnOptions="false">
+                <ToolBarContent>
+                    <MudText Typo="Typo.h6">Menu yang dipesan</MudText>
+                    <MudSpacer />
+                    <MudAutocomplete @ref="autocompleteMenu" T="Menu" ValueChanged="e => PilihMenu(e)" Placeholder="Cari menu..." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Dense CoerceText SearchFunc="SearchMenuAsync" ToStringFunc="@(x => x is null ? null : $"{x.Nama} ({x.JenisMenu})")" MaxItems="128" />
+                </ToolBarContent>
+                <Columns>
+                    <PropertyColumn Property="x => x.Menu.Nama" HeaderClass="w-0" />
+                    <TemplateColumn HeaderClass="w-0" Sortable="false" Title="Varian">
+                        <CellTemplate>
+                            <MudSelect Dense T="VarianMenu" Label="Varian">
+                                @foreach (var item in _varianMenu.Where(x => x.IdMenu == context.Item.IdMenu))
+                                {
+                                    <MudSelectItem Value="@item.Nama" />
+                                }
+                            </MudSelect>
+                        </CellTemplate>
+                    </TemplateColumn>
+                    <PropertyColumn Property="x => x.Harga" HeaderClass="w-150" />
+                    <TemplateColumn HeaderClass="w-0" Sortable="false" Title="Jumlah">
+                        <CellTemplate>
+                            <MudNumericField Immediate HideSpinButtons T="int" @bind-Value="context.Item.Jumlah" @bind-Value:after="() => " Label="Jumlah" />
+                        </CellTemplate>
+                    </TemplateColumn>
+                    <PropertyColumn Property="x => x.Subtotal" Format="N0" />
+                    <PropertyColumn Property="x => x.Diskon" Format="P0" />
+                    <TemplateColumn HeaderClass="w-0" Sortable="false" Title="Opsi">
+                        <CellTemplate>
+                            <MudIconButton Variant="Variant.Filled" Size="Size.Small" Icon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="e => DeleteDetail(context.Item)" />
+                        </CellTemplate>
+                    </TemplateColumn>
+                </Columns>
+            </MudDataGrid>
+
+            <MudSimpleTable Dense Bordered Class="overflow-x-auto">
+                <thead>
+                    <tr>
+                        <th>Jenis</th>
+                        <th>Barang</th>
+                        <th>Jumlah</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var row in _menuDidapat)
+                    {
+                        <tr>
+                            <td>@row.Menu.JenisMenu</td>
+                            <td>@row.Menu.Nama</td>
+                            <td>@row.Jumlah</td>
+                        </tr>
+                    }
+                </tbody>
+            </MudSimpleTable>
+        </MudForm>
+        
+        <MudStack Row Class="mt-4">
+            <div>
+                <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Help" @onmouseenter="e => _isValidationRuleShow = true" @onmouseleave="e => _isValidationRuleShow = false" />
+                <MudPopover Open="_isValidationRuleShow" AnchorOrigin="Origin.TopCenter" TransformOrigin="Origin.BottomLeft" Fixed Class="px-4">
+                    <MudStack Spacing="0" Class="pb-2">
+                        <MudText Typo="Typo.button" Class="pt-2">Bayar :</MudText>
+                        <div>▪ Tidak boleh kosong</div>
+                        <MudText Typo="Typo.button" Class="pt-2">Status :</MudText>
+                        <div>▪ Status pesanan akan berubah secara otomatis sesuai dengan pesanan yang terjadi. Tidak disarankan mengubah status pesanan secara langsung.</div>
+                    </MudStack>
+                </MudPopover>
+            </div>
+            <MudSpacer />
+            <MudStack Row Class="w-425">
+                <MudButton Variant="Variant.Filled" Size="Size.Small" Color="_isNew ? Color.Success : Color.Warning" OnClick="SaveAsync" Class="flex-1">Simpan</MudButton>
+                <MudButton Size="Size.Small" OnClick="Cancel" Class="flex-1">Kembali</MudButton>
+            </MudStack>
+        </MudStack>
+
+    </MudContainer>
+}
+
+@* <MudMessageBox @ref="_cancelConfirmation" Title="Konfirmasi Pembatalan Pesanan">
+    <MessageContent>
+        <MudPaper Elevation="0" MinWidth="300px" Class="mx-5">
+            @($"Batalkan pesanan nomor {_pesanan.Id}")
+        </MudPaper>
+    </MessageContent>
+    <NoButton>
+        <MudButton Variant="Variant.Filled" Class="ma-1" Color="Color.Error" Size="Size.Small">Ya</MudButton>
+    </NoButton>
+    <YesButton>
+        <MudButton Variant="Variant.Filled" Class="ma-1" Size="Size.Small">Tidak</MudButton>
+    </YesButton>
+</MudMessageBox> *@

@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 namespace DBro.API.Controllers;
 
 [ApiController, Route("api/[controller]")]
-public class PesananController(IPesananRepository pesananRepository) : ControllerBase
+public class PesananController(IPesananRepository pesananRepository, IMenuRepository menuRepository, ISalesRepository salesRepository) : ControllerBase
 {
     readonly JsonSerializerOptions _options = new() { ReferenceHandler = ReferenceHandler.IgnoreCycles };
 
@@ -20,6 +20,32 @@ public class PesananController(IPesananRepository pesananRepository) : Controlle
             if (result != null)
                 return Ok(JsonSerializer.Serialize(result, _options));
             return BadRequest("Ada kesalahan saat mengakses data");
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, "Terjadi kesalahan pada server");
+        }
+    }
+
+    [HttpGet("form")]
+    public async Task<IActionResult> GetPesananForm(string id, [FromQuery] string entities = null!)
+    {
+        try
+        {
+            List<string> includes = entities?.Mid(entities.IndexOf('=') + 1).Split(',').Where(x => !string.IsNullOrEmpty(x)).ToList()!;
+            PesananFormDTO dto = new()
+            {
+                Menu = (await menuRepository.GetAsync()).ConvertAll(x => new Menu() { Id = x.Id, Nama = x.Nama, Harga = x.Harga }),
+                //VarianMenu = await menuRepository.GetVarianAsync(),
+                Diskon = await salesRepository.GetDiskonAsync(),
+                Promo = await salesRepository.GetPromoAsync()
+            };
+            var result = await pesananRepository.FindAsync(id, includes);
+            if (result.Item2 == true)
+                dto.Pesanan = result.Item1;
+            else if (result.Item2 == null)
+                return BadRequest("Ada kesalahan saat mengakses data");
+            return Ok(JsonSerializer.Serialize(dto, _options));
         }
         catch (Exception)
         {

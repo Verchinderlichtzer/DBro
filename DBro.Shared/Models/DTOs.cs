@@ -3,6 +3,8 @@ using System.Security.Claims;
 
 namespace DBro.Shared.Models;
 
+#region Auth
+
 public class LoginDTO()
 {
     [Required]
@@ -23,17 +25,44 @@ public class ClaimDTO
     public string Value { get; set; } = string.Empty;
 }
 
-public class SalesDTO
+#endregion Auth
+
+#region Sales
+
+public class SalesDTO // Data yang ditampilkan di List Sales, juga untuk kumpulan diskon dan promo pada form
 {
     public List<Diskon> Diskon { get; set; } = null!;
     public List<Promo> Promo { get; set; } = null!;
 }
 
-public class SalesFormDTO
+public class SalesFormDTO // Data yang diperlukan di Form Sales
 {
     public SalesDTO Sales { get; set; } = null!;
     public List<Menu> Menu { get; set; } = null!;
 }
+
+#endregion Sales
+
+#region Pesanan
+
+public class PesananFormDTO // Data yang diperlukan di Form Pesanan
+{
+    public Pesanan Pesanan { get; set; } = null!;
+    public List<Menu> Menu { get; set; } = null!;
+    //public List<VarianMenu> VarianMenu { get; set; } = null!;
+    public List<Diskon> Diskon { get; set; } = null!;
+    public List<Promo> Promo { get; set; } = null!;
+}
+
+public class MenuDidapatDTO // Menu yang didapat dari promo
+{
+    public Menu Menu { get; set; } = null!;
+    public int Jumlah { get; set; }
+}
+
+#endregion Pesanan
+
+#region Chart / Graph
 
 public class LineChartDTO
 {
@@ -41,6 +70,10 @@ public class LineChartDTO
     public DateTime Tanggal { get; set; }
     public int Nominal { get; set; }
 }
+
+#endregion Chart / Graph
+
+#region Lainnya
 
 public class PeriodikDTO
 {
@@ -73,3 +106,5 @@ public class RekapitulasiDTO
     public int Pengeluaran { get; set; }
     public int Total { get; set; }
 }
+
+#endregion Lainnya

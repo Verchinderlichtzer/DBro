@@ -63,7 +63,7 @@ public partial class MainLayout
         CurrentUser.JenisKelamin = (cp.FindFirstValue(ClaimTypes.Gender)!).ToEnum<JenisKelamin>();
     }
 
-    protected async Task<IEnumerable<KeyValuePair<string, string>>> CariMenu(string value)
+    protected async Task<IEnumerable<KeyValuePair<string, string>>> CariMenu(string value, CancellationToken token)
     {
         value ??= string.Empty;
         return await Task.FromResult(listMenu.Where(x => x.Key.Contains(value, StringComparison.OrdinalIgnoreCase) || x.Value.Contains(value, StringComparison.OrdinalIgnoreCase)));

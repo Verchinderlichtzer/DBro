@@ -35,7 +35,7 @@ public class SalesFormBase : ComponentBase
         _isNew = DiskonIds.Count == 0 && PromoIds.Count == 0;
         SalesService.IdEditor = IdEditor;
 
-        var response = await SalesService.SalesFormAsync(DiskonIds, PromoIds, [nameof(Menu)]);
+        var response = await SalesService.GetFormAsync(DiskonIds, PromoIds, [nameof(Menu)]);
         _menu = response.Item1.Menu;
         if (response.Item1.Sales != null)
         {
@@ -56,7 +56,7 @@ public class SalesFormBase : ComponentBase
         }
     }
 
-    protected async Task<IEnumerable<Menu>> SearchMenuAsync(string value)
+    protected async Task<IEnumerable<Menu>> SearchMenuAsync(string value, CancellationToken token)
     {
         value ??= string.Empty;
         return await Task.FromResult(_menu.Where(x => $"{x.Id} {x.JenisMenu} {x.Nama} {x.Harga}".Search(value)).OrderBy(x => x.Nama));

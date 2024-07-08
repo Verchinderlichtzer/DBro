@@ -12,8 +12,27 @@ public class SalesController(ISalesRepository salesRepository, IMenuRepository m
 {
     readonly JsonSerializerOptions _options = new() { ReferenceHandler = ReferenceHandler.IgnoreCycles };
 
+    #region Sales
+
+    [HttpGet]
+    public async Task<IActionResult> GetSales([FromQuery] string entities = null!)
+    {
+        try
+        {
+            List<string> includes = entities?.Mid(entities.IndexOf('=') + 1).Split(',').Where(x => !string.IsNullOrEmpty(x)).ToList()!;
+            var result = await salesRepository.GetSalesAsync(includes);
+            if (result != null)
+                return Ok(JsonSerializer.Serialize(result, _options));
+            return BadRequest("Ada kesalahan saat mengakses data");
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, "Terjadi kesalahan pada server");
+        }
+    }
+
     [HttpGet("form")]
-    public async Task<IActionResult> SalesForm([FromQuery] string diskonIds = null!, [FromQuery] string promoIds = null!, [FromQuery] string entities = null!)
+    public async Task<IActionResult> GetSalesForm([FromQuery] string diskonIds = null!, [FromQuery] string promoIds = null!, [FromQuery] string entities = null!)
     {
         try
         {
@@ -30,25 +49,6 @@ public class SalesController(ISalesRepository salesRepository, IMenuRepository m
             else if (result.Item2 == null)
                 return BadRequest("Ada kesalahan saat mengakses data");
             return Ok(JsonSerializer.Serialize(dto, _options));
-        }
-        catch (Exception)
-        {
-            return StatusCode(500, "Terjadi kesalahan pada server");
-        }
-    }
-
-    #region Sales
-
-    [HttpGet]
-    public async Task<IActionResult> GetSales([FromQuery] string entities = null!)
-    {
-        try
-        {
-            List<string> includes = entities?.Mid(entities.IndexOf('=') + 1).Split(',').Where(x => !string.IsNullOrEmpty(x)).ToList()!;
-            var result = await salesRepository.GetSalesAsync(includes);
-            if (result != null)
-                return Ok(JsonSerializer.Serialize(result, _options));
-            return BadRequest("Ada kesalahan saat mengakses data");
         }
         catch (Exception)
         {

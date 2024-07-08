@@ -55,6 +55,7 @@ builder.Services.AddHttpClient<IMenuService, MenuService>(client => client.BaseA
 builder.Services.AddHttpClient<IUserService, UserService>(client => client.BaseAddress = new("https://localhost:7117/"));
 builder.Services.AddHttpClient<ISalesService, SalesService>(client => client.BaseAddress = new("https://localhost:7117/"));
 builder.Services.AddHttpClient<IAktivitasService, AktivitasService>(client => client.BaseAddress = new("https://localhost:7117/"));
+builder.Services.AddHttpClient<IPesananService, PesananService>(client => client.BaseAddress = new("https://localhost:7117/"));
 
 #endregion API Services
 
@@ -62,6 +63,7 @@ builder.Services.AddHttpClient<IAktivitasService, AktivitasService>(client => cl
 
 builder.Services.AddScoped<IValidator<Menu>, MenuValidator>();
 builder.Services.AddScoped<IValidator<User>, UserValidator>();
+builder.Services.AddScoped<IValidator<Pesanan>, PesananValidator>();
 
 #endregion Validators
 

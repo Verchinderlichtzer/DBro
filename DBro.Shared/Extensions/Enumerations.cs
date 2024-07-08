@@ -37,9 +37,9 @@ public enum JenisVarian : byte
 
 public enum StatusPesanan : byte
 {
-    None,
-    Diterima,
-    Ditolak
+    [Description("-")] None,
+    [Description("Diterima")] Diterima,
+    [Description("Ditolak")] Ditolak
 }
 
 public enum JenisLog : byte

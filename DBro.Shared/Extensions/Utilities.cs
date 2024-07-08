@@ -302,6 +302,13 @@ public static partial class Utilities
         return string.Empty;
     }
 
+    /// <summary>1;,2cX3W4HD5f6./78 => 12345678</summary>
+    public static int GetNumber(string str)
+    {
+        string result = GetNumberRegex().Replace(str, "");
+        return int.Parse(result);
+    }
+
     #endregion Number Utility
 
     #region Boolean Utility
@@ -768,6 +775,8 @@ public static partial class Utilities
     [GeneratedRegex("([A-Z])")] private static partial Regex CapitalLetter();
 
     [GeneratedRegex(@"(^\w+)\s+(.+)\s+(\w+$)")] private static partial Regex FirstRestLastWord();
+    [GeneratedRegex("[^0-9]")]
+    private static partial Regex GetNumberRegex();
 
     #endregion Regex
 }

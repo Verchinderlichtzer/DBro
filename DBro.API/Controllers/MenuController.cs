@@ -101,22 +101,22 @@ public class MenuController(IMenuRepository menuRepository) : ControllerBase
 
     #endregion Menu
 
-    #region Varian Menu
+    //#region Varian Menu
 
-    [HttpPut("varian")]
-    public async Task<IActionResult> PutVarian([FromBody] string jsonString)
-    {
-        try
-        {
-            List<VarianMenu> varianMenu = JsonSerializer.Deserialize<List<VarianMenu>>(jsonString)!;
-            var result = await menuRepository.UpdatesVarianAsync(Request.Headers["Id-Editor"]!, varianMenu);
-            return result == true ? NoContent() : result == false ? NotFound("Varian menu tidak ditemukan") : BadRequest("Ada kesalahan saat mengubah data");
-        }
-        catch (Exception)
-        {
-            return StatusCode(500, "Terjadi kesalahan pada server");
-        }
-    }
+    //[HttpPut("varian")]
+    //public async Task<IActionResult> PutVarian([FromBody] string jsonString)
+    //{
+    //    try
+    //    {
+    //        List<VarianMenu> varianMenu = JsonSerializer.Deserialize<List<VarianMenu>>(jsonString)!;
+    //        var result = await menuRepository.UpdatesVarianAsync(Request.Headers["Id-Editor"]!, varianMenu);
+    //        return result == true ? NoContent() : result == false ? NotFound("Varian menu tidak ditemukan") : BadRequest("Ada kesalahan saat mengubah data");
+    //    }
+    //    catch (Exception)
+    //    {
+    //        return StatusCode(500, "Terjadi kesalahan pada server");
+    //    }
+    //}
 
-    #endregion Varian Menu
+    //#endregion Varian Menu
 }

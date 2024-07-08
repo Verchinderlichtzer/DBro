@@ -21,11 +21,11 @@ public interface IMenuService
 
     #endregion Menu
 
-    #region Varian Menu
+    //#region Varian Menu
 
-    Task<(bool, string)> UpdatesVarianAsync(List<VarianMenu> varianMenu);
+    //Task<(bool, string)> UpdatesVarianAsync(List<VarianMenu> varianMenu);
 
-    #endregion Varian Menu
+    //#endregion Varian Menu
 }
 
 public class MenuService : IMenuService
@@ -107,22 +107,22 @@ public class MenuService : IMenuService
 
     #endregion Menu
 
-    #region Varian Menu
+    //#region Varian Menu
 
-    public async Task<(bool, string)> UpdatesVarianAsync(List<VarianMenu> varianMenu)
-    {
-        _httpClient.DefaultRequestHeaders.Add("Id-Editor", IdEditor);
-        var response = await _httpClient.PutAsJsonAsync("api/menu/varian", JsonSerializer.Serialize(varianMenu), _options);
-        string result = await response.Content.ReadAsStringAsync();
-        if (response.IsSuccessStatusCode)
-        {
-            return (true, null!);
-        }
-        else
-        {
-            return (false, result);
-        }
-    }
+    //public async Task<(bool, string)> UpdatesVarianAsync(List<VarianMenu> varianMenu)
+    //{
+    //    _httpClient.DefaultRequestHeaders.Add("Id-Editor", IdEditor);
+    //    var response = await _httpClient.PutAsJsonAsync("api/menu/varian", JsonSerializer.Serialize(varianMenu), _options);
+    //    string result = await response.Content.ReadAsStringAsync();
+    //    if (response.IsSuccessStatusCode)
+    //    {
+    //        return (true, null!);
+    //    }
+    //    else
+    //    {
+    //        return (false, result);
+    //    }
+    //}
 
-    #endregion Varian Menu
+    //#endregion Varian Menu
 }

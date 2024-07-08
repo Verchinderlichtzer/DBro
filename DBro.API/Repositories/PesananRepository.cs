@@ -6,6 +6,8 @@
 /// • One to Many - <see cref="User"/>
 /// <br/>
 /// • One to Many - <see cref="DetailPesanan"/>
+/// <br/>
+/// • One to Many - <see cref="MenuPromoPesanan"/>
 /// </summary>
 public interface IPesananRepository
 {
@@ -32,8 +34,8 @@ public class PesananRepository(AppDbContext appDbContext) : IPesananRepository
             {
                 if (includes.Contains(nameof(User))) models = models.Include(x => x.User);
                 if (includes.Contains(nameof(DetailPesanan))) models = models.Include(x => x.DetailPesanan);
-                if (includes.Contains(nameof(Menu))) models = models.Include(x => x.DetailPesanan).ThenInclude(x => x.Menu);
-                if (includes.Contains(nameof(VarianMenu))) models = models.Include(x => x.DetailPesanan).ThenInclude(x => x.VarianMenu);
+                //if (includes.Contains(nameof(VarianMenu))) models = models.Include(x => x.DetailPesanan).ThenInclude(x => x.VarianMenu);
+                if (includes.Contains(nameof(MenuPromoPesanan))) models = models.Include(x => x.MenuPromoPesanan);
             }
 
             return await models.OrderByDescending(x => x.Id).ToListAsync();
@@ -54,8 +56,8 @@ public class PesananRepository(AppDbContext appDbContext) : IPesananRepository
             {
                 if (includes.Contains(nameof(User))) model = model.Include(x => x.User);
                 if (includes.Contains(nameof(DetailPesanan))) model = model.Include(x => x.DetailPesanan);
-                if (includes.Contains(nameof(Menu))) model = model.Include(x => x.DetailPesanan).ThenInclude(x => x.Menu);
-                if (includes.Contains(nameof(VarianMenu))) model = model.Include(x => x.DetailPesanan).ThenInclude(x => x.VarianMenu);
+                //if (includes.Contains(nameof(VarianMenu))) model = model.Include(x => x.DetailPesanan).ThenInclude(x => x.VarianMenu);
+                if (includes.Contains(nameof(MenuPromoPesanan))) model = model.Include(x => x.MenuPromoPesanan);
             }
 
             Pesanan pesanan = (await model.FirstOrDefaultAsync(x => x.Id == id))!;

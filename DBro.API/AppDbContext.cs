@@ -6,7 +6,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
     public DbSet<User> User { get; set; }
     public DbSet<Menu> Menu { get; set; }
-    public DbSet<VarianMenu> VarianMenu { get; set; }
+
+    //public DbSet<VarianMenu> VarianMenu { get; set; }
+
+    public DbSet<MenuPromoPesanan> MenuPromoPesanan { get; set; }
     public DbSet<Pesanan> Pesanan { get; set; }
     public DbSet<DetailPesanan> DetailPesanan { get; set; }
     public DbSet<Aktivitas> Aktivitas { get; set; }
@@ -34,12 +37,12 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             e.HasOne(x => x.User).WithMany(x => x.Aktivitas).HasForeignKey(x => x.Email);
         });
 
-        modelBuilder.Entity<VarianMenu>(e =>
-        {
-            e.HasOne(x => x.Menu).WithMany(x => x.VarianMenu).HasForeignKey(x => x.IdMenu);
-            e.HasIndex(x => x.Nama).IsUnique();
-            e.Ignore(x => x.Removable);
-        });
+        //modelBuilder.Entity<VarianMenu>(e =>
+        //{
+        //    e.HasOne(x => x.Menu).WithMany(x => x.VarianMenu).HasForeignKey(x => x.IdMenu);
+        //    e.HasIndex(x => x.Nama).IsUnique();
+        //    e.Ignore(x => x.Removable);
+        //});
 
         modelBuilder.Entity<Pesanan>(e =>
         {
@@ -52,20 +55,26 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             e.HasKey(x => new { x.IdPesanan, x.IdMenu });
             e.HasOne(x => x.Pesanan).WithMany(x => x.DetailPesanan).HasForeignKey(x => x.IdPesanan);
             e.HasOne(x => x.Menu).WithMany(x => x.DetailPesanan).HasForeignKey(x => x.IdMenu);
-            e.HasOne(x => x.VarianMenu).WithMany(x => x.DetailPesanan).HasForeignKey(x => x.IdVarianMenu);
+            //e.HasOne(x => x.VarianMenu).WithMany(x => x.DetailPesanan).HasForeignKey(x => x.IdVarianMenu);
             e.Property(x => x.Diskon).HasPrecision(5, 2);
+        });
+
+        modelBuilder.Entity<MenuPromoPesanan>(e =>
+        {
+            e.HasOne(x => x.Pesanan).WithMany(x => x.MenuPromoPesanan).HasForeignKey(x => x.IdPesanan);
+            e.HasOne(x => x.Menu).WithMany(x => x.MenuPromoPesanan).HasForeignKey(x => x.IdMenu);
         });
 
         modelBuilder.Entity<Diskon>(e =>
         {
-            e.HasOne(x => x.Menu).WithOne(x => x.Diskon).HasForeignKey<Diskon>(x => x.IdMenu);
+            e.HasOne(x => x.Menu).WithMany(x => x.Diskon).HasForeignKey(x => x.IdMenu);
             e.Property(x => x.Nilai).HasPrecision(5, 2);
         });
 
         modelBuilder.Entity<Promo>(e =>
         {
-            e.HasOne(x => x.MenuDibeli).WithOne(x => x.PromoDibeli).HasForeignKey<Promo>(x => x.IdMenuDibeli).OnDelete(DeleteBehavior.NoAction);
-            e.HasOne(x => x.MenuDidapat).WithOne(x => x.PromoDidapat).HasForeignKey<Promo>(x => x.IdMenuDidapat).OnDelete(DeleteBehavior.NoAction);
+            e.HasOne(x => x.MenuDibeli).WithMany(x => x.PromoDibeli).HasForeignKey(x => x.IdMenuDibeli).OnDelete(DeleteBehavior.NoAction);
+            e.HasOne(x => x.MenuDidapat).WithMany(x => x.PromoDidapat).HasForeignKey(x => x.IdMenuDidapat).OnDelete(DeleteBehavior.NoAction);
         });
 
         #endregion Model Configuration
