@@ -18,7 +18,7 @@ namespace DBro.API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    JenisMenu = table.Column<byte>(type: "tinyint", nullable: false),
+                    Kategori = table.Column<byte>(type: "tinyint", nullable: false),
                     Nama = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Harga = table.Column<int>(type: "int", nullable: false),
                     Gambar = table.Column<byte[]>(type: "varbinary(max)", nullable: true)
@@ -95,28 +95,6 @@ namespace DBro.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "VarianMenu",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    IdMenu = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    JenisVarian = table.Column<byte>(type: "tinyint", nullable: false),
-                    Nama = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Harga = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_VarianMenu", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_VarianMenu_Menu_IdMenu",
-                        column: x => x.IdMenu,
-                        principalTable: "Menu",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Aktivitas",
                 columns: table => new
                 {
@@ -124,7 +102,7 @@ namespace DBro.API.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Tanggal = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    JenisLog = table.Column<byte>(type: "tinyint", nullable: false),
+                    Jenis = table.Column<byte>(type: "tinyint", nullable: false),
                     Entitas = table.Column<byte>(type: "tinyint", nullable: false),
                     IdEntitas = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
@@ -149,7 +127,7 @@ namespace DBro.API.Migrations
                     Subtotal = table.Column<int>(type: "int", nullable: false),
                     Potongan = table.Column<int>(type: "int", nullable: false),
                     Bayar = table.Column<int>(type: "int", nullable: false),
-                    StatusPesanan = table.Column<byte>(type: "tinyint", nullable: false)
+                    Status = table.Column<byte>(type: "tinyint", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -167,10 +145,8 @@ namespace DBro.API.Migrations
                 {
                     IdPesanan = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     IdMenu = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    IdVarianMenu = table.Column<int>(type: "int", nullable: true),
-                    Jumlah = table.Column<int>(type: "int", nullable: false),
                     Harga = table.Column<int>(type: "int", nullable: false),
-                    Subtotal = table.Column<int>(type: "int", nullable: false),
+                    Jumlah = table.Column<int>(type: "int", nullable: false),
                     Diskon = table.Column<decimal>(type: "decimal(5,2)", precision: 5, scale: 2, nullable: false)
                 },
                 constraints: table =>
@@ -188,16 +164,38 @@ namespace DBro.API.Migrations
                         principalTable: "Pesanan",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MenuPromoPesanan",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IdPesanan = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    IdMenu = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Jumlah = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MenuPromoPesanan", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_DetailPesanan_VarianMenu_IdVarianMenu",
-                        column: x => x.IdVarianMenu,
-                        principalTable: "VarianMenu",
-                        principalColumn: "Id");
+                        name: "FK_MenuPromoPesanan_Menu_IdMenu",
+                        column: x => x.IdMenu,
+                        principalTable: "Menu",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_MenuPromoPesanan_Pesanan_IdPesanan",
+                        column: x => x.IdPesanan,
+                        principalTable: "Pesanan",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
                 table: "Menu",
-                columns: new[] { "Id", "Gambar", "Harga", "JenisMenu", "Nama" },
+                columns: new[] { "Id", "Gambar", "Harga", "Kategori", "Nama" },
                 values: new object[,]
                 {
                     { "M-0001", null, 7000, (byte)1, "Sayap" },
@@ -247,15 +245,19 @@ namespace DBro.API.Migrations
                 column: "IdMenu");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DetailPesanan_IdVarianMenu",
-                table: "DetailPesanan",
-                column: "IdVarianMenu");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Diskon_IdMenu",
                 table: "Diskon",
-                column: "IdMenu",
-                unique: true);
+                column: "IdMenu");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MenuPromoPesanan_IdMenu",
+                table: "MenuPromoPesanan",
+                column: "IdMenu");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MenuPromoPesanan_IdPesanan",
+                table: "MenuPromoPesanan",
+                column: "IdPesanan");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Pesanan_Email",
@@ -265,14 +267,12 @@ namespace DBro.API.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Promo_IdMenuDibeli",
                 table: "Promo",
-                column: "IdMenuDibeli",
-                unique: true);
+                column: "IdMenuDibeli");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Promo_IdMenuDidapat",
                 table: "Promo",
-                column: "IdMenuDidapat",
-                unique: true);
+                column: "IdMenuDidapat");
 
             migrationBuilder.CreateIndex(
                 name: "IX_User_Telepon",
@@ -280,17 +280,6 @@ namespace DBro.API.Migrations
                 column: "Telepon",
                 unique: true,
                 filter: "[Telepon] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_VarianMenu_IdMenu",
-                table: "VarianMenu",
-                column: "IdMenu");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_VarianMenu_Nama",
-                table: "VarianMenu",
-                column: "Nama",
-                unique: true);
         }
 
         /// <inheritdoc />
@@ -306,19 +295,19 @@ namespace DBro.API.Migrations
                 name: "Diskon");
 
             migrationBuilder.DropTable(
+                name: "MenuPromoPesanan");
+
+            migrationBuilder.DropTable(
                 name: "Promo");
 
             migrationBuilder.DropTable(
                 name: "Pesanan");
 
             migrationBuilder.DropTable(
-                name: "VarianMenu");
+                name: "Menu");
 
             migrationBuilder.DropTable(
                 name: "User");
-
-            migrationBuilder.DropTable(
-                name: "Menu");
         }
     }
 }

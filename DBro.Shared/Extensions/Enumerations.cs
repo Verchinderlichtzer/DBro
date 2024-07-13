@@ -14,7 +14,7 @@ public enum JenisUser : byte
     Pelanggan
 }
 
-public enum JenisMenu : byte
+public enum Kategori : byte
 {
     [Description("")] None,
     [Description("Chicken")] Chicken,
@@ -42,7 +42,7 @@ public enum StatusPesanan : byte
     [Description("Ditolak")] Ditolak
 }
 
-public enum JenisLog : byte
+public enum JenisAktivitas : byte
 {
     Tambah,
     Edit,

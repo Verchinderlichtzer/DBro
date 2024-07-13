@@ -99,7 +99,7 @@ public class SalesListBase : ComponentBase
     {
         var parameters = new DialogParameters { ["DiskonIds"] = _selectedDiskon.Select(x => x.Id).ToList(), ["PromoIds"] = _selectedPromo.Select(x => x.Id).ToList(), ["JumlahDiskon"] = _jumlahDiskon, ["JumlahPromo"] = _jumlahPromo, ["IdEditor"] = SalesService.IdEditor };
         var form = await DialogService.Show<SalesForm>(isNew ? "Tambah Diskon & Promo" : "Edit Diskon & Promo", parameters).Result;
-        if (form.Canceled)
+        if (form!.Canceled)
         {
             _selectedDiskon.Clear();
             _selectedPromo.Clear();
@@ -107,8 +107,7 @@ public class SalesListBase : ComponentBase
         }
         else
         {
-            SalesDTO model = (SalesDTO)form.Data;
-            if (model != null)
+            if (form.Data is SalesDTO model)
             {
                 Snackbar.Add(isNew ? "Data berhasil ditambah" : "Data berhasil diubah", Severity.Success);
             }
@@ -120,7 +119,7 @@ public class SalesListBase : ComponentBase
     {
         List<string> jumlahTerpilih = [$"{_selectedDiskon.Count} diskon", $"{_selectedPromo.Count} promo"];
         _deleteMessage = $"Hapus {jumlahTerpilih.CombineWords()} terpilih?";
-        bool? result = await _deleteConfirmation!.Show();
+        bool? result = await _deleteConfirmation!.ShowAsync();
         if (result == false)
         {
             var response = await SalesService.DeletesSalesAsync(_selectedDiskon.Select(x => x.Id).ToList(), _selectedPromo.Select(x => x.Id).ToList());

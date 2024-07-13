@@ -39,15 +39,20 @@ public class SalesController(ISalesRepository salesRepository, IMenuRepository m
             List<string> markedDiskon = diskonIds?.Mid(diskonIds.IndexOf('=') + 1).Split(',').Where(x => !string.IsNullOrEmpty(x)).ToList()!;
             List<string> markedPromo = promoIds?.Mid(promoIds.IndexOf('=') + 1).Split(',').Where(x => !string.IsNullOrEmpty(x)).ToList()!;
             List<string> includes = entities?.Mid(entities.IndexOf('=') + 1).Split(',').Where(x => !string.IsNullOrEmpty(x)).ToList()!;
-            SalesFormDTO dto = new()
+            SalesDTO dto = new()
             {
                 Menu = (await menuRepository.GetAsync()).ConvertAll(x => new Menu() { Id = x.Id, Nama = x.Nama, Harga = x.Harga })
             };
             var result = await salesRepository.FindsSalesAsync(markedDiskon, markedPromo, includes);
             if (result.Item2 == true)
-                dto.Sales = result.Item1;
+            {
+                dto.Diskon = result.Item1.Diskon;
+                dto.Promo = result.Item1.Promo;
+            }
             else if (result.Item2 == null)
+            {
                 return BadRequest("Ada kesalahan saat mengakses data");
+            }
             return Ok(JsonSerializer.Serialize(dto, _options));
         }
         catch (Exception)

@@ -28,13 +28,13 @@ else
                 <MudCardMedia Style="background-size: 100% 100%;" Image="@(menu.Gambar != null ? string.Format($"data:image/gif;base64,{Convert.ToBase64String(menu.Gambar!)}") : "/images/piring_kosong.png")" Height="200" />
                 <MudCardContent Class="mb-12">
                     <MudText Typo="Typo.subtitle1">@menu.Nama</MudText>
-                    <MudText Typo="Typo.caption" Style="color: grey;">@menu.JenisMenu.GetDescription()</MudText>
+                    <MudText Typo="Typo.caption" Style="color: grey;">@menu.Kategori.GetDescription()</MudText>
                 </MudCardContent>
                 <MudCardActions Class="wp-100 absolute mt-12" Style="bottom: 0">
                     <MudStack Row Spacing="1" Class="flex-1" Justify="Justify.Center">
                         <MudText Typo="Typo.subtitle1">@menu.Harga.ToString("C0")</MudText>
                         <MudSpacer />
-                        <MudIconButton Variant="Variant.Filled" Size="Size.Small" Icon="@Icons.Material.Filled.Grain" Color="Color.Info" OnClick="async e => await OpenVarianAsync(menu)" />
+                        @* <MudIconButton Variant="Variant.Filled" Size="Size.Small" Icon="@Icons.Material.Filled.Grain" Color="Color.Info" OnClick="async e => await OpenVarianAsync(menu)" /> *@
                         <MudIconButton Variant="Variant.Filled" Size="Size.Small" Icon="@Icons.Material.Filled.Edit" Color="Color.Warning" OnClick="async e => await OpenFormAsync(menu)" />
                         <MudIconButton Variant="Variant.Filled" Size="Size.Small" Icon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="async e => await DeleteAsync(menu)" />
                     </MudStack>

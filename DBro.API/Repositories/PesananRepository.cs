@@ -105,7 +105,7 @@ public class PesananRepository(AppDbContext appDbContext) : IPesananRepository
             modelPesanan.Tanggal = pesanan.Tanggal;
             modelPesanan.Subtotal = pesanan.Subtotal;
             modelPesanan.Bayar = pesanan.Bayar;
-            modelPesanan.StatusPesanan = pesanan.StatusPesanan;
+            modelPesanan.Status = pesanan.Status;
 
             appDbContext.DetailPesanan.RemoveRange(await appDbContext.DetailPesanan.Where(x => x.IdPesanan == pesanan.Id).ToListAsync());
 

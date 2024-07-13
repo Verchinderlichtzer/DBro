@@ -124,7 +124,7 @@ public class SalesRepository(AppDbContext appDbContext) : ISalesRepository
             await appDbContext.Aktivitas.AddAsync(new()
             {
                 Email = idEditor,
-                JenisLog = JenisLog.Tambah,
+                Jenis = JenisAktivitas.Tambah,
                 Entitas = Entitas.Sales,
                 IdEntitas = new List<string> { d, p }.CombineWords(lastSeparator: ". ")
             });
@@ -180,7 +180,7 @@ public class SalesRepository(AppDbContext appDbContext) : ISalesRepository
             await appDbContext.Aktivitas.AddAsync(new()
             {
                 Email = idEditor,
-                JenisLog = JenisLog.Edit,
+                Jenis = JenisAktivitas.Edit,
                 Entitas = Entitas.Sales,
                 IdEntitas = new List<string> { d, p }.CombineWords(lastSeparator: ". ")
             });
@@ -221,7 +221,7 @@ public class SalesRepository(AppDbContext appDbContext) : ISalesRepository
             await appDbContext.Aktivitas.AddAsync(new()
             {
                 Email = idEditor,
-                JenisLog = JenisLog.Hapus,
+                Jenis = JenisAktivitas.Hapus,
                 Entitas = Entitas.Sales,
                 IdEntitas = new List<string> { d, p }.CombineWords(lastSeparator: ". ")
             });

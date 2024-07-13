@@ -24,8 +24,8 @@ public class SalesFormBase : ComponentBase
 
     protected MudForm? _form = new();
 
-    protected SalesDTO _sales = new() { Diskon = [], Promo = [] };
-    protected List<Menu> _menu = [];
+    protected SalesFormDTO _sales = new() { DiskonDTO = [], PromoDTO = [] };
+    protected List<Menu> _menu = null!;
 
     protected bool _isNew;
     protected bool _isValidationRuleShow;
@@ -37,10 +37,11 @@ public class SalesFormBase : ComponentBase
 
         var response = await SalesService.GetFormAsync(DiskonIds, PromoIds, [nameof(Menu)]);
         _menu = response.Item1.Menu;
-        if (response.Item1.Sales != null)
+        if (response.Item1.Diskon != null)
         {
-            _sales = response.Item1.Sales;
-            _sales.Diskon.ForEach(x => x.Nilai *= 100);
+            _sales.DiskonDTO = response.Item1.Diskon.ConvertAll(x => new DiskonFormDTO() { Diskon = x, DR = new(x.TanggalMulai, x.TanggalAkhir) });
+            _sales.PromoDTO = response.Item1.Promo.ConvertAll(x => new PromoFormDTO() { Promo = x, DR = new(x.TanggalMulai, x.TanggalAkhir) });
+            _sales.DiskonDTO.ForEach(x => x.Diskon.Nilai *= 100);
         }
         else if (response.Item1 == null)
         {
@@ -59,29 +60,29 @@ public class SalesFormBase : ComponentBase
     protected async Task<IEnumerable<Menu>> SearchMenuAsync(string value, CancellationToken token)
     {
         value ??= string.Empty;
-        return await Task.FromResult(_menu.Where(x => $"{x.Id} {x.JenisMenu} {x.Nama} {x.Harga}".Search(value)).OrderBy(x => x.Nama));
+        return await Task.FromResult(_menu.Where(x => $"{x.Id} {x.Kategori} {x.Nama} {x.Harga}".Search(value)).OrderBy(x => x.Nama));
     }
 
-    protected async Task<IEnumerable<Diskon>> SearchDiskonAsync(string value)
-    {
-        value ??= string.Empty;
-        return await Task.FromResult(_sales.Diskon.Where(x => x.IdMenu.Search(value) || x.Menu.Nama.Search(value) || x.Nilai.ToString("P0").Search(value) || x.TanggalMulai!.Value.ToString("dd/MM/yyyy MMMM").Search(value) || x.TanggalAkhir!.Value.ToString("dd/MM/yyyy MMMM").Search(value)).OrderBy(x => x.Menu.Nama));
-    }
+    //protected async Task<IEnumerable<Diskon>> SearchDiskonAsync(string value)
+    //{
+    //    value ??= string.Empty;
+    //    return await Task.FromResult(_sales.DiskonDTO.Where(x => x.Diskon.IdMenu.Search(value) || x.Diskon.Menu.Nama.Search(value) || x.Diskon.Nilai.ToString("P0").Search(value) || x.Diskon.TanggalMulai!.Value.ToString("dd/MM/yyyy MMMM").Search(value) || x.Diskon.TanggalAkhir!.Value.ToString("dd/MM/yyyy MMMM").Search(value)).OrderBy(x => x.Diskon.Menu.Nama));
+    //}
 
-    protected async Task<IEnumerable<Promo>> SearchPromoAsync(string value)
-    {
-        value ??= string.Empty;
-        return await Task.FromResult(_sales.Promo.Where(x => x.IdMenuDibeli.Search(value) || x.IdMenuDidapat.Search(value) || x.MenuDibeli.Nama.Search(value) || x.MenuDidapat.Nama.Search(value) || x.JumlahDibeli.ToString().Search(value) || x.JumlahDidapat.ToString().Search(value) || x.TanggalMulai!.Value.ToString("dd/MM/yyyy MMMM").Search(value) || x.TanggalAkhir!.Value.ToString("dd/MM/yyyy MMMM").Search(value)).OrderBy(x => x.MenuDibeli.Nama));
-    }
+    //protected async Task<IEnumerable<Promo>> SearchPromoAsync(string value)
+    //{
+    //    value ??= string.Empty;
+    //    return await Task.FromResult(_sales.PromoDTO.Where(x => x.IdMenuDibeli.Search(value) || x.IdMenuDidapat.Search(value) || x.MenuDibeli.Nama.Search(value) || x.MenuDidapat.Nama.Search(value) || x.JumlahDibeli.ToString().Search(value) || x.JumlahDidapat.ToString().Search(value) || x.TanggalMulai!.Value.ToString("dd/MM/yyyy MMMM").Search(value) || x.TanggalAkhir!.Value.ToString("dd/MM/yyyy MMMM").Search(value)).OrderBy(x => x.MenuDibeli.Nama));
+    //}
 
     protected void AddDiskon()
     {
-        _sales.Diskon.Add(new());
+        _sales.DiskonDTO.Add(new());
     }
 
     protected void AddPromo()
     {
-        _sales.Promo.Add(new());
+        _sales.PromoDTO.Add(new());
     }
 
     protected async Task SaveAsync()
@@ -89,21 +90,31 @@ public class SalesFormBase : ComponentBase
         await _form!.Validate();
         if (_form!.IsValid)
         {
-            _sales.Diskon.ForEach(x => x.Nilai /= 100);
+            _sales.DiskonDTO.ForEach(x =>
+            {
+                x.Diskon.Nilai /= 100;
+                x.Diskon.TanggalMulai = x.DR.Start;
+                x.Diskon.TanggalAkhir = x.DR.End;
+            });
+            _sales.PromoDTO.ForEach(x =>
+            {
+                x.Promo.TanggalMulai = x.DR.Start;
+                x.Promo.TanggalAkhir = x.DR.End;
+            });
             if (_isNew)
             {
-                var response = await SalesService.AddsSalesAsync(_sales);
+                var response = await SalesService.AddsSalesAsync(new() { Diskon = _sales.DiskonDTO.ConvertAll(x => x.Diskon), Promo = _sales.PromoDTO.ConvertAll(x => x.Promo) });
                 if (response.Item1 != null)
                 {
-                    _sales = response.Item1;
-                    MudDialog.Close(DialogResult.Ok(_sales));
+                    var result = response.Item1;
+                    MudDialog.Close(DialogResult.Ok(result));
                     return;
                 }
                 await DialogService.ShowMessageBox("Error", response.Item2, yesText: "Ok");
             }
             else
             {
-                var response = await SalesService.UpdatesSalesAsync(_sales);
+                var response = await SalesService.UpdatesSalesAsync(new() { Diskon = _sales.DiskonDTO.ConvertAll(x => x.Diskon), Promo = _sales.PromoDTO.ConvertAll(x => x.Promo) });
                 if (response.Item1)
                 {
                     MudDialog.Close(DialogResult.Ok(_sales));
@@ -120,4 +131,22 @@ public class SalesFormBase : ComponentBase
     }
 
     protected void Cancel() => MudDialog.Cancel();
+
+    public class SalesFormDTO
+    {
+        public List<DiskonFormDTO> DiskonDTO { get; set; } = null!;
+        public List<PromoFormDTO> PromoDTO { get; set; } = null!;
+    }
+
+    public class DiskonFormDTO
+    {
+        public Diskon Diskon { get; set; } = null!;
+        public DateRange DR { get; set; } = new(DateTime.Today, DateTime.Today.AddDays(7));
+    }
+
+    public class PromoFormDTO
+    {
+        public Promo Promo { get; set; } = null!;
+        public DateRange DR { get; set; } = new(DateTime.Today, DateTime.Today.AddDays(7));
+    }
 }

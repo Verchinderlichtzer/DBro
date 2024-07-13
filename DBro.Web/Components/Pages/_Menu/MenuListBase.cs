@@ -56,7 +56,7 @@ public class MenuListBase : ComponentBase
 
     protected void SearchData()
     {
-        _filteredList = _menuList.Where(x => $"{x.Id} {x.Nama} {x.JenisMenu.GetDescription()}".Search(_searchTerms)).ToList();
+        _filteredList = _menuList.Where(x => $"{x.Id} {x.Nama} {x.Kategori.GetDescription()}".Search(_searchTerms)).ToList();
     }
 
     protected void ShowData()
@@ -70,29 +70,27 @@ public class MenuListBase : ComponentBase
         var parameters = new DialogParameters { ["Id"] = menu?.Id, ["IdEditor"] = MenuService.IdEditor };
         var form = await DialogService.Show<MenuForm>(isNew ? "Tambah Menu" : $"Edit \"{menu!.Nama}\"", parameters).Result;
 
-        Menu model = (Menu)form.Data;
-
-        if (model != null)
+        if (form!.Data is Menu model)
             Snackbar.Add(isNew ? "Menu berhasil ditambah" : "Menu berhasil diubah", Severity.Success);
         await LoadDataAsync();
     }
 
-    protected async Task OpenVarianAsync(Menu menu)
-    {
-        var parameters = new DialogParameters { ["IdMenu"] = menu.Id, ["IdEditor"] = MenuService.IdEditor };
-        var form = await DialogService.Show<VarianForm>($"Varian pada \"{menu.Nama}\"", parameters).Result;
+    //protected async Task OpenVarianAsync(Menu menu)
+    //{
+    //    var parameters = new DialogParameters { ["IdMenu"] = menu.Id, ["IdEditor"] = MenuService.IdEditor };
+    //    var form = await DialogService.Show<VarianForm>($"Varian pada \"{menu.Nama}\"", parameters).Result;
 
-        Menu model = (Menu)form.Data;
+    //    Menu model = (Menu)form.Data;
 
-        if (model != null)
-            Snackbar.Add("Varian berhasil diubah", Severity.Success);
-        await LoadDataAsync();
-    }
+    //    if (model != null)
+    //        Snackbar.Add("Varian berhasil diubah", Severity.Success);
+    //    await LoadDataAsync();
+    //}
 
     protected async Task DeleteAsync(Menu menu)
     {
         _deleteMessage = $"Hapus \"{menu.Nama}\"?";
-        bool? result = await _deleteConfirmation!.Show();
+        bool? result = await _deleteConfirmation!.ShowAsync();
         if (result == false)
         {
             var response = await MenuService.DeleteAsync(menu.Id);

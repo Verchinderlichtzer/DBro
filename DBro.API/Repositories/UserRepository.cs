@@ -73,7 +73,7 @@ public class UserRepository(AppDbContext appDbContext) : IUserRepository
             var model = await appDbContext.User.AddAsync(user);
             await appDbContext.Aktivitas.AddAsync(new() {
                 Email = idEditor,
-                JenisLog = JenisLog.Tambah,
+                Jenis = JenisAktivitas.Tambah,
                 Entitas = Entitas.User,
                 IdEntitas = model.Entity.Email
             });
@@ -109,7 +109,7 @@ public class UserRepository(AppDbContext appDbContext) : IUserRepository
                 await appDbContext.Aktivitas.AddAsync(new()
                 {
                     Email = idEditor,
-                    JenisLog = JenisLog.Edit,
+                    Jenis = JenisAktivitas.Edit,
                     Entitas = Entitas.User,
                     IdEntitas = model.Email
                 });
@@ -152,7 +152,7 @@ public class UserRepository(AppDbContext appDbContext) : IUserRepository
                 await appDbContext.Aktivitas.AddAsync(new()
                 {
                     Email = idEditor,
-                    JenisLog = JenisLog.Hapus,
+                    Jenis = JenisAktivitas.Hapus,
                     Entitas = Entitas.User,
                     IdEntitas = email
                 });

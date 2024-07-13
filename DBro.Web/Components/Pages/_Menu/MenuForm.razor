@@ -6,8 +6,8 @@
             <MudForm Model="_menu" @ref="_form" Validation="((MenuValidator)Validator).ValidateValue" @onkeypress="OnKeyPressAsync">
                 <MudStack Row>
                     <div class="flex-2">
-                        <MudSelect Dense @bind-Value="_menu.JenisMenu" Label="Jenis Menu">
-                            @foreach (JenisMenu x in Enum.GetValues(typeof(JenisMenu)))
+                        <MudSelect Dense @bind-Value="_menu.Kategori" Label="Jenis Menu">
+                            @foreach (Kategori x in Enum.GetValues(typeof(Kategori)))
                             {
                                 <MudSelectItem Value="x">
                                     @x.GetDescription()
@@ -24,11 +24,11 @@
                             </div>
                             <div>
                                 <MudFileUpload T="IBrowserFile" Accept=".jpg, .png, .webp" FilesChanged="UploadFile">
-                                    <ButtonTemplate>
-                                        <MudButton HtmlTag="label" Variant="Variant.Filled" Size="Size.Small" Color="Color.Success" StartIcon="@Icons.Material.Filled.CloudUpload" for="@context" @onmouseenter="e => _isKetentuanUploadShow = true" @onmouseleave="e => _isKetentuanUploadShow = false">
+                                    <ActivatorContent>
+                                        <MudButton HtmlTag="label" Variant="Variant.Filled" Size="Size.Small" Color="Color.Success" StartIcon="@Icons.Material.Filled.CloudUpload" @onmouseenter="e => _isKetentuanUploadShow = true" @onmouseleave="e => _isKetentuanUploadShow = false">
                                             Upload
                                         </MudButton>
-                                    </ButtonTemplate>
+                                    </ActivatorContent>
                                 </MudFileUpload>
                                 <MudPopover Open="_isKetentuanUploadShow" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter" Fixed Class="px-4 opacity-75">
                                     <MudStack Spacing="0" Class="pb-2">

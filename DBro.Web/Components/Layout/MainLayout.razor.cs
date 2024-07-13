@@ -28,7 +28,7 @@ public partial class MainLayout
     bool _isDrawerOpen = true;
     readonly MudTheme _theme = new()
     {
-        Palette = new PaletteLight()
+        PaletteLight = new PaletteLight()
         {
             Primary = Colors.Pink.Accent4,
             Secondary = Colors.Cyan.Darken2,
@@ -42,8 +42,8 @@ public partial class MainLayout
             Secondary = Colors.Blue.Accent2,
             Tertiary = Colors.Purple.Accent3,
             Warning = Colors.Orange.Darken1,
-            DrawerIcon = Colors.Grey.Lighten2,
-            DrawerText = Colors.Grey.Lighten2
+            DrawerIcon = Colors.Gray.Lighten2,
+            DrawerText = Colors.Gray.Lighten2
         },
         Typography = new()
         {

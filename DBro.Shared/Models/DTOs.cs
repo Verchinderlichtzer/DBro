@@ -29,16 +29,12 @@ public class ClaimDTO
 
 #region Sales
 
-public class SalesDTO // Data yang ditampilkan di List Sales, juga untuk kumpulan diskon dan promo pada form
+/// <summary> Data yang diperlukan di List dan Form Sales </summary>
+public class SalesDTO
 {
-    public List<Diskon> Diskon { get; set; } = null!;
-    public List<Promo> Promo { get; set; } = null!;
-}
-
-public class SalesFormDTO // Data yang diperlukan di Form Sales
-{
-    public SalesDTO Sales { get; set; } = null!;
-    public List<Menu> Menu { get; set; } = null!;
+    public List<Diskon> Diskon { get; set; } = null!; // Used in List & Form Sales
+    public List<Promo> Promo { get; set; } = null!; // Used in List & Form Sales
+    public List<Menu> Menu { get; set; } = null!; // Used in Form Sales
 }
 
 #endregion Sales

@@ -51,9 +51,7 @@ public class UserListBase : ComponentBase
         var parameters = new DialogParameters { ["Email"] = user?.Email, ["IdEditor"] = UserService.IdEditor };
         var form = await DialogService.Show<UserForm>(isNew ? "Tambah User" : $"Edit \"{user!.Email}\"", parameters).Result;
 
-        User model = (User)form.Data;
-
-        if (model != null)
+        if (form!.Data is User model)
             Snackbar.Add(isNew ? "User berhasil ditambah" : "User berhasil diubah", Severity.Success);
         await LoadDataAsync();
     }
@@ -61,7 +59,7 @@ public class UserListBase : ComponentBase
     protected async Task DeleteAsync(User user)
     {
         _deleteMessage = $"Hapus \"{user.Email}\"?";
-        bool? result = await _deleteConfirmation!.Show();
+        bool? result = await _deleteConfirmation!.ShowAsync();
         if (result == false)
         {
             var response = await UserService.DeleteAsync(user.Email);

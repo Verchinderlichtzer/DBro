@@ -11,7 +11,7 @@ public interface ISalesService
 
     Task<(SalesDTO, string)> GetSalesAsync(List<string> includes = null!);
 
-    Task<(SalesFormDTO, string)> GetFormAsync(List<string> diskonIds, List<string> promoIds, List<string> includes = null!);
+    Task<(SalesDTO, string)> GetFormAsync(List<string> diskonIds, List<string> promoIds, List<string> includes = null!);
 
     Task<(SalesDTO, string)> FindsSalesAsync(List<string> diskonIds, List<string> promoIds, List<string> includes = null!);
 
@@ -72,7 +72,7 @@ public class SalesService : ISalesService
         return (null!, result);
     }
 
-    public async Task<(SalesFormDTO, string)> GetFormAsync(List<string> diskonIds, List<string> promoIds, List<string> includes = null!)
+    public async Task<(SalesDTO, string)> GetFormAsync(List<string> diskonIds, List<string> promoIds, List<string> includes = null!)
     {
         string diskonIdList = diskonIds.Count > 0 ? $"diskonIds={string.Join(',', diskonIds)}" : string.Empty;
         string promoIdList = promoIds.Count > 0 ? $"promoIds={string.Join(',', promoIds)}" : string.Empty;
@@ -80,7 +80,7 @@ public class SalesService : ISalesService
         var response = await _httpClient.GetAsync($"api/sales/form?diskonIds={diskonIdList}&promoIds={promoIdList}&entities={join}");
         var result = await response.Content.ReadAsStringAsync();
         if (response.IsSuccessStatusCode)
-            return (JsonSerializer.Deserialize<SalesFormDTO>(result)!, null!);
+            return (JsonSerializer.Deserialize<SalesDTO>(result)!, null!);
         return (null!, result);
     }
 

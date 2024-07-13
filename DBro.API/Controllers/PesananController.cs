@@ -27,24 +27,21 @@ public class PesananController(IPesananRepository pesananRepository, IMenuReposi
         }
     }
 
-    [HttpGet("form")]
-    public async Task<IActionResult> GetPesananForm(string id, [FromQuery] string entities = null!)
+    [HttpGet("form/{id?}")]
+    public async Task<IActionResult> GetPesananForm(string? id, [FromQuery] string entities = null!)
     {
         try
         {
             List<string> includes = entities?.Mid(entities.IndexOf('=') + 1).Split(',').Where(x => !string.IsNullOrEmpty(x)).ToList()!;
             PesananFormDTO dto = new()
             {
-                Menu = (await menuRepository.GetAsync()).ConvertAll(x => new Menu() { Id = x.Id, Nama = x.Nama, Harga = x.Harga }),
+                Menu = (await menuRepository.GetAsync()).ConvertAll(x => new Menu() { Id = x.Id, Nama = x.Nama, Harga = x.Harga, Kategori = x.Kategori }),
                 //VarianMenu = await menuRepository.GetVarianAsync(),
                 Diskon = await salesRepository.GetDiskonAsync(),
                 Promo = await salesRepository.GetPromoAsync()
             };
-            var result = await pesananRepository.FindAsync(id, includes);
-            if (result.Item2 == true)
-                dto.Pesanan = result.Item1;
-            else if (result.Item2 == null)
-                return BadRequest("Ada kesalahan saat mengakses data");
+            var result = await pesananRepository.FindAsync(id!, includes);
+            dto.Pesanan = result.Item1;
             return Ok(JsonSerializer.Serialize(dto, _options));
         }
         catch (Exception)

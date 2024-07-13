@@ -17,7 +17,7 @@ else
                     <MudIconButton Variant="Variant.Filled" Size="Size.Small" Color="Color.Dark" Icon="@Icons.Material.Filled.Refresh" OnClick="LoadDataAsync" />
                 </MudTooltip>
                 <MudTooltip Text="Tambah Pesanan" Arrow Placement="Placement.Bottom">
-                    <MudIconButton Variant="Variant.Filled" Size="Size.Small" Icon="@Icons.Material.Filled.Add" Color="Color.Success" OnClick="async e => await OpenFormAsync()" />
+                    <MudIconButton Variant="Variant.Filled" Size="Size.Small" Icon="@Icons.Material.Filled.Add" Color="Color.Success" OnClick="@(e => NavManager.NavigateTo("/pesanan/form"))" />
                 </MudTooltip>
             </MudStack>
             <MudSpacer />
@@ -29,11 +29,11 @@ else
             <PropertyColumn Property="x => x.Subtotal" HeaderClass="w-150" />
             <PropertyColumn Property="x => x.Potongan" />
             <PropertyColumn Property="x => x.Bayar" HeaderClass="w-125" />
-            <PropertyColumn Property="x => x.StatusPesanan.GetDescription()" HeaderClass="w-0" />
+            <PropertyColumn Property="x => x.Status.GetDescription()" HeaderClass="w-0" />
             <TemplateColumn HeaderClass="w-0" Sortable="false" Title="Opsi">
                 <CellTemplate>
                     <MudStack Row Spacing="1" Justify="Justify.Center">
-                        @if (!string.IsNullOrEmpty(context.Item.Email) && context.Item.StatusPesanan == StatusPesanan.None)
+                        @if (!string.IsNullOrEmpty(context.Item.Email) && context.Item.Status == StatusPesanan.None)
                         {
                             <MudIconButton Variant="Variant.Outlined" Size="Size.Small" Icon="@Icons.Material.Filled.Check" Color="Color.Success" OnClick="async e => await ApprovalAsync(context.Item, true)" />
                             <MudIconButton Variant="Variant.Outlined" Size="Size.Small" Icon="@Icons.Material.Filled.Close" Color="Color.Error" OnClick="async e => await ApprovalAsync(context.Item, false)" />

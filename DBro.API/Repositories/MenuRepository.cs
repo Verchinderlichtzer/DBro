@@ -89,7 +89,7 @@ public class MenuRepository(AppDbContext appDbContext) : IMenuRepository
             await appDbContext.Aktivitas.AddAsync(new()
             {
                 Email = idEditor,
-                JenisLog = JenisLog.Tambah,
+                Jenis = JenisAktivitas.Tambah,
                 Entitas = Entitas.Menu,
                 IdEntitas = model.Entity.Id
             });
@@ -116,13 +116,13 @@ public class MenuRepository(AppDbContext appDbContext) : IMenuRepository
             if (model != null)
             {
                 model.Nama = menu.Nama;
-                model.JenisMenu = menu.JenisMenu;
+                model.Kategori = menu.Kategori;
                 model.Harga = menu.Harga;
                 model.Gambar = menu.Gambar;
                 await appDbContext.Aktivitas.AddAsync(new()
                 {
                     Email = idEditor,
-                    JenisLog = JenisLog.Edit,
+                    Jenis = JenisAktivitas.Edit,
                     Entitas = Entitas.Menu,
                     IdEntitas = model.Id
                 });
@@ -156,7 +156,7 @@ public class MenuRepository(AppDbContext appDbContext) : IMenuRepository
                 await appDbContext.Aktivitas.AddAsync(new()
                 {
                     Email = idEditor,
-                    JenisLog = JenisLog.Edit,
+                    Jenis = JenisAktivitas.Edit,
                     Entitas = Entitas.Menu,
                     IdEntitas = model.Id
                 });

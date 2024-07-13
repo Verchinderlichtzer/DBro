@@ -14,5 +14,6 @@ public class DetailPesanan
     //public VarianMenu VarianMenu { get; set; } = null!;
 
     public int Subtotal => Harga * Jumlah; // Sebelum Diskon
-    public int Total => Subtotal - (int)(Subtotal * Diskon); // Sesudah Diskon
+    public int Potongan => (int)(Subtotal * Diskon); // Sebelum Diskon
+    public int Total => Subtotal - Potongan; // Sesudah Diskon
 }

@@ -14,7 +14,9 @@ public class PesananListBase : ComponentBase
 
     [Inject] protected ISnackbar Snackbar { get; set; } = null!;
 
-    protected Func<Pesanan, bool> FilterSearch => x => $"{x.Id} {x.Email} {x.Tanggal:dd/MM/yyyy} {x.StatusPesanan}".Search(_searchTerms);
+    [Inject] protected NavigationManager NavManager { get; set; } = null!;
+
+    protected Func<Pesanan, bool> FilterSearch => x => $"{x.Id} {x.Email} {x.Tanggal:dd/MM/yyyy} {x.Status}".Search(_searchTerms);
 
     protected MudMessageBox? _deleteConfirmation = new();
 
@@ -48,7 +50,7 @@ public class PesananListBase : ComponentBase
 
     protected async Task ApprovalAsync(Pesanan pesanan, bool approved)
     {
-        pesanan.StatusPesanan = approved ? StatusPesanan.Diterima : StatusPesanan.Ditolak;
+        pesanan.Status = approved ? StatusPesanan.Diterima : StatusPesanan.Ditolak;
         var response = await PesananService.UpdateAsync(pesanan);
         if (!response.Item1)
             await DialogService.ShowMessageBox("Error", response.Item2, yesText: "Ok");
@@ -60,9 +62,7 @@ public class PesananListBase : ComponentBase
         var parameters = new DialogParameters { ["Id"] = pesanan?.Id, ["IdEditor"] = PesananService.IdEditor };
         var form = await DialogService.Show<PesananForm>(isNew ? "Tambah Pesanan" : $"Edit \"{pesanan!.Id}\"", parameters).Result;
 
-        Pesanan model = (Pesanan)form.Data;
-
-        if (model != null)
+        if (form!.Data is Pesanan model)
             Snackbar.Add(isNew ? "Pesanan berhasil ditambah" : "Pesanan berhasil diubah", Severity.Success);
         await LoadDataAsync();
     }
@@ -70,7 +70,7 @@ public class PesananListBase : ComponentBase
     protected async Task DeleteAsync(Pesanan pesanan)
     {
         _deleteMessage = $"Hapus \"{pesanan.Id}\"?";
-        bool? result = await _deleteConfirmation!.Show();
+        bool? result = await _deleteConfirmation!.ShowAsync();
         if (result == false)
         {
             var response = await PesananService.DeleteAsync(pesanan.Id);

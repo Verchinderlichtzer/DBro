@@ -17,7 +17,7 @@ namespace DBro.API.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.5")
+                .HasAnnotation("ProductVersion", "8.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -41,7 +41,7 @@ namespace DBro.API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<byte>("JenisLog")
+                    b.Property<byte>("Jenis")
                         .HasColumnType("tinyint");
 
                     b.Property<DateTime>("Tanggal")
@@ -69,20 +69,12 @@ namespace DBro.API.Migrations
                     b.Property<int>("Harga")
                         .HasColumnType("int");
 
-                    b.Property<int?>("IdVarianMenu")
-                        .HasColumnType("int");
-
                     b.Property<int>("Jumlah")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Subtotal")
                         .HasColumnType("int");
 
                     b.HasKey("IdPesanan", "IdMenu");
 
                     b.HasIndex("IdMenu");
-
-                    b.HasIndex("IdVarianMenu");
 
                     b.ToTable("DetailPesanan");
                 });
@@ -108,8 +100,7 @@ namespace DBro.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("IdMenu")
-                        .IsUnique();
+                    b.HasIndex("IdMenu");
 
                     b.ToTable("Diskon");
                 });
@@ -125,7 +116,7 @@ namespace DBro.API.Migrations
                     b.Property<int>("Harga")
                         .HasColumnType("int");
 
-                    b.Property<byte>("JenisMenu")
+                    b.Property<byte>("Kategori")
                         .HasColumnType("tinyint");
 
                     b.Property<string>("Nama")
@@ -141,205 +132,233 @@ namespace DBro.API.Migrations
                         {
                             Id = "M-0001",
                             Harga = 7000,
-                            JenisMenu = (byte)1,
+                            Kategori = (byte)1,
                             Nama = "Sayap"
                         },
                         new
                         {
                             Id = "M-0002",
                             Harga = 8000,
-                            JenisMenu = (byte)1,
+                            Kategori = (byte)1,
                             Nama = "Paha Bawah"
                         },
                         new
                         {
                             Id = "M-0003",
                             Harga = 10000,
-                            JenisMenu = (byte)1,
+                            Kategori = (byte)1,
                             Nama = "Dada"
                         },
                         new
                         {
                             Id = "M-0004",
                             Harga = 10000,
-                            JenisMenu = (byte)1,
+                            Kategori = (byte)1,
                             Nama = "Paha Atas"
                         },
                         new
                         {
                             Id = "M-0005",
                             Harga = 10500,
-                            JenisMenu = (byte)2,
+                            Kategori = (byte)2,
                             Nama = "DBRO 1 Sayap + Nasi"
                         },
                         new
                         {
                             Id = "M-0006",
                             Harga = 11500,
-                            JenisMenu = (byte)2,
+                            Kategori = (byte)2,
                             Nama = "DBRO 2 Paha Bawah + Nasi"
                         },
                         new
                         {
                             Id = "M-0007",
                             Harga = 13000,
-                            JenisMenu = (byte)2,
+                            Kategori = (byte)2,
                             Nama = "DBRO 3 Dada / Paha Atas + Nasi"
                         },
                         new
                         {
                             Id = "M-0008",
                             Harga = 10000,
-                            JenisMenu = (byte)3,
+                            Kategori = (byte)3,
                             Nama = "Spaghetti"
                         },
                         new
                         {
                             Id = "M-0009",
                             Harga = 8000,
-                            JenisMenu = (byte)4,
+                            Kategori = (byte)4,
                             Nama = "DBRO Burger"
                         },
                         new
                         {
                             Id = "M-0010",
                             Harga = 10500,
-                            JenisMenu = (byte)4,
+                            Kategori = (byte)4,
                             Nama = "DBRO Reguler"
                         },
                         new
                         {
                             Id = "M-0011",
                             Harga = 12000,
-                            JenisMenu = (byte)4,
+                            Kategori = (byte)4,
                             Nama = "DBRO Chiz"
                         },
                         new
                         {
                             Id = "M-0012",
                             Harga = 13000,
-                            JenisMenu = (byte)4,
+                            Kategori = (byte)4,
                             Nama = "DBRO Premium"
                         },
                         new
                         {
                             Id = "M-0013",
                             Harga = 15000,
-                            JenisMenu = (byte)4,
+                            Kategori = (byte)4,
                             Nama = "DBRO Premium Chiz"
                         },
                         new
                         {
                             Id = "M-0014",
                             Harga = 9000,
-                            JenisMenu = (byte)5,
+                            Kategori = (byte)5,
                             Nama = "DBROsis"
                         },
                         new
                         {
                             Id = "M-0015",
                             Harga = 17000,
-                            JenisMenu = (byte)5,
+                            Kategori = (byte)5,
                             Nama = "DBROsis + Kentang + Minum*"
                         },
                         new
                         {
                             Id = "M-0016",
                             Harga = 13000,
-                            JenisMenu = (byte)6,
+                            Kategori = (byte)6,
                             Nama = "Sayhot Dada"
                         },
                         new
                         {
                             Id = "M-0017",
                             Harga = 10000,
-                            JenisMenu = (byte)6,
+                            Kategori = (byte)6,
                             Nama = "Sayhot Sayap"
                         },
                         new
                         {
                             Id = "M-0018",
                             Harga = 11000,
-                            JenisMenu = (byte)6,
+                            Kategori = (byte)6,
                             Nama = "Sayhot Paha Bawah"
                         },
                         new
                         {
                             Id = "M-0019",
                             Harga = 21000,
-                            JenisMenu = (byte)7,
+                            Kategori = (byte)7,
                             Nama = "Tteokbokki Reguler"
                         },
                         new
                         {
                             Id = "M-0020",
                             Harga = 30000,
-                            JenisMenu = (byte)7,
+                            Kategori = (byte)7,
                             Nama = "Tteokbokki Medium"
                         },
                         new
                         {
                             Id = "M-0021",
                             Harga = 40000,
-                            JenisMenu = (byte)7,
+                            Kategori = (byte)7,
                             Nama = "Tteokbokki Large"
                         },
                         new
                         {
                             Id = "M-0022",
                             Harga = 11000,
-                            JenisMenu = (byte)8,
+                            Kategori = (byte)8,
                             Nama = "Sayap Sambal Merah"
                         },
                         new
                         {
                             Id = "M-0023",
                             Harga = 12000,
-                            JenisMenu = (byte)8,
+                            Kategori = (byte)8,
                             Nama = "Paha Bawah Sambal Merah"
                         },
                         new
                         {
                             Id = "M-0024",
                             Harga = 13000,
-                            JenisMenu = (byte)1,
+                            Kategori = (byte)1,
                             Nama = "Kulit"
                         },
                         new
                         {
                             Id = "M-0025",
                             Harga = 3000,
-                            JenisMenu = (byte)9,
+                            Kategori = (byte)9,
                             Nama = "Prima"
                         },
                         new
                         {
                             Id = "M-0026",
                             Harga = 4000,
-                            JenisMenu = (byte)9,
+                            Kategori = (byte)9,
                             Nama = "Teh Botol Sosro"
                         },
                         new
                         {
                             Id = "M-0027",
                             Harga = 4000,
-                            JenisMenu = (byte)9,
+                            Kategori = (byte)9,
                             Nama = "S-tee"
                         },
                         new
                         {
                             Id = "M-0028",
                             Harga = 5500,
-                            JenisMenu = (byte)9,
+                            Kategori = (byte)9,
                             Nama = "Nestle Orange"
                         },
                         new
                         {
                             Id = "M-0029",
                             Harga = 6000,
-                            JenisMenu = (byte)9,
+                            Kategori = (byte)9,
                             Nama = "Milo"
                         });
+                });
+
+            modelBuilder.Entity("DBro.Shared.Models.MenuPromoPesanan", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("IdMenu")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("IdPesanan")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Jumlah")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IdMenu");
+
+                    b.HasIndex("IdPesanan");
+
+                    b.ToTable("MenuPromoPesanan");
                 });
 
             modelBuilder.Entity("DBro.Shared.Models.Pesanan", b =>
@@ -356,7 +375,7 @@ namespace DBro.API.Migrations
                     b.Property<int>("Potongan")
                         .HasColumnType("int");
 
-                    b.Property<byte>("StatusPesanan")
+                    b.Property<byte>("Status")
                         .HasColumnType("tinyint");
 
                     b.Property<int>("Subtotal")
@@ -399,11 +418,9 @@ namespace DBro.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("IdMenuDibeli")
-                        .IsUnique();
+                    b.HasIndex("IdMenuDibeli");
 
-                    b.HasIndex("IdMenuDidapat")
-                        .IsUnique();
+                    b.HasIndex("IdMenuDidapat");
 
                     b.ToTable("Promo");
                 });
@@ -459,38 +476,6 @@ namespace DBro.API.Migrations
                         });
                 });
 
-            modelBuilder.Entity("DBro.Shared.Models.VarianMenu", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("Harga")
-                        .HasColumnType("int");
-
-                    b.Property<string>("IdMenu")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<byte>("JenisVarian")
-                        .HasColumnType("tinyint");
-
-                    b.Property<string>("Nama")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IdMenu");
-
-                    b.HasIndex("Nama")
-                        .IsUnique();
-
-                    b.ToTable("VarianMenu");
-                });
-
             modelBuilder.Entity("DBro.Shared.Models.Aktivitas", b =>
                 {
                     b.HasOne("DBro.Shared.Models.User", "User")
@@ -516,26 +501,39 @@ namespace DBro.API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DBro.Shared.Models.VarianMenu", "VarianMenu")
-                        .WithMany("DetailPesanan")
-                        .HasForeignKey("IdVarianMenu");
-
                     b.Navigation("Menu");
 
                     b.Navigation("Pesanan");
-
-                    b.Navigation("VarianMenu");
                 });
 
             modelBuilder.Entity("DBro.Shared.Models.Diskon", b =>
                 {
                     b.HasOne("DBro.Shared.Models.Menu", "Menu")
-                        .WithOne("Diskon")
-                        .HasForeignKey("DBro.Shared.Models.Diskon", "IdMenu")
+                        .WithMany("Diskon")
+                        .HasForeignKey("IdMenu")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Menu");
+                });
+
+            modelBuilder.Entity("DBro.Shared.Models.MenuPromoPesanan", b =>
+                {
+                    b.HasOne("DBro.Shared.Models.Menu", "Menu")
+                        .WithMany("MenuPromoPesanan")
+                        .HasForeignKey("IdMenu")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DBro.Shared.Models.Pesanan", "Pesanan")
+                        .WithMany("MenuPromoPesanan")
+                        .HasForeignKey("IdPesanan")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Menu");
+
+                    b.Navigation("Pesanan");
                 });
 
             modelBuilder.Entity("DBro.Shared.Models.Pesanan", b =>
@@ -550,14 +548,14 @@ namespace DBro.API.Migrations
             modelBuilder.Entity("DBro.Shared.Models.Promo", b =>
                 {
                     b.HasOne("DBro.Shared.Models.Menu", "MenuDibeli")
-                        .WithOne("PromoDibeli")
-                        .HasForeignKey("DBro.Shared.Models.Promo", "IdMenuDibeli")
+                        .WithMany("PromoDibeli")
+                        .HasForeignKey("IdMenuDibeli")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("DBro.Shared.Models.Menu", "MenuDidapat")
-                        .WithOne("PromoDidapat")
-                        .HasForeignKey("DBro.Shared.Models.Promo", "IdMenuDidapat")
+                        .WithMany("PromoDidapat")
+                        .HasForeignKey("IdMenuDidapat")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -566,36 +564,24 @@ namespace DBro.API.Migrations
                     b.Navigation("MenuDidapat");
                 });
 
-            modelBuilder.Entity("DBro.Shared.Models.VarianMenu", b =>
-                {
-                    b.HasOne("DBro.Shared.Models.Menu", "Menu")
-                        .WithMany("VarianMenu")
-                        .HasForeignKey("IdMenu")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Menu");
-                });
-
             modelBuilder.Entity("DBro.Shared.Models.Menu", b =>
                 {
                     b.Navigation("DetailPesanan");
 
-                    b.Navigation("Diskon")
-                        .IsRequired();
+                    b.Navigation("Diskon");
 
-                    b.Navigation("PromoDibeli")
-                        .IsRequired();
+                    b.Navigation("MenuPromoPesanan");
 
-                    b.Navigation("PromoDidapat")
-                        .IsRequired();
+                    b.Navigation("PromoDibeli");
 
-                    b.Navigation("VarianMenu");
+                    b.Navigation("PromoDidapat");
                 });
 
             modelBuilder.Entity("DBro.Shared.Models.Pesanan", b =>
                 {
                     b.Navigation("DetailPesanan");
+
+                    b.Navigation("MenuPromoPesanan");
                 });
 
             modelBuilder.Entity("DBro.Shared.Models.User", b =>
@@ -603,11 +589,6 @@ namespace DBro.API.Migrations
                     b.Navigation("Aktivitas");
 
                     b.Navigation("Pesanan");
-                });
-
-            modelBuilder.Entity("DBro.Shared.Models.VarianMenu", b =>
-                {
-                    b.Navigation("DetailPesanan");
                 });
 #pragma warning restore 612, 618
         }

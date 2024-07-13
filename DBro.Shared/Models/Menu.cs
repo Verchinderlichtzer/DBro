@@ -4,7 +4,7 @@ public class Menu
 {
     public string Id { get; set; } = null!;
 
-    public JenisMenu JenisMenu { get; set; }
+    public Kategori Kategori { get; set; }
     public string Nama { get; set; } = string.Empty;
     public int Harga { get; set; }
     public byte[]? Gambar { get; set; }

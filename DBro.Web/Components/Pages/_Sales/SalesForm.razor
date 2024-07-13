@@ -5,15 +5,15 @@
         <MudContainer Class="vh-60 overflow-y-auto">
             <MudStack Row>
                 <MudStack Class="flex-1">
-                    @foreach (Diskon diskon in _sales.Diskon)
+                    @foreach (DiskonFormDTO diskon in _sales.DiskonDTO)
                     {
                         <MudCard Elevation="0" Class="border-solid border mud-border min-h-150">
                             <MudCardHeader>
                                 <CardHeaderContent>
                                     <MudStack Row="true">
-                                        <MudText Typo="Typo.h6">Diskon # @(_sales.Diskon.IndexOf(diskon) + 1)</MudText>
+                                        <MudText Typo="Typo.h6">Diskon # @(_sales.DiskonDTO.IndexOf(diskon) + 1)</MudText>
                                         <MudSpacer />
-                                        <MudIconButton Variant="Variant.Filled" Size="Size.Small" Icon="@Icons.Material.Filled.DeleteForever" Color="Color.Error" OnClick="e => _sales.Diskon.Remove(diskon)" tabindex="-1" />
+                                        <MudIconButton Variant="Variant.Filled" Size="Size.Small" Icon="@Icons.Material.Filled.DeleteForever" Color="Color.Error" OnClick="e => _sales.DiskonDTO.Remove(diskon)" tabindex="-1" />
                                     </MudStack>
                                 </CardHeaderContent>
                             </MudCardHeader>
@@ -22,13 +22,13 @@
                                 <MudForm Model="diskon">
                                     <MudStack Row>
                                         <div class="flex-1">
-                                            <MudAutocomplete Label="Menu" T="Menu" @bind-Value="diskon.Menu" @bind-Value:after="() => diskon.IdMenu = diskon.Menu.Id" Dense CoerceText SearchFunc="SearchMenuAsync" ToStringFunc="x => x == null ? null : x.Nama" MaxItems="128" />
+                                            <MudAutocomplete Label="Menu" T="Menu" @bind-Value="diskon.Diskon.Menu" @bind-Value:after="() => diskon.Diskon.IdMenu = diskon.Diskon.Menu.Id" Dense CoerceText SearchFunc="SearchMenuAsync" ToStringFunc="x => x == null ? null : x.Nama" MaxItems="128" />
                                         </div>
                                         <div class="w-75">
-                                            <MudNumericField Immediate HideSpinButtons T="decimal" @bind-Value="diskon.Nilai" Format="N0" Label="Diskon" Min="1" Max="99" Adornment="Adornment.End" AdornmentText="%" />
+                                            <MudNumericField Immediate HideSpinButtons T="decimal" @bind-Value="diskon.Diskon.Nilai" Format="N0" Label="Diskon" Min="1" Max="99" Adornment="Adornment.End" AdornmentText="%" />
                                         </div>
                                     </MudStack>
-                                    <MudDateRangePicker Label="Jangka Waktu" PickerVariant="PickerVariant.Dialog" DateRange="_isNew ? new() { Start = DateTime.Today, End = DateTime.Today.AddDays(7) } : new() { Start = diskon.TanggalMulai, End = diskon.TanggalAkhir }" DateRangeChanged="e => { diskon.TanggalMulai = e.Start; diskon.TanggalAkhir = e.End; }" DateFormat="dd MMM yyyy" tabindex="-1" />
+                                    <MudDateRangePicker Label="Jangka Waktu" PickerVariant="PickerVariant.Dialog" @bind-DateRange="diskon.DR" DateFormat="dd MMM yyyy" tabindex="-1" />
                                 </MudForm>
                             </MudCardContent>
                         </MudCard>
@@ -36,15 +36,15 @@
                     <MudIconButton Class="border-dashed border mud-border-success min-h-200" Size="Size.Large" Icon="@Icons.Material.Filled.Add" Variant="Variant.Outlined" Color="Color.Success" OnClick="AddDiskon" />
                 </MudStack>
                 <MudStack Class="flex-1">
-                    @foreach (Promo promo in _sales.Promo)
+                    @foreach (PromoFormDTO promo in _sales.PromoDTO)
                     {
                         <MudCard Elevation="0" Class="border-solid border mud-border min-h-150">
                             <MudCardHeader>
                                 <CardHeaderContent>
                                     <MudStack Row="true">
-                                        <MudText Typo="Typo.h6">Promo # @(_sales.Promo.IndexOf(promo) + 1)</MudText>
+                                        <MudText Typo="Typo.h6">Promo # @(_sales.PromoDTO.IndexOf(promo) + 1)</MudText>
                                         <MudSpacer />
-                                        <MudIconButton Variant="Variant.Filled" Size="Size.Small" Icon="@Icons.Material.Filled.DeleteForever" Color="Color.Error" OnClick="e => _sales.Promo.Remove(promo)" tabindex="-1" />
+                                        <MudIconButton Variant="Variant.Filled" Size="Size.Small" Icon="@Icons.Material.Filled.DeleteForever" Color="Color.Error" OnClick="e => _sales.PromoDTO.Remove(promo)" tabindex="-1" />
                                     </MudStack>
                                 </CardHeaderContent>
                             </MudCardHeader>
@@ -53,19 +53,19 @@
                                 <MudForm Model="promo">
                                     <MudStack Row Spacing="1">
                                         <div class="w-50">
-                                            <MudNumericField Immediate T="int" @bind-Value="promo.JumlahDibeli" Label="Beli" Min="1" Max="99" />
+                                            <MudNumericField Immediate T="int" @bind-Value="promo.Promo.JumlahDibeli" Label="Beli" Min="1" Max="99" />
                                         </div>
                                         <div class="flex-1">
-                                            <MudAutocomplete Label="Beli" T="Menu" @bind-Value="promo.MenuDibeli" @bind-Value:after="() => promo.IdMenuDibeli = promo.MenuDibeli.Id" Dense CoerceText SearchFunc="SearchMenuAsync" ToStringFunc="x => x == null ? null : x.Nama" MaxItems="128" />
+                                            <MudAutocomplete Label="Beli" T="Menu" @bind-Value="promo.Promo.MenuDibeli" @bind-Value:after="() => promo.Promo.IdMenuDibeli = promo.Promo.MenuDibeli.Id" Dense CoerceText SearchFunc="SearchMenuAsync" ToStringFunc="x => x == null ? null : x.Nama" MaxItems="128" />
                                         </div>
                                         <div class="w-50">
-                                            <MudNumericField Immediate T="int" @bind-Value="promo.JumlahDidapat" Label="Gratis" Min="1" Max="99" />
+                                            <MudNumericField Immediate T="int" @bind-Value="promo.Promo.JumlahDidapat" Label="Gratis" Min="1" Max="99" />
                                         </div>
                                         <div class="flex-1">
-                                            <MudAutocomplete Label="Gratis" T="Menu" @bind-Value="promo.MenuDidapat" @bind-Value:after="() => promo.IdMenuDidapat = promo.MenuDidapat.Id" Dense CoerceText SearchFunc="SearchMenuAsync" ToStringFunc="x => x == null ? null : x.Nama" MaxItems="128" />
+                                            <MudAutocomplete Label="Gratis" T="Menu" @bind-Value="promo.Promo.MenuDidapat" @bind-Value:after="() => promo.Promo.IdMenuDidapat = promo.Promo.MenuDidapat.Id" Dense CoerceText SearchFunc="SearchMenuAsync" ToStringFunc="x => x == null ? null : x.Nama" MaxItems="128" />
                                         </div>
                                     </MudStack>
-                                    <MudDateRangePicker Label="Jangka Waktu" PickerVariant="PickerVariant.Dialog" DateRange="_isNew ? new() { Start = DateTime.Today, End = DateTime.Today.AddDays(7) } : new() { Start = promo.TanggalMulai, End = promo.TanggalAkhir }" DateRangeChanged="e => { promo.TanggalMulai = e.Start; promo.TanggalAkhir = e.End; }" DateFormat="dd MMM yyyy" tabindex="-1" />
+                                    <MudDateRangePicker Label="Jangka Waktu" PickerVariant="PickerVariant.Dialog" @bind-DateRange="promo.DR" DateFormat="dd MMM yyyy" tabindex="-1" />
                                 </MudForm>
                             </MudCardContent>
                         </MudCard>

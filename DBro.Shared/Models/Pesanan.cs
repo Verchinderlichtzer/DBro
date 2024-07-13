@@ -9,7 +9,7 @@ public class Pesanan
     public int Subtotal { get; set; }
     public int Potongan { get; set; }
     public int Bayar { get; set; }
-    public StatusPesanan StatusPesanan { get; set; }
+    public StatusPesanan Status { get; set; }
 
     public List<DetailPesanan> DetailPesanan { get; set; } = null!;
     public List<MenuPromoPesanan> MenuPromoPesanan { get; set; } = null!;
@@ -17,5 +17,5 @@ public class Pesanan
 
     public int Total => Subtotal - Potongan;
     public int Sisa => Bayar - Total;
-    public TimeSpan? Jam { get; set; }
+    public TimeSpan? Jam { get; set; } = DateTime.Now.TimeOfDay;
 }

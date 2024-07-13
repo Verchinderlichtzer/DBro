@@ -1,18 +1,13 @@
 ﻿using FluentValidation;
 using MudBlazor;
-using Color = MudBlazor.Color;
-using DBro.Web.Services;
-using MudBlazor.Charts;
 
 namespace DBro.Web.Components.Pages._Pesanan;
 
 public class PesananFormBase : ComponentBase
 {
-    [Parameter] public string Email { get; set; } = null!;
+    [Parameter] public string Id { get; set; } = string.Empty;
 
     [Parameter] public string IdEditor { get; set; } = null!;
-
-    [CascadingParameter] protected MudDialogInstance MudDialog { get; set; } = null!;
 
     [Inject] protected IPesananService PesananService { get; set; } = null!;
 
@@ -20,10 +15,12 @@ public class PesananFormBase : ComponentBase
 
     [Inject] protected IDialogService DialogService { get; set; } = null!;
 
+    [Inject] protected NavigationManager NavManager { get; set; } = null!;
+
     protected MudForm? _form = new();
     protected MudAutocomplete<Menu> autocompleteMenu = new();
 
-    protected Pesanan _pesanan = new();
+    protected Pesanan _pesanan = null!;
     protected List<Menu> _menu = [];
     //protected List<VarianMenu> _varianMenu = [];
     protected List<Diskon> _diskon = [];
@@ -37,26 +34,24 @@ public class PesananFormBase : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
-        _isNew = string.IsNullOrEmpty(Email);
-        PesananService.IdEditor = Email;
+        _isNew = string.IsNullOrEmpty(Id);
+        PesananService.IdEditor = IdEditor;
 
-        if (!_isNew)
+        var response = await PesananService.GetFormAsync(Id);
+
+        if (response.Item1 == null)
         {
-            var response = await PesananService.GetFormAsync(Email);
-            if (response.Item1 != null)
-            {
-                _pesanan = response.Item1.Pesanan;
-                _menu = response.Item1.Menu;
-                //_varianMenu = response.Item1.VarianMenu;
-                _diskon = response.Item1.Diskon;
-                _promo = response.Item1.Promo;
-            }
-            else
-            {
-                await DialogService.ShowMessageBox("Error", response.Item2, yesText: "Ok");
-                MudDialog.Cancel();
-                return;
-            }
+            await DialogService.ShowMessageBox("Error", response.Item2, yesText: "Ok");
+            NavManager.NavigateTo("/pesanan");
+            return;
+        }
+        else
+        {
+            _pesanan = response.Item1.Pesanan ?? new() { DetailPesanan = [] };
+            _menu = response.Item1.Menu;
+            //_varianMenu = response.Item1.VarianMenu;
+            _diskon = response.Item1.Diskon;
+            _promo = response.Item1.Promo;
         }
         _hasLoaded = true;
     }
@@ -64,7 +59,7 @@ public class PesananFormBase : ComponentBase
     protected async Task<IEnumerable<Menu>> SearchMenuAsync(string value, CancellationToken token)
     {
         value ??= string.Empty;
-        return await Task.FromResult(_menu.Where(x => $"{x.Id} {x.JenisMenu.GetDescription()} {x.Nama}".Search(value)).OrderBy(x => x.Nama));
+        return await Task.FromResult(_menu.Where(x => $"{x.Id} {x.Kategori.GetDescription()} {x.Nama}".Search(value)).OrderBy(x => x.Nama));
     }
 
     //protected async Task<IEnumerable<VarianMenu>> SearchVarianMenuAsync(string value, CancellationToken token)
@@ -76,9 +71,9 @@ public class PesananFormBase : ComponentBase
     protected async Task PilihMenu(Menu e)
     {
         if (e is null) return;
-        _pesanan.DetailPesanan.Add(new() { IdPesanan = _pesanan.Id, IdMenu = e.Id, Menu = e, Jumlah = 1, Harga = e.Harga });
+        _pesanan.DetailPesanan.Add(new() { IdPesanan = _pesanan.Id, IdMenu = e.Id, Menu = e, Harga = e.Harga, Jumlah = 1, Diskon = _diskon.Find(x => x.IdMenu == e.Id)?.Nilai ?? 0 });
         _menu.Remove(e);
-        //Hitung();
+        Calculate();
         await autocompleteMenu.ResetAsync();
     }
 
@@ -86,6 +81,23 @@ public class PesananFormBase : ComponentBase
     {
         _menu.Add(detailPesanan.Menu);
         _pesanan.DetailPesanan!.Remove(detailPesanan);
+        Calculate();
+    }
+
+    protected void Calculate()
+    {
+        _menuDidapat.Clear();
+        var hasil = _promo.Where(x => x.TanggalMulai <= DateTime.Today && x.TanggalAkhir >= DateTime.Today).ToList();
+        foreach (var item in _pesanan.DetailPesanan)
+        {
+            var menuDibeli = hasil.FirstOrDefault(x => x.IdMenuDibeli == item.IdMenu);
+            if (menuDibeli != null)
+            {
+                _menuDidapat.Add(new() { Menu = menuDibeli.MenuDidapat, Jumlah = item.Jumlah / menuDibeli.JumlahDibeli * menuDibeli.JumlahDidapat });
+            }
+        }
+        _pesanan.Subtotal = _pesanan.DetailPesanan.Sum(x => x.Harga * x.Jumlah);
+        _pesanan.Potongan = _pesanan.DetailPesanan.Sum(x => x.Potongan);
     }
 
     protected async Task SaveAsync()
@@ -99,8 +111,7 @@ public class PesananFormBase : ComponentBase
                 if (response.Item1 != null)
                 {
                     _pesanan = response.Item1;
-                    MudDialog.Close(DialogResult.Ok(_pesanan));
-                    return;
+                    NavManager.NavigateTo("/pesanan");
                 }
                 await DialogService.ShowMessageBox("Error", response.Item2, yesText: "Ok");
             }
@@ -109,8 +120,7 @@ public class PesananFormBase : ComponentBase
                 var response = await PesananService.UpdateAsync(_pesanan);
                 if (response.Item1)
                 {
-                    MudDialog.Close(DialogResult.Ok(_pesanan));
-                    return;
+                    NavManager.NavigateTo("/pesanan");
                 }
                 await DialogService.ShowMessageBox("Error", response.Item2, yesText: "Ok");
             }
@@ -121,6 +131,4 @@ public class PesananFormBase : ComponentBase
     {
         if (e.Code == "Enter" || e.Code == "NumpadEnter") await SaveAsync();
     }
-
-    protected void Cancel() => MudDialog.Cancel();
 }

@@ -98,203 +98,203 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         {
             Id = "M-0001",
             Nama = "Sayap",
-            JenisMenu = JenisMenu.Chicken,
+            Kategori = Kategori.Chicken,
             Harga = 7000
         },
         new Menu
         {
             Id = "M-0002",
             Nama = "Paha Bawah",
-            JenisMenu = JenisMenu.Chicken,
+            Kategori = Kategori.Chicken,
             Harga = 8000
         },
         new Menu
         {
             Id = "M-0003",
             Nama = "Dada",
-            JenisMenu = JenisMenu.Chicken,
+            Kategori = Kategori.Chicken,
             Harga = 10000
         },
         new Menu
         {
             Id = "M-0004",
             Nama = "Paha Atas",
-            JenisMenu = JenisMenu.Chicken,
+            Kategori = Kategori.Chicken,
             Harga = 10000
         },
         new Menu
         {
             Id = "M-0005",
             Nama = "DBRO 1 Sayap + Nasi",
-            JenisMenu = JenisMenu.PaketNasi,
+            Kategori = Kategori.PaketNasi,
             Harga = 10500
         },
         new Menu
         {
             Id = "M-0006",
             Nama = "DBRO 2 Paha Bawah + Nasi",
-            JenisMenu = JenisMenu.PaketNasi,
+            Kategori = Kategori.PaketNasi,
             Harga = 11500
         },
         new Menu
         {
             Id = "M-0007",
             Nama = "DBRO 3 Dada / Paha Atas + Nasi",
-            JenisMenu = JenisMenu.PaketNasi,
+            Kategori = Kategori.PaketNasi,
             Harga = 13000
         },
         new Menu
         {
             Id = "M-0008",
             Nama = "Spaghetti",
-            JenisMenu = JenisMenu.Spaghetti,
+            Kategori = Kategori.Spaghetti,
             Harga = 10000
         },
         new Menu
         {
             Id = "M-0009",
             Nama = "DBRO Burger",
-            JenisMenu = JenisMenu.Burger,
+            Kategori = Kategori.Burger,
             Harga = 8000
         },
         new Menu
         {
             Id = "M-0010",
             Nama = "DBRO Reguler",
-            JenisMenu = JenisMenu.Burger,
+            Kategori = Kategori.Burger,
             Harga = 10500
         },
         new Menu
         {
             Id = "M-0011",
             Nama = "DBRO Chiz",
-            JenisMenu = JenisMenu.Burger,
+            Kategori = Kategori.Burger,
             Harga = 12000
         },
         new Menu
         {
             Id = "M-0012",
             Nama = "DBRO Premium",
-            JenisMenu = JenisMenu.Burger,
+            Kategori = Kategori.Burger,
             Harga = 13000
         },
         new Menu
         {
             Id = "M-0013",
             Nama = "DBRO Premium Chiz",
-            JenisMenu = JenisMenu.Burger,
+            Kategori = Kategori.Burger,
             Harga = 15000
         },
         new Menu
         {
             Id = "M-0014",
             Nama = "DBROsis",
-            JenisMenu = JenisMenu.DBROsis,
+            Kategori = Kategori.DBROsis,
             Harga = 9000
         },
         new Menu
         {
             Id = "M-0015",
             Nama = "DBROsis + Kentang + Minum*",
-            JenisMenu = JenisMenu.DBROsis,
+            Kategori = Kategori.DBROsis,
             Harga = 17000
         },
         new Menu
         {
             Id = "M-0016",
             Nama = "Sayhot Dada",
-            JenisMenu = JenisMenu.Sayhot,
+            Kategori = Kategori.Sayhot,
             Harga = 13000
         },
         new Menu
         {
             Id = "M-0017",
             Nama = "Sayhot Sayap",
-            JenisMenu = JenisMenu.Sayhot,
+            Kategori = Kategori.Sayhot,
             Harga = 10000
         },
         new Menu
         {
             Id = "M-0018",
             Nama = "Sayhot Paha Bawah",
-            JenisMenu = JenisMenu.Sayhot,
+            Kategori = Kategori.Sayhot,
             Harga = 11000
         },
         new Menu
         {
             Id = "M-0019",
             Nama = "Tteokbokki Reguler",
-            JenisMenu = JenisMenu.Tteokbokki,
+            Kategori = Kategori.Tteokbokki,
             Harga = 21000
         },
         new Menu
         {
             Id = "M-0020",
             Nama = "Tteokbokki Medium",
-            JenisMenu = JenisMenu.Tteokbokki,
+            Kategori = Kategori.Tteokbokki,
             Harga = 30000
         },
         new Menu
         {
             Id = "M-0021",
             Nama = "Tteokbokki Large",
-            JenisMenu = JenisMenu.Tteokbokki,
+            Kategori = Kategori.Tteokbokki,
             Harga = 40000
         },
         new Menu
         {
             Id = "M-0022",
             Nama = "Sayap Sambal Merah",
-            JenisMenu = JenisMenu.DPrek,
+            Kategori = Kategori.DPrek,
             Harga = 11000
         },
         new Menu
         {
             Id = "M-0023",
             Nama = "Paha Bawah Sambal Merah",
-            JenisMenu = JenisMenu.DPrek,
+            Kategori = Kategori.DPrek,
             Harga = 12000
         },
         new Menu
         {
             Id = "M-0024",
             Nama = "Kulit",
-            JenisMenu = JenisMenu.Chicken,
+            Kategori = Kategori.Chicken,
             Harga = 13000
         },
         new Menu
         {
             Id = "M-0025",
             Nama = "Prima",
-            JenisMenu = JenisMenu.Minuman,
+            Kategori = Kategori.Minuman,
             Harga = 3000
         },
         new Menu
         {
             Id = "M-0026",
             Nama = "Teh Botol Sosro",
-            JenisMenu = JenisMenu.Minuman,
+            Kategori = Kategori.Minuman,
             Harga = 4000
         },
         new Menu
         {
             Id = "M-0027",
             Nama = "S-tee",
-            JenisMenu = JenisMenu.Minuman,
+            Kategori = Kategori.Minuman,
             Harga = 4000
         },
         new Menu
         {
             Id = "M-0028",
             Nama = "Nestle Orange",
-            JenisMenu = JenisMenu.Minuman,
+            Kategori = Kategori.Minuman,
             Harga = 5500
         },
         new Menu
         {
             Id = "M-0029",
             Nama = "Milo",
-            JenisMenu = JenisMenu.Minuman,
+            Kategori = Kategori.Minuman,
             Harga = 6000
         });
 

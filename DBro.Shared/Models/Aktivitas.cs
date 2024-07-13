@@ -6,7 +6,7 @@ public class Aktivitas
     public string Email { get; set; } = null!;
 
     public DateTime Tanggal { get; set; } = DateTime.Now;
-    public JenisLog JenisLog { get; set; }
+    public JenisAktivitas Jenis { get; set; }
     public Entitas Entitas { get; set; }
     public string IdEntitas { get; set; } = string.Empty;
 
