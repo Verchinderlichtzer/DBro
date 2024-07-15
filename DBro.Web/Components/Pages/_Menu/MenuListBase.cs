@@ -5,7 +5,7 @@ namespace DBro.Web.Components.Pages._Menu;
 [Authorize]
 public class MenuListBase : ComponentBase
 {
-    [CascadingParameter] public MainLayout Layout { get; set; } = null!;
+    [CascadingParameter] public AdminLayout Layout { get; set; } = null!;
 
     [Inject] protected IMenuService MenuService { get; set; } = null!;
 
@@ -15,11 +15,9 @@ public class MenuListBase : ComponentBase
 
     protected MudMessageBox? _deleteConfirmation = new();
 
-    protected List<Menu> _menuList = null!;
-    protected List<Menu> _filteredList = null!;
-    protected List<Menu> _displayedList = null!;
+    protected List<Menu> _allMenu = null!, _filteredMenu = null!, _displayedMenu = null!;
 
-    protected bool _hasLoaded;
+    protected bool _loaded;
     protected string _searchTerms = string.Empty;
     protected string _deleteMessage = string.Empty;
     protected int _dataPerPage = 20;
@@ -36,7 +34,7 @@ public class MenuListBase : ComponentBase
         MenuService.IdEditor = Layout.CurrentUser.Email;
 
         await LoadDataAsync();
-        _hasLoaded = true;
+        _loaded = true;
     }
 
     protected async Task LoadDataAsync()
@@ -44,8 +42,8 @@ public class MenuListBase : ComponentBase
         var response = await MenuService.GetAsync();
         if (response.Item1 != null)
         {
-            _menuList = response.Item1;
-            _filteredList = _menuList;
+            _allMenu = response.Item1;
+            _filteredMenu = _allMenu;
             ShowData();
         }
         else
@@ -56,12 +54,13 @@ public class MenuListBase : ComponentBase
 
     protected void SearchData()
     {
-        _filteredList = _menuList.Where(x => $"{x.Id} {x.Nama} {x.Kategori.GetDescription()}".Search(_searchTerms)).ToList();
+        _filteredMenu = _allMenu.Where(x => $"{x.Id} {x.Nama} {x.Kategori.GetDescription()}".Search(_searchTerms)).ToList();
+        ShowData();
     }
 
     protected void ShowData()
     {
-        _displayedList = _filteredList.Skip((_currentPage - 1) * _dataPerPage).Take(_dataPerPage).ToList();
+        _displayedMenu = _filteredMenu.Skip((_currentPage - 1) * _dataPerPage).Take(_dataPerPage).ToList();
     }
 
     protected async Task OpenFormAsync(Menu menu = null!)

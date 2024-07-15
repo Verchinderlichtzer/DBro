@@ -3,12 +3,11 @@ using System.Security.Claims;
 
 namespace DBro.Web.Components.Layout;
 
-public partial class MainLayout
+public partial class AdminLayout
 {
-    [CascadingParameter]
-    public Task<AuthenticationState> AuthenticationState { get; set; } = null!;
+    [CascadingParameter] public Task<AuthenticationState> AuthState { get; set; } = null!;
 
-    [Inject] protected NavigationManager NavManager { get; set; } = null!;
+    [Inject] private NavigationManager NavManager { get; set; } = null!;
 
     public User CurrentUser { get; set; } = new();
 
@@ -16,7 +15,7 @@ public partial class MainLayout
 
     MudAutocomplete<KeyValuePair<string, string>>? _menuList = new();
 
-    protected Dictionary<string, string> listMenu = new()
+    Dictionary<string, string> listMenu = new()
     {
         { "User", "/user" },
         { "Menu", "/menu" },
@@ -56,20 +55,20 @@ public partial class MainLayout
 
     protected override async Task OnInitializedAsync()
     {
-        ClaimsPrincipal cp = (await AuthenticationState).User;
+        ClaimsPrincipal cp = (await AuthState).User;
         CurrentUser.Email = cp.FindFirstValue(ClaimTypes.Email)!;
         CurrentUser.Nama = cp.FindFirstValue(ClaimTypes.Name)!;
         CurrentUser.JenisUser = (cp.FindFirstValue(ClaimTypes.Role)!).ToEnum<JenisUser>();
         CurrentUser.JenisKelamin = (cp.FindFirstValue(ClaimTypes.Gender)!).ToEnum<JenisKelamin>();
     }
 
-    protected async Task<IEnumerable<KeyValuePair<string, string>>> CariMenu(string value, CancellationToken token)
+    async Task<IEnumerable<KeyValuePair<string, string>>> CariMenu(string value, CancellationToken token)
     {
         value ??= string.Empty;
         return await Task.FromResult(listMenu.Where(x => x.Key.Contains(value, StringComparison.OrdinalIgnoreCase) || x.Value.Contains(value, StringComparison.OrdinalIgnoreCase)));
     }
 
-    protected async Task PilihMenu(KeyValuePair<string, string> value)
+    async Task PilihMenu(KeyValuePair<string, string> value)
     {
         await _menuList!.ResetAsync();
         if (!string.IsNullOrEmpty(value.Key)) NavManager.NavigateTo(value.Value);

@@ -9,6 +9,7 @@ namespace DBro.API.Controllers;
 public class PesananController(IPesananRepository pesananRepository, IMenuRepository menuRepository, ISalesRepository salesRepository) : ControllerBase
 {
     readonly JsonSerializerOptions _options = new() { ReferenceHandler = ReferenceHandler.IgnoreCycles };
+    #region Pesanan
 
     [HttpGet]
     public async Task<IActionResult> GetPesanan([FromQuery] string entities = null!)
@@ -60,7 +61,7 @@ public class PesananController(IPesananRepository pesananRepository, IMenuReposi
             if (result.Item2 == true)
                 return Ok(JsonSerializer.Serialize(result.Item1, _options));
             else if (result.Item2 == false)
-                return NotFound("Pesanan tidak ditemukan");
+                return NotFound("Keranjang belum dibuat");
             return BadRequest("Ada kesalahan saat mengakses data");
         }
         catch (Exception)
@@ -118,4 +119,62 @@ public class PesananController(IPesananRepository pesananRepository, IMenuReposi
             return StatusCode(500, "Terjadi kesalahan pada server");
         }
     }
+
+    [HttpGet("detail/{idPesanan}/{idMenu}")]
+    public async Task<IActionResult> FindDetail(string idPesanan, string idMenu)
+    {
+        try
+        {
+            var result = await pesananRepository.FindDetailAsync(idPesanan, idMenu);
+            if (result.Item2 == true)
+                return Ok(JsonSerializer.Serialize(result.Item1, _options));
+            else if (result.Item2 == false)
+                return NotFound("Pesanan tidak ditemukan");
+            return BadRequest("Ada kesalahan saat mengakses data");
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, "Terjadi kesalahan pada server");
+        }
+    }
+
+    #endregion Pesanan
+
+    #region Keranjang
+
+    [HttpGet("keranjang/{email}")]
+    public async Task<IActionResult> CekKeranjang(string email)
+    {
+        try
+        {
+            var result = await pesananRepository.CekKeranjangAsync(email);
+            if (result.Item2 == true)
+                return Ok(JsonSerializer.Serialize(result.Item1, _options));
+            else if (result.Item2 == false)
+                return NotFound("Pesanan tidak ditemukan");
+            return BadRequest("Ada kesalahan saat mengakses data");
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, "Terjadi kesalahan pada server");
+        }
+    }
+
+    [HttpPost("keranjang")]
+    public async Task<IActionResult> TambahKeKeranjang([FromBody] string jsonString)
+    {
+        try
+        {
+            DetailPesanan detailPesanan = JsonSerializer.Deserialize<DetailPesanan>(jsonString)!;
+            var result = await pesananRepository.TambahKeKeranjangAsync(detailPesanan);
+            detailPesanan = result.Item1;
+            return detailPesanan != null ? CreatedAtAction(nameof(FindDetail), new { idPesanan = detailPesanan.IdPesanan, idMenu = detailPesanan.IdMenu }, JsonSerializer.Serialize(detailPesanan, _options)) : BadRequest(result.Item2);
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, "Terjadi kesalahan pada server");
+        }
+    }
+
+    #endregion Keranjang
 }

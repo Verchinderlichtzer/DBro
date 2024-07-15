@@ -5,7 +5,7 @@ namespace DBro.Web.Components.Pages._Sales;
 [Authorize]
 public class SalesListBase : ComponentBase
 {
-    [CascadingParameter] public MainLayout Layout { get; set; } = null!;
+    [CascadingParameter] public AdminLayout Layout { get; set; } = null!;
 
     [Inject] protected ISalesService SalesService { get; set; } = null!;
 
@@ -27,9 +27,9 @@ public class SalesListBase : ComponentBase
     protected int _jumlahDiskon;
     protected int _jumlahPromo;
 
-    protected bool isNew = true;
-    protected bool _hasLoaded;
-    protected bool _isVisibleSales;
+    protected bool _new = true;
+    protected bool _loaded;
+    protected bool _salesCountVisible;
     protected string _searchDiskonTerms = string.Empty;
     protected string _searchPromoTerms = string.Empty;
     protected string _deleteMessage = string.Empty;
@@ -44,14 +44,14 @@ public class SalesListBase : ComponentBase
         SalesService.IdEditor = Layout.CurrentUser.Email;
 
         await LoadDataAsync();
-        _hasLoaded = true;
+        _loaded = true;
     }
 
     protected async Task LoadDataAsync()
     {
         _selectedDiskon.Clear();
         _selectedPromo.Clear();
-        isNew = true;
+        _new = true;
 
         var response = await SalesService.GetSalesAsync([nameof(Menu)]);
         if (response.Item1 != null)
@@ -90,7 +90,7 @@ public class SalesListBase : ComponentBase
             Snackbar.Add("Maksimal 100 data", Severity.Error);
             return;
         }
-        _isVisibleSales = false;
+        _salesCountVisible = false;
         await Task.Delay(50);
         await OpenFormSalesAsync();
     }
@@ -98,18 +98,18 @@ public class SalesListBase : ComponentBase
     protected async Task OpenFormSalesAsync()
     {
         var parameters = new DialogParameters { ["DiskonIds"] = _selectedDiskon.Select(x => x.Id).ToList(), ["PromoIds"] = _selectedPromo.Select(x => x.Id).ToList(), ["JumlahDiskon"] = _jumlahDiskon, ["JumlahPromo"] = _jumlahPromo, ["IdEditor"] = SalesService.IdEditor };
-        var form = await DialogService.Show<SalesForm>(isNew ? "Tambah Diskon & Promo" : "Edit Diskon & Promo", parameters).Result;
+        var form = await DialogService.Show<SalesForm>(_new ? "Tambah Diskon & Promo" : "Edit Diskon & Promo", parameters).Result;
         if (form!.Canceled)
         {
             _selectedDiskon.Clear();
             _selectedPromo.Clear();
-            isNew = true;
+            _new = true;
         }
         else
         {
             if (form.Data is SalesDTO model)
             {
-                Snackbar.Add(isNew ? "Data berhasil ditambah" : "Data berhasil diubah", Severity.Success);
+                Snackbar.Add(_new ? "Data berhasil ditambah" : "Data berhasil diubah", Severity.Success);
             }
         }
         await LoadDataAsync();

@@ -1,4 +1,7 @@
-﻿namespace DBro.API.Repositories;
+﻿using DBro.Shared.Models;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxTokenParser;
+
+namespace DBro.API.Repositories;
 
 /// <summary>
 /// GET Includable :
@@ -11,6 +14,8 @@
 /// </summary>
 public interface IPesananRepository
 {
+    #region Pesanan
+
     Task<List<Pesanan>> GetAsync(List<string> includes = null!);
 
     Task<(Pesanan, bool?)> FindAsync(string id, List<string> includes = null!);
@@ -20,10 +25,24 @@ public interface IPesananRepository
     Task<(bool?, string)> UpdateAsync(Pesanan pesanan);
 
     Task<byte> DeleteAsync(string id);
+
+    Task<(DetailPesanan, bool?)> FindDetailAsync(string idPesanan, string idMenu);
+
+    #endregion Pesanan
+
+    #region Keranjang
+
+    Task<(Pesanan, bool?)> CekKeranjangAsync(string email);
+
+    Task<(DetailPesanan, string)> TambahKeKeranjangAsync(DetailPesanan detailPesanan);
+
+    #endregion Keranjang
 }
 
 public class PesananRepository(AppDbContext appDbContext) : IPesananRepository
 {
+    #region Pesanan
+
     public async Task<List<Pesanan>> GetAsync(List<string> includes = null!)
     {
         try
@@ -74,12 +93,11 @@ public class PesananRepository(AppDbContext appDbContext) : IPesananRepository
     {
         try
         {
-            pesanan.Id = GenerateId("PSN", 2, DateTime.Today, appDbContext.Pesanan.Where(x => x.Tanggal!.Value.Date == DateTime.Today).Select(x => x.Id));
+            pesanan.Id = GenerateId("PSN", 3, DateTime.Today, appDbContext.Pesanan.Where(x => x.Tanggal!.Value.Date == DateTime.Today).Select(x => x.Id));
 
+            pesanan.DetailPesanan.ForEach(x => { x.Menu = null!; x.IdPesanan = pesanan.Id; });
+            pesanan.MenuPromoPesanan.ForEach(x => { x.Menu = null!; x.IdPesanan = pesanan.Id; });
             var model = await appDbContext.Pesanan.AddAsync(pesanan);
-            await appDbContext.DetailPesanan.AddRangeAsync(pesanan.DetailPesanan);
-
-            //pesanan = Nullify(pesanan);
             await appDbContext.SaveChangesAsync();
             return (model.Entity, null!);
         }
@@ -150,4 +168,67 @@ public class PesananRepository(AppDbContext appDbContext) : IPesananRepository
             return 3;
         }
     }
+
+    public async Task<(DetailPesanan, bool?)> FindDetailAsync(string idPesanan, string idMenu)
+    {
+        try
+        {
+            DetailPesanan detailPesanan = (await appDbContext.DetailPesanan.FirstOrDefaultAsync(x => x.IdPesanan == idPesanan && x.IdMenu == idMenu))!;
+
+            return detailPesanan != null ? (detailPesanan, true) : (null!, false);
+        }
+        catch (Exception)
+        {
+            return (null!, null);
+        }
+    }
+
+    #endregion Pesanan
+
+    #region Keranjang
+
+    public async Task<(Pesanan, bool?)> CekKeranjangAsync(string email)
+    {
+        try
+        {
+            Pesanan pesanan = (await appDbContext.Pesanan.Include(x => x.DetailPesanan).ThenInclude(x => x.Menu).OrderBy(x => x.Id).LastOrDefaultAsync(x => x.Email == email && x.Status == StatusPesanan.BelumCheckout))!;
+            if (pesanan == null)
+            {
+                pesanan = new()
+                {
+                    Id = GenerateId("PSN", 3, DateTime.Today, appDbContext.Pesanan.Where(x => x.Tanggal!.Value.Date == DateTime.Today).Select(x => x.Id)),
+                    Email = email,
+                    Status = StatusPesanan.BelumCheckout
+                };
+                var model = await appDbContext.Pesanan.AddAsync(pesanan);
+                await appDbContext.SaveChangesAsync();
+                pesanan = model.Entity;
+            }
+            return (pesanan, pesanan != null);
+        }
+        catch (Exception)
+        {
+            return (null!, null);
+        }
+    }
+
+    public async Task<(DetailPesanan, string)> TambahKeKeranjangAsync(DetailPesanan detailPesanan)
+    {
+        try
+        {
+            var model = await appDbContext.DetailPesanan.AddAsync(detailPesanan);
+            await appDbContext.SaveChangesAsync();
+            return (model.Entity, null!);
+        }
+        catch (Exception)
+        {
+            List<string> msg = [];
+            //string message = ex.InnerException!.Message;
+            //if (message.Contains("IX_User_Telepon"))
+            //    msg.Add("No Telepon");
+            return (null!, msg.Count > 0 ? $"{msg.CombineWords()} sudah digunakan".CapitalizeSentence() : "Ada kesalahan saat menyimpan data");
+        }
+    }
+
+    #endregion Keranjang
 }

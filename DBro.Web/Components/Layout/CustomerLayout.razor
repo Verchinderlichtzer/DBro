@@ -1,0 +1,29 @@
+﻿@inherits LayoutComponentBase
+
+<MudThemeProvider Theme="_theme" />
+<MudPopoverProvider />
+<MudDialogProvider MaxWidth="MaxWidth.Large" />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar Elevation="1" Dense>
+        <MudButton Href="/home" Color="Color.Inherit" Variant="Variant.Text" Class="@(relativePath.Search("home") ? "mud-chip-text mx-1 px-3 font-bold" : "mx-1 px-3")">Home</MudButton>
+        <MudButton Href="/keranjang" Color="Color.Inherit" Variant="Variant.Text" Class="@(relativePath.Search("keranjang") ? "mud-chip-text mx-1 px-3 font-bold" : "mx-1 px-3")">Keranjang</MudButton>
+
+        <MudSpacer />
+        <MudMenu Dense ActivationEvent="MouseEvent.MouseOver" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter">
+            <ActivatorContent>
+                <MudButton Class="white-text">@CurrentUser.Nama</MudButton>
+            </ActivatorContent>
+            <ChildContent>
+                <MudMenuItem Href="@($"/info-user/{CurrentUser.Email}")">Info User</MudMenuItem>
+                <MudMenuItem Href="/logout" ForceLoad>Logout</MudMenuItem>
+            </ChildContent>
+        </MudMenu>
+    </MudAppBar>
+    <MudMainContent>
+        <CascadingValue Value="this">
+            @Body
+        </CascadingValue>
+    </MudMainContent>
+</MudLayout>

@@ -1,9 +1,10 @@
 ﻿@page "/sales"
+@layout AdminLayout
 @inherits SalesListBase
 
 <PageTitle>Diskon & Promo</PageTitle>
 
-@if (!_hasLoaded)
+@if (!_loaded)
 {
     <MudProgressCircular Indeterminate />
 }
@@ -12,9 +13,9 @@ else
     <MudStack Row Spacing="2">
         <MudText Typo="Typo.h5">Diskon & Promo</MudText>
         <MudTooltip Text="Tambah data" Arrow Placement="Placement.Bottom">
-            <MudIconButton Variant="Variant.Filled" Size="Size.Small" Icon="@Icons.Material.Filled.Add" Color="Color.Success" OnClick="e => _isVisibleSales = true" />
+            <MudIconButton Variant="Variant.Filled" Size="Size.Small" Icon="@Icons.Material.Filled.Add" Color="Color.Success" OnClick="e => _salesCountVisible = true" />
         </MudTooltip>
-        @if (!isNew)
+        @if (!_new)
         {
             <MudTooltip Text="Edit data terpilih" Arrow Placement="Placement.Bottom">
                 <MudIconButton Variant="Variant.Filled" Size="Size.Small" Icon="@Icons.Material.Filled.Edit" Color="Color.Warning" OnClick="OpenFormSalesAsync" />
@@ -29,7 +30,7 @@ else
     </MudStack>
     <MudStack Row Class="mt-3">
         <div class="flex-1">
-            <MudDataGrid Items="_sales.Diskon" MultiSelection @bind-SelectedItems="_selectedDiskon" @bind-SelectedItems:after="() => isNew = _selectedDiskon.Count == 0 && _selectedPromo.Count == 0" Elevation="2" Dense Bordered QuickFilter="FilterSearchDiskon" ShowColumnOptions="false" Height="calc(100vh - 200px)">
+            <MudDataGrid Items="_sales.Diskon" MultiSelection @bind-SelectedItems="_selectedDiskon" @bind-SelectedItems:after="() => _new = _selectedDiskon.Count == 0 && _selectedPromo.Count == 0" Elevation="2" Dense Bordered QuickFilter="FilterSearchDiskon" ShowColumnOptions="false" Height="calc(100vh - 200px)">
                 <ToolBarContent>
                     <MudStack Row Spacing="2">
                         <MudText Typo="Typo.h5">Daftar Diskon</MudText>
@@ -42,12 +43,12 @@ else
                     <PropertyColumn Property="x => x.Id" HeaderClass="w-0" />
                     <PropertyColumn Property="x => x.Menu.Nama" Title="Menu" />
                     <PropertyColumn Property="x => x.Nilai" HeaderClass="w-0" Title="Diskon" Format="P0" />
-                    <PropertyColumn Property="@(x => $"{x.TanggalMulai:dd/MM/yy} → {x.TanggalAkhir:dd/MM/yy}")" HeaderClass="w-175" SortBy="x => x.TanggalMulai" Title="Jangka Waktu" />
+                    <PropertyColumn Property="@(x => $"{x.TanggalMulai:dd/MM/yy} → {x.TanggalAkhir:dd/MM/yy}")" HeaderClass="w-175" CellClassFunc="@(x => x.TanggalMulai > DateTime.Today ? "mud-info-text" : x.TanggalAkhir < DateTime.Today ? "mud-error-text" : "")" SortBy="x => x.TanggalMulai" Title="Jangka Waktu" />
                 </Columns>
             </MudDataGrid>
         </div>
         <div class="flex-1">
-            <MudDataGrid Items="_sales.Promo" MultiSelection @bind-SelectedItems="_selectedPromo" @bind-SelectedItems:after="() => isNew = _selectedDiskon.Count == 0 && _selectedPromo.Count == 0" Elevation="2" Dense Bordered QuickFilter="FilterSearchPromo" ShowColumnOptions="false" Height="calc(100vh - 200px)">
+            <MudDataGrid Items="_sales.Promo" MultiSelection @bind-SelectedItems="_selectedPromo" @bind-SelectedItems:after="() => _new = _selectedDiskon.Count == 0 && _selectedPromo.Count == 0" Elevation="2" Dense Bordered QuickFilter="FilterSearchPromo" ShowColumnOptions="false" Height="calc(100vh - 200px)">
                 <ToolBarContent>
                     <MudStack Row Spacing="2">
                         <MudText Typo="Typo.h5">Daftar Promo</MudText>
@@ -63,7 +64,7 @@ else
                             @((MarkupString)KeteranganPromo(context.Item))
                         </CellTemplate>
                     </TemplateColumn>
-                    <PropertyColumn Property="@(x => $"{x.TanggalMulai:dd/MM/yy} → {x.TanggalAkhir:dd/MM/yy}")" HeaderClass="w-175" SortBy="x => x.TanggalMulai" Title="Jangka Waktu" />
+                    <PropertyColumn Property="@(x => $"{x.TanggalMulai:dd/MM/yy} → {x.TanggalAkhir:dd/MM/yy}")" HeaderClass="w-175" CellClassFunc="@(x => x.TanggalMulai > DateTime.Today ? "mud-info-text" : x.TanggalAkhir < DateTime.Today ? "mud-error-text" : "")" SortBy="x => x.TanggalMulai" Title="Jangka Waktu" />
                 </Columns>
             </MudDataGrid>
         </div>
@@ -84,7 +85,7 @@ else
     </YesButton>
 </MudMessageBox>
 
-<MudDialog @bind-Visible="_isVisibleSales">
+<MudDialog @bind-Visible="_salesCountVisible">
     <TitleContent>
         <MudText Typo="Typo.h6">
             Masukkan Jumlah
@@ -96,6 +97,6 @@ else
     </DialogContent>
     <DialogActions>
         <MudButton Class="w-75" Color="Color.Primary" OnClick="ShowModalAsync">Ok</MudButton>
-        <MudButton Class="w-75" OnClick="_ => _isVisibleSales = false">Batal</MudButton>
+        <MudButton Class="w-75" OnClick="e => _salesCountVisible = false">Batal</MudButton>
     </DialogActions>
 </MudDialog>

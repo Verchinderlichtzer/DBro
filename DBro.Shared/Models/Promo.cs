@@ -6,8 +6,8 @@ public class Promo
     public string IdMenuDibeli { get; set; } = null!;
     public string IdMenuDidapat { get; set; } = null!;
 
-    public int JumlahDibeli { get; set; }
-    public int JumlahDidapat { get; set; }
+    public int JumlahDibeli { get; set; } = 2;
+    public int JumlahDidapat { get; set; } = 1;
     public DateTime? TanggalMulai { get; set; }
     public DateTime? TanggalAkhir { get; set; }
 

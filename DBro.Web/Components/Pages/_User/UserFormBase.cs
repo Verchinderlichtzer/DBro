@@ -24,15 +24,15 @@ public class UserFormBase : ComponentBase
 
     protected User _user = new();
 
-    protected bool _isNew;
+    protected bool _new;
     protected bool _isValidationRuleShow;
 
     protected override async Task OnInitializedAsync()
     {
-        _isNew = string.IsNullOrEmpty(Email);
-        UserService.IdEditor = Email;
+        _new = string.IsNullOrEmpty(Email);
+        UserService.IdEditor = IdEditor;
 
-        if (!_isNew)
+        if (!_new)
         {
             var response = await UserService.FindAsync(Email);
             if (response.Item1 != null)
@@ -53,7 +53,7 @@ public class UserFormBase : ComponentBase
         await _form!.Validate();
         if (_form!.IsValid)
         {
-            if (_isNew)
+            if (_new)
             {
                 _user.JenisUser = JenisUser.Karyawan;
                 _user.Password = Encrypt(_user.TanggalLahir!.Value.ToString("ddMMyy"));

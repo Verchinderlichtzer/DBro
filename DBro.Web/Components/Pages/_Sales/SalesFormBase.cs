@@ -27,12 +27,12 @@ public class SalesFormBase : ComponentBase
     protected SalesFormDTO _sales = new() { DiskonDTO = [], PromoDTO = [] };
     protected List<Menu> _menu = null!;
 
-    protected bool _isNew;
+    protected bool _new;
     protected bool _isValidationRuleShow;
 
     protected override async Task OnInitializedAsync()
     {
-        _isNew = DiskonIds.Count == 0 && PromoIds.Count == 0;
+        _new = DiskonIds.Count == 0 && PromoIds.Count == 0;
         SalesService.IdEditor = IdEditor;
 
         var response = await SalesService.GetFormAsync(DiskonIds, PromoIds, [nameof(Menu)]);
@@ -50,7 +50,7 @@ public class SalesFormBase : ComponentBase
             return;
         }
 
-        if (_isNew)
+        if (_new)
         {
             for (int i = 0; i < JumlahDiskon; i++) AddDiskon();
             for (int i = 0; i < JumlahPromo; i++) AddPromo();
@@ -77,12 +77,12 @@ public class SalesFormBase : ComponentBase
 
     protected void AddDiskon()
     {
-        _sales.DiskonDTO.Add(new());
+        _sales.DiskonDTO.Add(new() { Diskon = new() });
     }
 
     protected void AddPromo()
     {
-        _sales.PromoDTO.Add(new());
+        _sales.PromoDTO.Add(new() { Promo = new() });
     }
 
     protected async Task SaveAsync()
@@ -101,7 +101,7 @@ public class SalesFormBase : ComponentBase
                 x.Promo.TanggalMulai = x.DR.Start;
                 x.Promo.TanggalAkhir = x.DR.End;
             });
-            if (_isNew)
+            if (_new)
             {
                 var response = await SalesService.AddsSalesAsync(new() { Diskon = _sales.DiskonDTO.ConvertAll(x => x.Diskon), Promo = _sales.PromoDTO.ConvertAll(x => x.Promo) });
                 if (response.Item1 != null)

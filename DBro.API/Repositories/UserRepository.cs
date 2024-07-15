@@ -71,12 +71,16 @@ public class UserRepository(AppDbContext appDbContext) : IUserRepository
         try
         {
             var model = await appDbContext.User.AddAsync(user);
-            await appDbContext.Aktivitas.AddAsync(new() {
-                Email = idEditor,
-                Jenis = JenisAktivitas.Tambah,
-                Entitas = Entitas.User,
-                IdEntitas = model.Entity.Email
-            });
+            if (!string.IsNullOrEmpty(idEditor))
+            {
+                await appDbContext.Aktivitas.AddAsync(new()
+                {
+                    Email = idEditor,
+                    Jenis = JenisAktivitas.Tambah,
+                    Entitas = Entitas.User,
+                    IdEntitas = model.Entity.Email
+                });
+            }
             await appDbContext.SaveChangesAsync();
             return (model.Entity, null!);
         }

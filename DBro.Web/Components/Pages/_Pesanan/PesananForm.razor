@@ -1,10 +1,11 @@
 ﻿@page "/pesanan/form"
 @page "/pesanan/form/{id}"
+@layout AdminLayout
 @inherits PesananFormBase
 
 <PageTitle>Pesanan Langsung</PageTitle>
 
-@if (!_hasLoaded)
+@if (!_loaded)
 {
     <MudProgressCircular Indeterminate />
 }
@@ -13,8 +14,8 @@ else
     <MudContainer MaxWidth="MaxWidth.ExtraLarge">
         
         <MudText Typo="Typo.h6">
-            <MudIcon Icon="@(_isNew ? Icons.Material.Filled.Add : Icons.Material.Filled.Edit)" Class="mr-3 mb-n1" />
-            @(_isNew ? "Tambah Pesanan (Langsung)" : "Edit Pesanan")
+            <MudIcon Icon="@(_new ? Icons.Material.Filled.Add : Icons.Material.Filled.Edit)" Class="mr-3 mb-n1" />
+            @(_new ? "Tambah Pesanan" : "Edit Pesanan")
         </MudText>
         
         <MudForm Model="_pesanan" @ref="_form" Validation="((PesananValidator)Validator).ValidateValue">
@@ -23,9 +24,9 @@ else
                     <div class="w-125">
                         <MudField Label="Id">@_pesanan.Id</MudField>
                     </div>
-                    <div class="w-150">
+                    @* <div class="w-150">
                         <MudField Label="Email">@_pesanan.Email</MudField>
-                    </div>
+                    </div> *@
                     <MudStack Row>
                         <div class="w-225">
                             <MudDatePicker Label="Tanggal" @bind-Date="_pesanan.Tanggal" PickerVariant="PickerVariant.Dialog" DateFormat="dd MMMM yyyy" tabindex="-1" />
@@ -35,16 +36,16 @@ else
                         </div>
                     </MudStack>
                 </MudStack>
-                <MudStack Row Class="flex-1">
+                <MudStack Row Class="w-350">
                     <MudStack Class="flex-1">
                         <div>
-                            <MudField Label="Subtotal" Adornment="Adornment.Start" AdornmentText="Rp">@_pesanan.Subtotal</MudField>
+                            <MudField Label="Subtotal" Adornment="Adornment.Start" AdornmentText="Rp">@_pesanan.Subtotal.ToString("N0")</MudField>
                         </div>
                         <div>
-                            <MudField Label="Potongan" Adornment="Adornment.Start" AdornmentText="Rp">@_pesanan.Potongan</MudField>
+                            <MudField Label="Total Diskon" Adornment="Adornment.Start" AdornmentText="Rp">@_pesanan.Potongan.ToString("N0")</MudField>
                         </div>
                         <div>
-                            <MudField Label="Total" Adornment="Adornment.Start" AdornmentText="Rp">@_pesanan.Total</MudField>
+                            <MudField Label="Total" Adornment="Adornment.Start" AdornmentText="Rp">@_pesanan.Total.ToString("N0")</MudField>
                         </div>
                     </MudStack>
                     <MudStack Class="flex-1">
@@ -52,10 +53,10 @@ else
                             <MudNumericField Immediate HideSpinButtons T="int" @bind-Value="_pesanan.Bayar" Format="N0" Label="Bayar" Adornment="Adornment.Start" AdornmentText="Rp" />
                         </div>
                         <div>
-                            <MudField Label="Sisa" Adornment="Adornment.Start" AdornmentText="Rp">@_pesanan.Sisa</MudField>
+                            <MudField Label="@(_pesanan.Sisa < 0 ? "Kurang" : "Kembali")" Adornment="Adornment.Start" AdornmentText="Rp" AdornmentColor="_pesanan.Sisa < 0 ? Color.Error : Color.Default">@Math.Abs(_pesanan.Sisa).ToString("N0")</MudField>
                         </div>
-                        <div>
-                            <MudSelect @bind-Value="_pesanan.Status" Label="StatusPesanan">
+                        @* <div>
+                            <MudSelect @bind-Value="_pesanan.Status" Dense Label="Status Pesanan">
                                 @foreach (StatusPesanan x in Enum.GetValues(typeof(StatusPesanan)))
                                 {
                                     <MudSelectItem Value="x">
@@ -63,30 +64,31 @@ else
                                     </MudSelectItem>
                                 }
                             </MudSelect>
-                        </div>
+                        </div> *@
                     </MudStack>
                 </MudStack>
             </MudStack>
-            <MudAutocomplete @ref="autocompleteMenu" T="Menu" ValueChanged="e => PilihMenu(e)" Placeholder="Cari menu..." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Dense CoerceText SearchFunc="SearchMenuAsync" ToStringFunc="@(x => x is null ? null : $"{x.Nama} ({x.Kategori})")" MaxItems="128" />
 
-            <MudStack Row>
+            <MudStack Row Class="mt-3">
 
-                <MudDataGrid Class="flex-1" Items="_pesanan.DetailPesanan" Elevation="2" Dense Bordered ShowColumnOptions="false">
+                <MudDataGrid Class="flex-2" Items="_pesanan.DetailPesanan" Elevation="2" Dense Bordered ShowColumnOptions="false">
                     <ToolBarContent>
                         <MudText Typo="Typo.h6">Menu yang dipesan</MudText>
                         <MudSpacer />
+                        <MudAutocomplete @ref="autocompleteMenu" T="Menu" @bind-Value="_menuTerpilih" @bind-Value:after="() => PilihMenu(_menuTerpilih)" Placeholder="Cari & pilih menu..." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Dense CoerceText SearchFunc="SearchMenuAsync" ToStringFunc="@(x => x is null ? null : $"{x.Nama} ({x.Kategori.GetDescription()})")" MaxItems="128" />
                     </ToolBarContent>
                     <Columns>
-                        <PropertyColumn Property="x => x.Harga" HeaderClass="w-150" />
-                        <TemplateColumn Title="Jumlah">
+                        <PropertyColumn Property="x => x.Menu.Nama" />
+                        <PropertyColumn Property="x => x.Harga" HeaderClass="w-0" Format="N0" />
+                        <TemplateColumn Title="Jumlah" HeaderClass="w-0">
                             <CellTemplate>
-                                <MudNumericField Class="mt-n2" Immediate HideSpinButtons T="int" @bind-Value="context.Item.Jumlah" @bind-Value:after="Calculate" />
+                                <MudNumericField Class="mt-n1" Immediate HideSpinButtons T="int" @bind-Value="context.Item.Jumlah" @bind-Value:after="Calculate" />
                             </CellTemplate>
                         </TemplateColumn>
-                        <PropertyColumn Property="x => x.Subtotal" Format="N0" />
-                        <PropertyColumn Property="x => x.Diskon" Format="P0" />
-                        <PropertyColumn Property="x => x.Total" Format="N0" />
-                        <TemplateColumn HeaderClass="w-0" Sortable="false" Title="Opsi">
+                        <PropertyColumn Property="x => x.Subtotal" Format="N0" HeaderClass="w-0" />
+                        <PropertyColumn Property="x => x.Diskon" Sortable="false" Format="P0" HeaderClass="w-0" />
+                        <PropertyColumn Property="x => x.Total" Format="N0" HeaderClass="w-0" />
+                        <TemplateColumn HeaderClass="w-0" Title="Opsi">
                             <CellTemplate>
                                 <MudIconButton Variant="Variant.Filled" Size="Size.Small" Icon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="e => DeleteDetail(context.Item)" />
                             </CellTemplate>
@@ -94,26 +96,22 @@ else
                     </Columns>
                 </MudDataGrid>
 
-                <MudTable Class="flex-1" Items="_menuDidapat" Dense Bordered>
+                <MudTable Class="flex-1" Items="_pesanan.MenuPromoPesanan" Dense Bordered>
                     <ToolBarContent>
                         <MudText Typo="Typo.h6">Promo didapat</MudText>
                     </ToolBarContent>
                     <HeaderContent>
                         <MudTh>Menu</MudTh>
-                        <MudTh>Jumlah</MudTh>
+                        <MudTh Class="w-0">Jumlah</MudTh>
                     </HeaderContent>
                     <RowTemplate>
-                        <MudTd DataLabel="Nama Menu">@context.Menu.Nama</MudTd>
+                        <MudTd DataLabel="Menu">@context.Menu.Nama</MudTd>
                         <MudTd DataLabel="Jumlah">@context.Jumlah</MudTd>
                     </RowTemplate>
-                    <PagerContent>
-                        <MudTablePager />
-                    </PagerContent>
                 </MudTable>
 
             </MudStack>
 
-            
         </MudForm>
         
         <MudStack Row Class="mt-4">
@@ -130,7 +128,7 @@ else
             </div>
             <MudSpacer />
             <MudStack Row Class="w-425">
-                <MudButton Variant="Variant.Filled" Size="Size.Small" Color="_isNew ? Color.Success : Color.Warning" OnClick="SaveAsync" Class="flex-1">Simpan</MudButton>
+                <MudButton Variant="Variant.Filled" Size="Size.Small" Color="_new ? Color.Success : Color.Warning" OnClick="SaveAsync" Class="flex-1">Simpan</MudButton>
                 <MudButton Size="Size.Small" OnClick="@(e => NavManager.NavigateTo("/pesanan"))" Class="flex-1">Kembali</MudButton>
             </MudStack>
         </MudStack>

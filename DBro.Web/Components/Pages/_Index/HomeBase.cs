@@ -5,7 +5,11 @@ namespace DBro.Web.Components.Pages._Index;
 [Authorize]
 public class HomeBase : ComponentBase
 {
-    [CascadingParameter] public MainLayout Layout { get; set; } = null!;
+    [CascadingParameter] public CustomerLayout Layout { get; set; } = null!;
+
+    [Inject] protected IMenuService MenuService { get; set; } = null!;
+
+    [Inject] protected IPesananService PesananService { get; set; } = null!;
 
     [Inject] protected IDialogService DialogService { get; set; } = null!;
 
@@ -13,37 +17,72 @@ public class HomeBase : ComponentBase
 
     [Inject] protected NavigationManager NavManager { get; set; } = null!;
 
-    protected bool _hasLoaded;
+    protected Pesanan _keranjang = new();
+    protected List<DisplayedMenu> _displayedMenu = null!;
+    protected List<Menu> _allMenu = null!, _filteredMenu = null!;
 
-    //protected override async Task OnInitializedAsync()
-    //{
-    //    Layout.BreadcrumbItems =
-    //    [
-    //        new("Home", "/home")
-    //    ];
-    //    Layout.Refresh();
+    protected string _searchTerms = string.Empty;
+    protected int _dataPerPage = 20;
+    protected int _currentPage = 1;
+    protected int _totalPage;
+    protected bool _loaded;
 
-    //    _hasLoaded = true;
+    //protected Menu _menuTerpilih = new();
+    protected int _jumlah = 1;
+    //protected bool _menuCountVisible;
+    protected bool _firstClick;
 
-    //    //     var user = await ((AuthStateProvider)AuthenticationStateProvider).GetAuthenticationStateAsync();
-    //    //     var roleClaim = user.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role);
-
-    //    //     NavManager.NavigateTo(roleClaim != null && !string.IsNullOrEmpty(roleClaim.Value) ? "/home-pengawas" : "/home-peserta");
-    //}
-
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        Layout.BreadcrumbItems =
-        [
-            new("Home", "/home")
-        ];
-        Layout.Refresh();
+        await LoadDataAsync();
+        _loaded = true;
+    }
 
-        _hasLoaded = true;
+    protected async Task LoadDataAsync()
+    {
+        var response = await MenuService.GetAsync();
+        if (response.Item1 != null)
+        {
+            _allMenu = response.Item1;
+            _filteredMenu = _allMenu;
+            ShowData();
+        }
+        else
+        {
+            await DialogService.ShowMessageBox("Error", response.Item2, yesText: "Ok");
+        }
+    }
 
-        //     var user = await ((AuthStateProvider)AuthenticationStateProvider).GetAuthenticationStateAsync();
-        //     var roleClaim = user.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role);
+    protected void SearchData()
+    {
+        _filteredMenu = _allMenu.Where(x => $"{x.Id} {x.Nama} {x.Kategori.GetDescription()}".Search(_searchTerms)).ToList();
+        ShowData();
+    }
 
-        //     NavManager.NavigateTo(roleClaim != null && !string.IsNullOrEmpty(roleClaim.Value) ? "/home-pengawas" : "/home-peserta");
+    protected void ShowData()
+    {
+        _displayedMenu = _filteredMenu.Skip((_currentPage - 1) * _dataPerPage).Take(_dataPerPage).ToList().ConvertAll(x => new DisplayedMenu { Menu = x });
+    }
+    protected void ClosePopups()
+    {
+        _displayedMenu.ForEach(x => x.Open = false);
+    }
+
+    protected async Task TambahKeKeranjangAsync(Menu menu)
+    {
+        if (!_firstClick)
+        {
+            var result = await PesananService.CekKeranjangAsync(Layout.CurrentUser.Email);
+            _keranjang = result.Item1;
+            _firstClick = true;
+        }
+        await PesananService.TambahKeKeranjangAsync(new() { IdPesanan = _keranjang.Id, IdMenu = menu.Id, Jumlah = _jumlah, Harga = menu.Harga });
+        Snackbar.Add("Menu ditambah ke keranjang", Severity.Success);
+    }
+
+    public class DisplayedMenu
+    {
+        public Menu Menu { get; set; } = null!;
+        public bool Open { get; set; }
     }
 }

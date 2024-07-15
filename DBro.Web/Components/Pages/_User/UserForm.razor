@@ -4,7 +4,7 @@
     <DialogContent>
         <MudContainer Class="h-350 overflow-y-auto">
             <MudForm Model="_user" @ref="_form" Validation="((UserValidator)Validator).ValidateValue" @onkeypress="OnKeyPressAsync">
-                <MudTextField AutoFocus OnlyValidateIfDirty InputType="InputType.Email" Label="Email" @bind-Value="_user.Email" MaxLength="64" For="() => _user.Email" ReadOnly="!_isNew" />
+                <MudTextField AutoFocus OnlyValidateIfDirty InputType="InputType.Email" Label="Email" @bind-Value="_user.Email" MaxLength="64" For="() => _user.Email" ReadOnly="!_new" />
                 <MudTextField OnlyValidateIfDirty Label="Nama" @bind-Value="_user.Nama" MaxLength="64" For="() => _user.Nama" />
                 <MudStack Class="mt-4">
                     <MudText>Status User :</MudText>
@@ -40,7 +40,7 @@
         </div>
         <MudSpacer />
         <MudStack Row Class="w-300">
-            <MudButton Variant="Variant.Filled" Size="Size.Small" Color="_isNew ? Color.Success : Color.Warning" OnClick="SaveAsync" Class="flex-1">Simpan</MudButton>
+            <MudButton Variant="Variant.Filled" Size="Size.Small" Color="_new ? Color.Success : Color.Warning" OnClick="SaveAsync" Class="flex-1">Simpan</MudButton>
             <MudButton Size="Size.Small" OnClick="Cancel" Class="flex-1">Kembali</MudButton>
         </MudStack>
     </DialogActions>

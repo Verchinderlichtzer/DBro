@@ -5,7 +5,7 @@ namespace DBro.Web.Components.Pages._User;
 [Authorize]
 public class UserListBase : ComponentBase
 {
-    [CascadingParameter] public MainLayout Layout { get; set; } = null!;
+    [CascadingParameter] public AdminLayout Layout { get; set; } = null!;
 
     [Inject] protected IUserService UserService { get; set; } = null!;
 
@@ -19,7 +19,7 @@ public class UserListBase : ComponentBase
 
     protected List<User> _userList = null!;
 
-    protected bool _hasLoaded;
+    protected bool _loaded;
     protected string _searchTerms = string.Empty;
     protected string _deleteMessage = string.Empty;
 
@@ -33,7 +33,7 @@ public class UserListBase : ComponentBase
         UserService.IdEditor = Layout.CurrentUser.Email;
 
         await LoadDataAsync();
-        _hasLoaded = true;
+        _loaded = true;
     }
 
     protected async Task LoadDataAsync()

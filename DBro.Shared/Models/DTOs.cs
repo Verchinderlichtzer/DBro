@@ -50,12 +50,6 @@ public class PesananFormDTO // Data yang diperlukan di Form Pesanan
     public List<Promo> Promo { get; set; } = null!;
 }
 
-public class MenuDidapatDTO // Menu yang didapat dari promo
-{
-    public Menu Menu { get; set; } = null!;
-    public int Jumlah { get; set; }
-}
-
 #endregion Pesanan
 
 #region Chart / Graph

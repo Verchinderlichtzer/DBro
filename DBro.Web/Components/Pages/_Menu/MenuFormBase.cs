@@ -25,16 +25,16 @@ public class MenuFormBase : ComponentBase
 
     protected Menu _menu = new();
 
-    protected bool _isNew;
+    protected bool _new;
     protected bool _isValidationRuleShow;
     protected bool _isKetentuanUploadShow;
 
     protected override async Task OnInitializedAsync()
     {
-        _isNew = string.IsNullOrEmpty(Id);
+        _new = string.IsNullOrEmpty(Id);
         MenuService.IdEditor = IdEditor;
 
-        if (!_isNew)
+        if (!_new)
         {
             var response = await MenuService.FindAsync(Id);
             if (response.Item1 != null)
@@ -72,7 +72,7 @@ public class MenuFormBase : ComponentBase
         await _form!.Validate();
         if (_form!.IsValid)
         {
-            if (_isNew)
+            if (_new)
             {
                 var response = await MenuService.AddAsync(_menu);
                 if (response.Item1 != null)

@@ -1,6 +1,6 @@
 ﻿<Router AppAssembly="typeof(Program).Assembly">
     <Found Context="routeData">
-        <AuthorizeRouteView RouteData="routeData" DefaultLayout="typeof(MainLayout)">
+        <AuthorizeRouteView RouteData="routeData" DefaultLayout="typeof(BlankLayout)">
             <NotAuthorized>
                 <DBro.Web.Components.Partial.HttpUnauthorized />
             </NotAuthorized>
@@ -8,7 +8,7 @@
     </Found>
     <NotFound>
         <PageTitle>Halaman Tidak Ditemukan</PageTitle>
-        <LayoutView Layout="@typeof(NoLayout)">
+        <LayoutView Layout="@typeof(BlankLayout)">
             <ChildContent>
                 <DBro.Web.Components.Partial.HttpNotFound />
             </ChildContent>

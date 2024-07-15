@@ -56,7 +56,7 @@
                                             <MudNumericField Immediate T="int" @bind-Value="promo.Promo.JumlahDibeli" Label="Beli" Min="1" Max="99" />
                                         </div>
                                         <div class="flex-1">
-                                            <MudAutocomplete Label="Beli" T="Menu" @bind-Value="promo.Promo.MenuDibeli" @bind-Value:after="() => promo.Promo.IdMenuDibeli = promo.Promo.MenuDibeli.Id" Dense CoerceText SearchFunc="SearchMenuAsync" ToStringFunc="x => x == null ? null : x.Nama" MaxItems="128" />
+                                            <MudAutocomplete Label="Beli" T="Menu" @bind-Value="promo.Promo.MenuDibeli" @bind-Value:after="() => {promo.Promo.IdMenuDibeli = promo.Promo.MenuDibeli.Id; promo.Promo.MenuDidapat ??= promo.Promo.MenuDibeli;}" Dense CoerceText SearchFunc="SearchMenuAsync" ToStringFunc="x => x == null ? null : x.Nama" MaxItems="128" />
                                         </div>
                                         <div class="w-50">
                                             <MudNumericField Immediate T="int" @bind-Value="promo.Promo.JumlahDidapat" Label="Gratis" Min="1" Max="99" />
@@ -96,7 +96,7 @@
         </div>
         <MudSpacer />
         <MudStack Row Class="w-300">
-            <MudButton Variant="Variant.Filled" Size="Size.Small" Color="_isNew ? Color.Success : Color.Warning" OnClick="SaveAsync" Class="flex-1">Simpan</MudButton>
+            <MudButton Variant="Variant.Filled" Size="Size.Small" Color="_new ? Color.Success : Color.Warning" OnClick="SaveAsync" Class="flex-1">Simpan</MudButton>
             <MudButton Size="Size.Small" OnClick="Cancel" Class="flex-1">Kembali</MudButton>
         </MudStack>
     </DialogActions>

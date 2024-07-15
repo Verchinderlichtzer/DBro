@@ -5,7 +5,7 @@ namespace DBro.Web.Components.Pages._Index;
 [Authorize]
 public class DashboardBase : ComponentBase
 {
-    [CascadingParameter] public MainLayout Layout { get; set; } = null!;
+    [CascadingParameter] public AdminLayout Layout { get; set; } = null!;
 
     [Inject] protected IDialogService DialogService { get; set; } = null!;
 
@@ -13,7 +13,7 @@ public class DashboardBase : ComponentBase
 
     [Inject] protected NavigationManager NavManager { get; set; } = null!;
 
-    protected bool _hasLoaded;
+    protected bool _loaded;
 
     //protected override async Task OnInitializedAsync()
     //{
@@ -23,7 +23,7 @@ public class DashboardBase : ComponentBase
     //    ];
     //    Layout.Refresh();
 
-    //    _hasLoaded = true;
+    //    _loaded = true;
 
     //    //     var user = await ((AuthStateProvider)AuthenticationStateProvider).GetAuthenticationStateAsync();
     //    //     var roleClaim = user.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role);
@@ -39,7 +39,7 @@ public class DashboardBase : ComponentBase
         ];
         Layout.Refresh();
 
-        _hasLoaded = true;
+        _loaded = true;
 
         //     var user = await ((AuthStateProvider)AuthenticationStateProvider).GetAuthenticationStateAsync();
         //     var roleClaim = user.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role);

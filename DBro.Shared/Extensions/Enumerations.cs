@@ -30,7 +30,7 @@ public enum Kategori : byte
 
 public enum JenisVarian : byte
 {
-    [Description("")] None,
+    [Description("-")] None,
     [Description("Tingkat Kepedasan")] TingkatKepedasan,
     [Description("Rasa")] Rasa
 }
@@ -38,6 +38,8 @@ public enum JenisVarian : byte
 public enum StatusPesanan : byte
 {
     [Description("-")] None,
+    [Description("Belum Checkout")] BelumCheckout,
+    [Description("Menunggu Persetujuan")] MenungguPersetujuan,
     [Description("Diterima")] Diterima,
     [Description("Ditolak")] Ditolak
 }

@@ -7,6 +7,8 @@ public interface IPesananService
 {
     public string IdEditor { get; set; } // Id Pesanan yang memanipulasi data
 
+    #region Pesanan
+
     Task<(List<Pesanan>, string)> GetAsync(List<string> includes = null!);
 
     Task<(PesananFormDTO, string)> GetFormAsync(string id, List<string> includes = null!);
@@ -18,6 +20,17 @@ public interface IPesananService
     Task<(bool, string)> UpdateAsync(Pesanan pesanan);
 
     Task<(bool, string)> DeleteAsync(string id);
+
+    #endregion Pesanan
+
+    #region Keranjang
+
+    /// <summary> Include Detail </summary>
+    Task<(Pesanan, string)> CekKeranjangAsync(string email);
+
+    Task<(DetailPesanan, string)> TambahKeKeranjangAsync(DetailPesanan detailPesanan);
+
+    #endregion Keranjang
 }
 
 public class PesananService : IPesananService
@@ -37,6 +50,8 @@ public class PesananService : IPesananService
         _httpClient = httpClient;
         _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", httpContextAccessor.HttpContext!.Request.Cookies["api_token"]);
     }
+
+    #region Pesanan
 
     public async Task<(List<Pesanan>, string)> GetAsync(List<string> includes = null!)
     {
@@ -105,4 +120,34 @@ public class PesananService : IPesananService
         string result = await response.Content.ReadAsStringAsync();
         return (response.IsSuccessStatusCode, result);
     }
+
+    #endregion Pesanan
+
+    #region Keranjang
+
+    public async Task<(Pesanan, string)> CekKeranjangAsync(string email)
+    {
+        var response = await _httpClient.GetAsync($"api/pesanan/keranjang/{email}");
+        var result = await response.Content.ReadAsStringAsync();
+        if (response.IsSuccessStatusCode)
+            return (JsonSerializer.Deserialize<Pesanan>(result)!, null!);
+        return (null!, result);
+    }
+
+    public async Task<(DetailPesanan, string)> TambahKeKeranjangAsync(DetailPesanan detailPesanan)
+    {
+        _httpClient.DefaultRequestHeaders.Add("Id-Editor", IdEditor);
+        var response = await _httpClient.PostAsJsonAsync("api/pesanan/keranjang", JsonSerializer.Serialize(detailPesanan), _options);
+        string result = await response.Content.ReadAsStringAsync();
+        if (response.IsSuccessStatusCode)
+        {
+            return (JsonSerializer.Deserialize<DetailPesanan>(result, _options)!, null!);
+        }
+        else
+        {
+            return (null!, result);
+        }
+    }
+
+    #endregion Keranjang
 }
