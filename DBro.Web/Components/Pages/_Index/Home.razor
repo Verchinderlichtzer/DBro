@@ -33,7 +33,7 @@ else
                             <div class="d-flex">
                                 <MudIconButton Variant="Variant.Filled" Size="Size.Small" Icon="@Icons.Material.Filled.AddShoppingCart" Color="Color.Success" OnClick="e => { ClosePopups(); _jumlah = 1; menu.Open = true; }" />
                                 <MudPopover Open="menu.Open" AnchorOrigin="Origin.TopCenter" TransformOrigin="Origin.BottomCenter" Paper="false">
-                                    <MudPaper Outlined="true" Class="pa-4 w-200">
+                                    <MudPaper Outlined Class="pa-4 w-200">
                                         <MudText Typo="Typo.h6" GutterBottom>Pesan Berapa?</MudText>
                                         <MudNumericField Class="mb-3" T="int" @bind-Value="_jumlah" Min="1" Max="100" AutoFocus />
                                         <MudStack Row>

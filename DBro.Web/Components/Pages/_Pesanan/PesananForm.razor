@@ -55,16 +55,6 @@ else
                         <div>
                             <MudField Label="@(_pesanan.Sisa < 0 ? "Kurang" : "Kembali")" Adornment="Adornment.Start" AdornmentText="Rp" AdornmentColor="_pesanan.Sisa < 0 ? Color.Error : Color.Default">@Math.Abs(_pesanan.Sisa).ToString("N0")</MudField>
                         </div>
-                        @* <div>
-                            <MudSelect @bind-Value="_pesanan.Status" Dense Label="Status Pesanan">
-                                @foreach (StatusPesanan x in Enum.GetValues(typeof(StatusPesanan)))
-                                {
-                                    <MudSelectItem Value="x">
-                                        @x.GetDescription()
-                                    </MudSelectItem>
-                                }
-                            </MudSelect>
-                        </div> *@
                     </MudStack>
                 </MudStack>
             </MudStack>

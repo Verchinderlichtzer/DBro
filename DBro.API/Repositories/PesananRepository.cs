@@ -56,8 +56,10 @@ public class PesananRepository(AppDbContext appDbContext) : IPesananRepository
             {
                 if (includes.Contains(nameof(User))) models = models.Include(x => x.User);
                 if (includes.Contains(nameof(DetailPesanan))) models = models.Include(x => x.DetailPesanan);
+                if (includes.Contains(nameof(Menu))) models = models.Include(x => x.DetailPesanan).ThenInclude(x => x.Menu);
                 //if (includes.Contains(nameof(VarianMenu))) models = models.Include(x => x.DetailPesanan).ThenInclude(x => x.VarianMenu);
                 if (includes.Contains(nameof(MenuPromoPesanan))) models = models.Include(x => x.MenuPromoPesanan);
+                if (includes.Contains(nameof(Menu))) models = models.Include(x => x.MenuPromoPesanan).ThenInclude(x => x.Menu);
             }
 
             return await models.OrderByDescending(x => x.Id).ToListAsync();
@@ -78,8 +80,10 @@ public class PesananRepository(AppDbContext appDbContext) : IPesananRepository
             {
                 if (includes.Contains(nameof(User))) model = model.Include(x => x.User);
                 if (includes.Contains(nameof(DetailPesanan))) model = model.Include(x => x.DetailPesanan);
+                if (includes.Contains(nameof(Menu))) model = model.Include(x => x.DetailPesanan).ThenInclude(x => x.Menu);
                 //if (includes.Contains(nameof(VarianMenu))) model = model.Include(x => x.DetailPesanan).ThenInclude(x => x.VarianMenu);
                 if (includes.Contains(nameof(MenuPromoPesanan))) model = model.Include(x => x.MenuPromoPesanan);
+                if (includes.Contains(nameof(Menu))) model = model.Include(x => x.MenuPromoPesanan).ThenInclude(x => x.Menu);
             }
 
             Pesanan pesanan = (await model.FirstOrDefaultAsync(x => x.Id == id))!;
@@ -136,17 +140,20 @@ public class PesananRepository(AppDbContext appDbContext) : IPesananRepository
             modelPesanan.Status = pesanan.Status;
             appDbContext.DetailPesanan.RemoveRange(await appDbContext.DetailPesanan.Where(x => x.IdPesanan == pesanan.Id).ToListAsync());
 
-            //var pesananDetail = Nullifies(pesanan.DetailPesanan!);
+            var pesananDetail = Nullifies(pesanan.DetailPesanan!);
 
-            await appDbContext.DetailPesanan.AddRangeAsync(pesanan.DetailPesanan);
+            await appDbContext.DetailPesanan.AddRangeAsync(pesananDetail);
 
-            await appDbContext.Aktivitas.AddAsync(new()
+            if (!string.IsNullOrEmpty(idEditor))
             {
-                Email = idEditor,
-                Jenis = JenisAktivitas.Edit,
-                Entitas = Entitas.Pesanan,
-                IdEntitas = modelPesanan.Id
-            });
+                await appDbContext.Aktivitas.AddAsync(new()
+                {
+                    Email = idEditor,
+                    Jenis = JenisAktivitas.Edit,
+                    Entitas = Entitas.Pesanan,
+                    IdEntitas = modelPesanan.Id
+                });
+            }
 
             int rowsAffected = await appDbContext.SaveChangesAsync();
 

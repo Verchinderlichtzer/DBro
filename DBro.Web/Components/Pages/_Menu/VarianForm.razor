@@ -9,7 +9,7 @@
                     <MudCard Elevation="0" Class="border-solid border mud-border min-h-150">
                         <MudCardHeader>
                             <CardHeaderContent>
-                                <MudStack Row="true">
+                                <MudStack Row>
                                     <MudText Typo="Typo.h6">Varian # @(_menu.VarianMenu.IndexOf(varian) + 1)</MudText>
                                     <MudSpacer />
                                     <MudIconButton Variant="Variant.Filled" Size="Size.Small" Icon="@Icons.Material.Filled.DeleteForever" Color="Color.Error" Disabled="!varian.Removable" OnClick="e => RemoveVarian(varian)" tabindex="-1" />

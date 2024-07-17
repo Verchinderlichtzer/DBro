@@ -14,7 +14,7 @@
                 </MudLink>
                 <MudButton Size="Size.Small" Href="/home" Color="Color.Inherit" Variant="Variant.Text" Class="@(relativePath.Search("home") ? "mud-chip-text bold px-6" : "px-6")">Home</MudButton>
                 <MudButton Size="Size.Small" Href="/keranjang" Color="Color.Inherit" Variant="Variant.Text" Class="@(relativePath == "keranjang" ? "mud-chip-text bold px-6" : "px-6")">Keranjang</MudButton>
-                <MudButton Size="Size.Small" Href="/daftar-keranjang" Color="Color.Inherit" Variant="Variant.Text" Class="@(relativePath.Search("daftar-keranjang") ? "mud-chip-text bold px-6" : "px-6")">Riwayat Pemesanan</MudButton>
+                <MudButton Size="Size.Small" Href="/daftar-keranjang" Color="Color.Inherit" Variant="Variant.Text" Class="@(relativePath.Search("daftar-keranjang") || relativePath.Search("detail-keranjang") ? "mud-chip-text bold px-6" : "px-6")">Riwayat Pemesanan</MudButton>
                 <MudSpacer />
                 <MudMenu Dense ActivationEvent="MouseEvent.MouseOver" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter">
                     <ActivatorContent>

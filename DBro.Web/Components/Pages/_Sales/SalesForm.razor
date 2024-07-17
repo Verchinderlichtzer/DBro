@@ -10,7 +10,7 @@
                         <MudCard Elevation="0" Class="border-solid border mud-border min-h-150">
                             <MudCardHeader>
                                 <CardHeaderContent>
-                                    <MudStack Row="true">
+                                    <MudStack Row>
                                         <MudText Typo="Typo.h6">Diskon # @(_sales.DiskonDTO.IndexOf(diskon) + 1)</MudText>
                                         <MudSpacer />
                                         <MudIconButton Variant="Variant.Filled" Size="Size.Small" Icon="@Icons.Material.Filled.DeleteForever" Color="Color.Error" OnClick="e => _sales.DiskonDTO.Remove(diskon)" tabindex="-1" />
@@ -41,7 +41,7 @@
                         <MudCard Elevation="0" Class="border-solid border mud-border min-h-150">
                             <MudCardHeader>
                                 <CardHeaderContent>
-                                    <MudStack Row="true">
+                                    <MudStack Row>
                                         <MudText Typo="Typo.h6">Promo # @(_sales.PromoDTO.IndexOf(promo) + 1)</MudText>
                                         <MudSpacer />
                                         <MudIconButton Variant="Variant.Filled" Size="Size.Small" Icon="@Icons.Material.Filled.DeleteForever" Color="Color.Error" OnClick="e => _sales.PromoDTO.Remove(promo)" tabindex="-1" />
