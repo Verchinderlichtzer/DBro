@@ -1,0 +1,81 @@
+﻿@page "/detail-keranjang/{idPesanan}"
+@layout CustomerLayout
+@inherits KeranjangDetailBase
+
+<PageTitle>Keranjang</PageTitle>
+
+@if (!_loaded)
+{
+    <MudProgressCircular Indeterminate />
+}
+else
+{
+    <MudText Typo="Typo.h4" Class="mb-3">Detail Keranjang @IdPesanan</MudText>
+
+    <MudStack>
+        <MudPaper>
+            <MudStack Row>
+                <div class="w-300">
+                    <MudText Typo="Typo.subtitle1">Tanggal</MudText>
+                </div>
+                <div>
+                    <MudText Typo="Typo.subtitle1">: @_pesanan.Tanggal!.Value.ToString("dd/MM/yyyy")</MudText>
+                </div>
+            </MudStack>
+            <MudStack Row>
+                <div class="w-300">
+                    <MudText Typo="Typo.subtitle1">Subtotal</MudText>
+                </div>
+                <div>
+                    <MudText Typo="Typo.subtitle1">: Rp @_pesanan.Subtotal.ToString("N0")</MudText>
+                </div>
+            </MudStack>
+            <MudStack Row>
+                <div class="w-300">
+                    <MudText Typo="Typo.subtitle1">Potongan</MudText>
+                </div>
+                <div>
+                    <MudText Typo="Typo.subtitle1">: Rp @_pesanan.Potongan.ToString("N0")</MudText>
+                </div>
+            </MudStack>
+            <MudStack Row>
+                <div class="w-300">
+                    <MudText Typo="Typo.subtitle1">Dibayar</MudText>
+                </div>
+                <div>
+                    <MudText Typo="Typo.subtitle1">: Rp @_pesanan.Bayar.ToString("N0")</MudText>
+                </div>
+            </MudStack>
+            <MudStack Row>
+                <div class="w-300">
+                    <MudText Typo="Typo.subtitle1">Status</MudText>
+                </div>
+                <div>
+                    <MudText Typo="Typo.subtitle1">: @_pesanan.Status.GetDescription()</MudText>
+                </div>
+            </MudStack>
+        </MudPaper>
+        @foreach (DetailPesanan detail in _pesanan.DetailPesanan)
+        {
+            <MudPaper>
+                <MudStack Row>
+                    <div class="d-flex flex-column align-center w-125">
+                        <MudImage Src="@(detail.Menu.Gambar != null ? string.Format($"data:image/gif;base64,{Convert.ToBase64String(detail.Menu.Gambar!)}") : "/images/piring_kosong.png")" Fluid Alt="Gambar Menu" ObjectFit="ObjectFit.Cover" Class="rounded-lg" />
+                    </div>
+                    <MudStack Class="flex-1">
+                        <MudText Typo="Typo.subtitle1">@detail.Menu.Nama</MudText>
+                        <MudText Typo="Typo.caption" Style="color: grey;">@detail.Menu.Kategori.GetDescription()</MudText>
+                        <MudStack Row>
+                            <MudStack>
+                                <MudText Typo="Typo.subtitle1">Jumlah : @detail.Jumlah</MudText>
+                                <MudText Typo="Typo.subtitle1">Harga : Rp @detail.Harga.ToString("N0")</MudText>
+                            </MudStack>
+                            <MudSpacer />
+                            <MudText Typo="Typo.subtitle1">@((detail.Jumlah * detail.Harga).ToString("N0"))</MudText>
+                        </MudStack>
+                    </MudStack>
+                </MudStack>
+            </MudPaper>
+        }
+    </MudStack>
+}

@@ -1,5 +1,4 @@
 ﻿using DBro.Shared.Models;
-using static Microsoft.CodeAnalysis.CSharp.SyntaxTokenParser;
 
 namespace DBro.API.Repositories;
 
@@ -20,11 +19,11 @@ public interface IPesananRepository
 
     Task<(Pesanan, bool?)> FindAsync(string id, List<string> includes = null!);
 
-    Task<(Pesanan, string)> AddAsync(Pesanan pesanan);
+    Task<(Pesanan, string)> AddAsync(string idEditor, Pesanan pesanan);
 
-    Task<(bool?, string)> UpdateAsync(Pesanan pesanan);
+    Task<(bool?, string)> UpdateAsync(string idEditor, Pesanan pesanan);
 
-    Task<byte> DeleteAsync(string id);
+    Task<byte> DeleteAsync(string idEditor, string id);
 
     Task<(DetailPesanan, bool?)> FindDetailAsync(string idPesanan, string idMenu);
 
@@ -35,6 +34,10 @@ public interface IPesananRepository
     Task<(Pesanan, bool?)> CekKeranjangAsync(string email);
 
     Task<(DetailPesanan, string)> TambahKeKeranjangAsync(DetailPesanan detailPesanan);
+
+    Task<(bool?, string)> UpdateDetailAsync(DetailPesanan detailPesanan);
+
+    Task<bool?> DeleteDetailAsync(string idPesanan, string idMenu);
 
     #endregion Keranjang
 }
@@ -89,7 +92,7 @@ public class PesananRepository(AppDbContext appDbContext) : IPesananRepository
         }
     }
 
-    public async Task<(Pesanan, string)> AddAsync(Pesanan pesanan)
+    public async Task<(Pesanan, string)> AddAsync(string idEditor, Pesanan pesanan)
     {
         try
         {
@@ -98,6 +101,13 @@ public class PesananRepository(AppDbContext appDbContext) : IPesananRepository
             pesanan.DetailPesanan.ForEach(x => { x.Menu = null!; x.IdPesanan = pesanan.Id; });
             pesanan.MenuPromoPesanan.ForEach(x => { x.Menu = null!; x.IdPesanan = pesanan.Id; });
             var model = await appDbContext.Pesanan.AddAsync(pesanan);
+            await appDbContext.Aktivitas.AddAsync(new()
+            {
+                Email = idEditor,
+                Jenis = JenisAktivitas.Tambah,
+                Entitas = Entitas.Pesanan,
+                IdEntitas = model.Entity.Id
+            });
             await appDbContext.SaveChangesAsync();
             return (model.Entity, null!);
         }
@@ -113,7 +123,7 @@ public class PesananRepository(AppDbContext appDbContext) : IPesananRepository
         }
     }
 
-    public async Task<(bool?, string)> UpdateAsync(Pesanan pesanan)
+    public async Task<(bool?, string)> UpdateAsync(string idEditor, Pesanan pesanan)
     {
         try
         {
@@ -124,12 +134,19 @@ public class PesananRepository(AppDbContext appDbContext) : IPesananRepository
             modelPesanan.Subtotal = pesanan.Subtotal;
             modelPesanan.Bayar = pesanan.Bayar;
             modelPesanan.Status = pesanan.Status;
-
             appDbContext.DetailPesanan.RemoveRange(await appDbContext.DetailPesanan.Where(x => x.IdPesanan == pesanan.Id).ToListAsync());
 
             //var pesananDetail = Nullifies(pesanan.DetailPesanan!);
 
             await appDbContext.DetailPesanan.AddRangeAsync(pesanan.DetailPesanan);
+
+            await appDbContext.Aktivitas.AddAsync(new()
+            {
+                Email = idEditor,
+                Jenis = JenisAktivitas.Edit,
+                Entitas = Entitas.Pesanan,
+                IdEntitas = modelPesanan.Id
+            });
 
             int rowsAffected = await appDbContext.SaveChangesAsync();
 
@@ -145,7 +162,7 @@ public class PesananRepository(AppDbContext appDbContext) : IPesananRepository
         }
     }
 
-    public async Task<byte> DeleteAsync(string id)
+    public async Task<byte> DeleteAsync(string idEditor, string id)
     {
         try
         {
@@ -158,6 +175,13 @@ public class PesananRepository(AppDbContext appDbContext) : IPesananRepository
                 //bool removable = await appDbContext.Pesanan.Include(x => x.DetailPesanan).AnyAsync(x => x.Id == id && x.DetailPesanan.Count == 0);
                 //if (!removable) return 2;
                 appDbContext.Pesanan.Remove(model);
+                await appDbContext.Aktivitas.AddAsync(new()
+                {
+                    Email = idEditor,
+                    Jenis = JenisAktivitas.Hapus,
+                    Entitas = Entitas.Pesanan,
+                    IdEntitas = model.Id
+                });
                 await appDbContext.SaveChangesAsync();
                 return 0;
             }
@@ -191,7 +215,9 @@ public class PesananRepository(AppDbContext appDbContext) : IPesananRepository
     {
         try
         {
-            Pesanan pesanan = (await appDbContext.Pesanan.Include(x => x.DetailPesanan).ThenInclude(x => x.Menu).OrderBy(x => x.Id).LastOrDefaultAsync(x => x.Email == email && x.Status == StatusPesanan.BelumCheckout))!;
+            Pesanan pesanan = (await appDbContext.Pesanan
+                .Include(x => x.DetailPesanan).ThenInclude(x => x.Menu)
+                .OrderBy(x => x.Id).LastOrDefaultAsync(x => x.Email == email && x.Status == StatusPesanan.BelumCheckout))!;
             if (pesanan == null)
             {
                 pesanan = new()
@@ -227,6 +253,42 @@ public class PesananRepository(AppDbContext appDbContext) : IPesananRepository
             //if (message.Contains("IX_User_Telepon"))
             //    msg.Add("No Telepon");
             return (null!, msg.Count > 0 ? $"{msg.CombineWords()} sudah digunakan".CapitalizeSentence() : "Ada kesalahan saat menyimpan data");
+        }
+    }
+
+    public async Task<(bool?, string)> UpdateDetailAsync(DetailPesanan detail)
+    {
+        try
+        {
+            DetailPesanan modelDetail = (await appDbContext.DetailPesanan.FirstOrDefaultAsync(x => x.IdPesanan == detail.IdPesanan && x.IdMenu == detail.IdMenu))!;
+
+            modelDetail.Jumlah = detail.Jumlah;
+
+            int rowsAffected = await appDbContext.SaveChangesAsync();
+
+            return (rowsAffected > 0, rowsAffected > 0 ? null! : "Pesanan tidak ditemukan");
+        }
+        catch (Exception)
+        {
+            List<string> msg = [];
+            //string message = ex.InnerException!.Message;
+            //if (message.Contains("IX_User_Telepon"))
+            //    msg.Add("No Telepon");
+            return (null!, msg.Count > 0 ? $"{msg.CombineWords()} sudah digunakan".CapitalizeSentence() : "Ada kesalahan saat menyimpan data");
+        }
+    }
+
+    public async Task<bool?> DeleteDetailAsync(string idPesanan, string idMenu)
+    {
+        try
+        {
+            DetailPesanan model = (await appDbContext.DetailPesanan.FirstAsync(x => x.IdPesanan == idPesanan && x.IdMenu == idMenu))!;
+            appDbContext.DetailPesanan.Remove(model);
+            return await appDbContext.SaveChangesAsync() > 0;
+        }
+        catch (Exception)
+        {
+            return null;
         }
     }
 

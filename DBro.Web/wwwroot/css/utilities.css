@@ -937,15 +937,23 @@
     transform: translate(-50%, -50%);
 }
 
-.font-bold {
+.bold {
     font-weight: bold !important;
 }
 
-.font-italic {
+.italic {
     font-style: italic !important;
 }
 
-.font-underline {
+.overline {
+    text-decoration: overline;
+}
+
+.line-through {
+    text-decoration: line-through;
+}
+
+.underline {
     text-decoration: underline !important;
 }
 

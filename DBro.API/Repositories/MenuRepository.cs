@@ -156,7 +156,7 @@ public class MenuRepository(AppDbContext appDbContext) : IMenuRepository
                 await appDbContext.Aktivitas.AddAsync(new()
                 {
                     Email = idEditor,
-                    Jenis = JenisAktivitas.Edit,
+                    Jenis = JenisAktivitas.Hapus,
                     Entitas = Entitas.Menu,
                     IdEntitas = model.Id
                 });

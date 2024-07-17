@@ -27,7 +27,7 @@ else
             <MudTextField Immediate @bind-Value="_searchTerms" Placeholder="Cari pesanan..." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0" />
         </ToolBarContent>
         <Columns>
-            <PropertyColumn Property="@(x => x.Email ?? "(Pelanggan Langsung)")" CellClassFunc="@(x => string.IsNullOrEmpty(x.Email) ? "font-italic opacity-50" : "")" />
+            <PropertyColumn Property="@(x => x.Email ?? "(Pelanggan Langsung)")" CellClassFunc="@(x => string.IsNullOrEmpty(x.Email) ? "italic opacity-50" : "")" />
             <PropertyColumn Property="x => x.Tanggal" Format="dd MMMM yyyy" HeaderClass="w-150" />
             <PropertyColumn Property="x => x.Subtotal" Format="N0" HeaderClass="w-0" />
             <PropertyColumn Property="x => x.Potongan" Format="N0" HeaderClass="w-0" />

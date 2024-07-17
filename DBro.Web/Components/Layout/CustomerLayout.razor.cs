@@ -21,7 +21,7 @@ public partial class CustomerLayout
             Secondary = Colors.Cyan.Darken2,
             Tertiary = Colors.DeepPurple.Darken1,
             Warning = Colors.Orange.Darken1,
-            AppbarBackground = Colors.Teal.Default,
+            AppbarBackground = Colors.DeepOrange.Default,
             AppbarText = Colors.Shades.White
         },
         Typography = new()
@@ -44,5 +44,9 @@ public partial class CustomerLayout
         CurrentUser.JenisKelamin = (cp.FindFirstValue(ClaimTypes.Gender)!).ToEnum<JenisKelamin>();
     }
 
-    public void Refresh() => StateHasChanged();
+    public void Refresh()
+    {
+        relativePath = NavManager.ToBaseRelativePath(NavManager.Uri);
+        StateHasChanged();
+    }
 }

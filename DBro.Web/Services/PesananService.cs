@@ -25,10 +25,14 @@ public interface IPesananService
 
     #region Keranjang
 
-    /// <summary> Include Detail </summary>
+    /// <summary> Ambil pesanan terakhir Include Detail then Menu </summary>
     Task<(Pesanan, string)> CekKeranjangAsync(string email);
 
     Task<(DetailPesanan, string)> TambahKeKeranjangAsync(DetailPesanan detailPesanan);
+
+    Task<(bool, string)> UpdateDetailAsync(DetailPesanan detailPesanan);
+
+    Task<(bool, string)> DeleteDetailAsync(string idPesanan, string idMenu);
 
     #endregion Keranjang
 }
@@ -136,7 +140,6 @@ public class PesananService : IPesananService
 
     public async Task<(DetailPesanan, string)> TambahKeKeranjangAsync(DetailPesanan detailPesanan)
     {
-        _httpClient.DefaultRequestHeaders.Add("Id-Editor", IdEditor);
         var response = await _httpClient.PostAsJsonAsync("api/pesanan/keranjang", JsonSerializer.Serialize(detailPesanan), _options);
         string result = await response.Content.ReadAsStringAsync();
         if (response.IsSuccessStatusCode)
@@ -147,6 +150,27 @@ public class PesananService : IPesananService
         {
             return (null!, result);
         }
+    }
+
+    public async Task<(bool, string)> UpdateDetailAsync(DetailPesanan detailPesanan)
+    {
+        var response = await _httpClient.PutAsJsonAsync("api/pesanan/keranjang", JsonSerializer.Serialize(detailPesanan), _options);
+        string result = await response.Content.ReadAsStringAsync();
+        if (response.IsSuccessStatusCode)
+        {
+            return (true, null!);
+        }
+        else
+        {
+            return (false, result);
+        }
+    }
+
+    public async Task<(bool, string)> DeleteDetailAsync(string idPesanan, string idMenu)
+    {
+        var response = await _httpClient.DeleteAsync($"api/pesanan/keranjang/{idPesanan}/{idMenu}");
+        string result = await response.Content.ReadAsStringAsync();
+        return (response.IsSuccessStatusCode, result);
     }
 
     #endregion Keranjang

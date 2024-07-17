@@ -30,10 +30,10 @@ public class HomeBase : ComponentBase
     //protected Menu _menuTerpilih = new();
     protected int _jumlah = 1;
     //protected bool _menuCountVisible;
-    protected bool _firstClick;
 
     protected override async Task OnInitializedAsync()
     {
+        Layout.Refresh();
         await LoadDataAsync();
         _loaded = true;
     }
@@ -41,9 +41,11 @@ public class HomeBase : ComponentBase
     protected async Task LoadDataAsync()
     {
         var response = await MenuService.GetAsync();
+        var result = await PesananService.CekKeranjangAsync(Layout.CurrentUser.Email);
+        _keranjang = result.Item1;
         if (response.Item1 != null)
         {
-            _allMenu = response.Item1;
+            _allMenu = response.Item1.Where(x => !_keranjang.DetailPesanan.Select(y => y.IdMenu).Contains(x.Id)).ToList();
             _filteredMenu = _allMenu;
             ShowData();
         }
@@ -70,13 +72,8 @@ public class HomeBase : ComponentBase
 
     protected async Task TambahKeKeranjangAsync(Menu menu)
     {
-        if (!_firstClick)
-        {
-            var result = await PesananService.CekKeranjangAsync(Layout.CurrentUser.Email);
-            _keranjang = result.Item1;
-            _firstClick = true;
-        }
         await PesananService.TambahKeKeranjangAsync(new() { IdPesanan = _keranjang.Id, IdMenu = menu.Id, Jumlah = _jumlah, Harga = menu.Harga });
+        await LoadDataAsync();
         Snackbar.Add("Menu ditambah ke keranjang", Severity.Success);
     }
 

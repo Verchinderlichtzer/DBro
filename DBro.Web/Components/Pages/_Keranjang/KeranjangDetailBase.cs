@@ -1,25 +1,22 @@
-﻿using DBro.Shared.Models;
-using MudBlazor;
+﻿using MudBlazor;
 
 namespace DBro.Web.Components.Pages._Keranjang;
 
 [Authorize]
-public class KeranjangListBase : ComponentBase
+public class KeranjangDetailBase : ComponentBase
 {
+    [Parameter] public string IdPesanan { get; set; } = string.Empty;
+
     [CascadingParameter] public CustomerLayout Layout { get; set; } = null!;
 
     [Inject] protected IPesananService PesananService { get; set; } = null!;
 
     [Inject] protected IDialogService DialogService { get; set; } = null!;
 
-    [Inject] protected NavigationManager NavManager { get; set; } = null!;
+    protected Pesanan _pesanan = null!;
 
-    protected List<Pesanan> _pesananList = null!;
-
-    protected bool _tampilPelangganLangsung;
     protected bool _loaded;
-    protected string _searchTerms = string.Empty;
-    protected string _deleteMessage = string.Empty;
+    protected double _jumlah;
 
     protected override async Task OnInitializedAsync()
     {
@@ -30,10 +27,10 @@ public class KeranjangListBase : ComponentBase
 
     protected async Task LoadDataAsync()
     {
-        var response = await PesananService.GetAsync();
+        var response = await PesananService.FindAsync(IdPesanan, [nameof(Menu)]);
         if (response.Item1 != null)
         {
-            _pesananList = response.Item1;
+            _pesanan = response.Item1;
         }
         else
         {
