@@ -41,7 +41,6 @@ public class SalesListBase : ComponentBase
             new("Sales", "/sales")
         ];
         Layout.Refresh();
-        SalesService.IdEditor = Layout.CurrentUser.Email;
 
         await LoadDataAsync();
         _loaded = true;
@@ -97,7 +96,7 @@ public class SalesListBase : ComponentBase
 
     protected async Task OpenFormSalesAsync()
     {
-        var parameters = new DialogParameters { ["DiskonIds"] = _selectedDiskon.Select(x => x.Id).ToList(), ["PromoIds"] = _selectedPromo.Select(x => x.Id).ToList(), ["JumlahDiskon"] = _jumlahDiskon, ["JumlahPromo"] = _jumlahPromo, ["IdEditor"] = SalesService.IdEditor };
+        var parameters = new DialogParameters { ["DiskonIds"] = _selectedDiskon.Select(x => x.Id).ToList(), ["PromoIds"] = _selectedPromo.Select(x => x.Id).ToList(), ["JumlahDiskon"] = _jumlahDiskon, ["JumlahPromo"] = _jumlahPromo };
         var form = await DialogService.Show<SalesForm>(_new ? "Tambah Diskon & Promo" : "Edit Diskon & Promo", parameters).Result;
         if (form!.Canceled)
         {

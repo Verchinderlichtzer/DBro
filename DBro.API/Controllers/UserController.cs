@@ -51,7 +51,7 @@ public class UserController(IUserRepository userRepository) : ControllerBase
         try
         {
             User user = JsonSerializer.Deserialize<User>(jsonString)!;
-            var result = await userRepository.AddAsync(Request.Headers["Id-Editor"]!, user);
+            var result = await userRepository.AddAsync(user);
             user = result.Item1;
             return user != null ? CreatedAtAction(nameof(FindUser), new { email = user.Email }, JsonSerializer.Serialize(user, _options)) : BadRequest(result.Item2);
         }
@@ -67,7 +67,7 @@ public class UserController(IUserRepository userRepository) : ControllerBase
         try
         {
             User user = JsonSerializer.Deserialize<User>(jsonString)!;
-            var result = await userRepository.UpdateAsync(Request.Headers["Id-Editor"]!, user);
+            var result = await userRepository.UpdateAsync(user);
             return result.Item1 == true ? NoContent() : result.Item1 == false ? NotFound(result.Item2) : BadRequest(result.Item2);
         }
         catch (Exception)
@@ -81,7 +81,7 @@ public class UserController(IUserRepository userRepository) : ControllerBase
     {
         try
         {
-            var result = await userRepository.DeleteAsync(Request.Headers["Id-Editor"]!, email);
+            var result = await userRepository.DeleteAsync(email);
 
             if (result == 0)
                 return NoContent();

@@ -12,6 +12,5 @@ public class User
     public string? Telepon { get; set; }
     public JenisUser JenisUser { get; set; }
 
-    public List<Aktivitas> Aktivitas { get; set; } = null!;
     public List<Pesanan> Pesanan { get; set; } = null!;
 }

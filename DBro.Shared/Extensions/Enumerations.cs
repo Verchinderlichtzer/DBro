@@ -10,8 +10,7 @@ public enum JenisKelamin : byte
 public enum JenisUser : byte
 {
     Admin,
-    Karyawan,
-    Pelanggan
+    Karyawan
 }
 
 public enum Kategori : byte
@@ -26,40 +25,4 @@ public enum Kategori : byte
     [Description("Tteokbokki")] Tteokbokki,
     [Description("D'Prek")] DPrek,
     [Description("Minuman")] Minuman
-}
-
-public enum JenisVarian : byte
-{
-    [Description("-")] None,
-    [Description("Tingkat Kepedasan")] TingkatKepedasan,
-    [Description("Rasa")] Rasa
-}
-
-public enum StatusPesanan : byte
-{
-    [Description("-")] None,
-    [Description("Belum Checkout")] BelumCheckout,
-    [Description("Menunggu Persetujuan")] MenungguPersetujuan,
-    [Description("Diterima")] Diterima,
-    [Description("Ditolak")] Ditolak
-}
-
-public enum JenisAktivitas : byte
-{
-    Tambah,
-    Edit,
-    Hapus
-}
-
-/// <summary>
-/// Aktivitas
-/// </summary>
-public enum Entitas : byte
-{
-    User,
-    Menu,
-    Diskon,
-    Promo,
-    [Description("Diskon & Promo")] Sales,
-    Pesanan
 }

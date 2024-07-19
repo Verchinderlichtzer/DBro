@@ -33,7 +33,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 #region AddRepositories
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IAktivitasRepository, AktivitasRepository>();
 builder.Services.AddScoped<IMenuRepository, MenuRepository>();
 builder.Services.AddScoped<IPesananRepository, PesananRepository>();
 builder.Services.AddScoped<ISalesRepository, SalesRepository>();
@@ -49,6 +48,9 @@ using (var scope = app.Services.CreateScope())
 }
 
 // Configure the HTTP request pipeline.
+
+app.UseStaticFiles();
+app.UseRequestLocalization("id-ID");
 
 app.UseHttpsRedirection();
 

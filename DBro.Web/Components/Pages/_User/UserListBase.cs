@@ -30,7 +30,6 @@ public class UserListBase : ComponentBase
             new("User", "/user")
         ];
         Layout.Refresh();
-        UserService.IdEditor = Layout.CurrentUser.Email;
 
         await LoadDataAsync();
         _loaded = true;
@@ -48,7 +47,7 @@ public class UserListBase : ComponentBase
     protected async Task OpenFormAsync(User user = null!)
     {
         bool isNew = user == null;
-        var parameters = new DialogParameters { ["Email"] = user?.Email, ["IdEditor"] = UserService.IdEditor };
+        var parameters = new DialogParameters { ["Email"] = user?.Email };
         var form = await DialogService.Show<UserForm>(isNew ? "Tambah User" : $"Edit \"{user!.Email}\"", parameters).Result;
 
         if (form!.Data is User model)

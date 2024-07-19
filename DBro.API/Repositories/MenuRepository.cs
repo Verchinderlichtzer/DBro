@@ -15,11 +15,11 @@ public interface IMenuRepository
 
     Task<(Menu, bool?)> FindAsync(string id, List<string> includes = null!);
 
-    Task<(Menu, string)> AddAsync(string idEditor, Menu menu);
+    Task<(Menu, string)> AddAsync(Menu menu);
 
-    Task<(bool?, string)> UpdateAsync(string idEditor, Menu menu);
+    Task<(bool?, string)> UpdateAsync(Menu menu);
 
-    Task<byte> DeleteAsync(string idEditor, string id);
+    Task<byte> DeleteAsync(string id);
 
     #endregion Menu
 
@@ -27,7 +27,7 @@ public interface IMenuRepository
 
     //Task<List<VarianMenu>> GetVarianAsync(List<string> includes = null!);
 
-    //Task<bool?> UpdatesVarianAsync(string idEditor, List<VarianMenu> menu);
+    //Task<bool?> UpdatesVarianAsync(List<VarianMenu> menu);
 
     //#endregion Varian Menu
 }
@@ -80,19 +80,13 @@ public class MenuRepository(AppDbContext appDbContext) : IMenuRepository
         }
     }
 
-    public async Task<(Menu, string)> AddAsync(string idEditor, Menu menu)
+    public async Task<(Menu, string)> AddAsync(Menu menu)
     {
         try
         {
             menu.Id = GenerateId(await appDbContext.Menu.Select(x => x.Id).ToListAsync(), 4, "M");
             var model = await appDbContext.Menu.AddAsync(menu);
-            await appDbContext.Aktivitas.AddAsync(new()
-            {
-                Email = idEditor,
-                Jenis = JenisAktivitas.Tambah,
-                Entitas = Entitas.Menu,
-                IdEntitas = model.Entity.Id
-            });
+            
             await appDbContext.SaveChangesAsync();
             return (model.Entity, null!);
         }
@@ -108,7 +102,7 @@ public class MenuRepository(AppDbContext appDbContext) : IMenuRepository
         }
     }
 
-    public async Task<(bool?, string)> UpdateAsync(string idEditor, Menu menu)
+    public async Task<(bool?, string)> UpdateAsync(Menu menu)
     {
         try
         {
@@ -119,13 +113,7 @@ public class MenuRepository(AppDbContext appDbContext) : IMenuRepository
                 model.Kategori = menu.Kategori;
                 model.Harga = menu.Harga;
                 model.Gambar = menu.Gambar;
-                await appDbContext.Aktivitas.AddAsync(new()
-                {
-                    Email = idEditor,
-                    Jenis = JenisAktivitas.Edit,
-                    Entitas = Entitas.Menu,
-                    IdEntitas = model.Id
-                });
+                
                 await appDbContext.SaveChangesAsync();
             }
             return (model != null, model != null ? null! : "Menu tidak ditemukan");
@@ -140,7 +128,7 @@ public class MenuRepository(AppDbContext appDbContext) : IMenuRepository
         }
     }
 
-    public async Task<byte> DeleteAsync(string idEditor, string id)
+    public async Task<byte> DeleteAsync(string id)
     {
         try
         {
@@ -153,13 +141,7 @@ public class MenuRepository(AppDbContext appDbContext) : IMenuRepository
                 bool removable = await appDbContext.Menu.Include(x => x.DetailPesanan).AnyAsync(x => x.Id == id && x.DetailPesanan.Count == 0);
                 if (!removable) return 2;
                 appDbContext.Menu.Remove(model);
-                await appDbContext.Aktivitas.AddAsync(new()
-                {
-                    Email = idEditor,
-                    Jenis = JenisAktivitas.Hapus,
-                    Entitas = Entitas.Menu,
-                    IdEntitas = model.Id
-                });
+                
                 await appDbContext.SaveChangesAsync();
                 return 0;
             }
@@ -172,51 +154,4 @@ public class MenuRepository(AppDbContext appDbContext) : IMenuRepository
     }
 
     #endregion Menu
-
-    //#region Varian Menu
-
-    //public async Task<List<VarianMenu>> GetVarianAsync(List<string> includes = null!)
-    //{
-    //    try
-    //    {
-    //        IQueryable<VarianMenu> models = appDbContext.VarianMenu;
-
-    //        if (includes != null)
-    //        {
-    //            if (includes.Contains(nameof(Menu))) models = models.Include(x => x.Menu);
-    //            if (includes.Contains(nameof(DetailPesanan))) models = models.Include(x => x.DetailPesanan);
-    //        }
-
-    //        return await models.OrderBy(x => x.Nama).ToListAsync();
-    //    }
-    //    catch (Exception)
-    //    {
-    //        return null!;
-    //    }
-    //}
-
-    //public async Task<bool?> UpdatesVarianAsync(string idEditor, List<VarianMenu> menu)
-    //{
-    //    try
-    //    {
-    //        appDbContext.VarianMenu.RemoveRange(await appDbContext.VarianMenu.Where(x => x.IdMenu == menu[0].IdMenu).ToListAsync());
-    //        await appDbContext.VarianMenu.AddRangeAsync(menu);
-    //        await appDbContext.Aktivitas.AddAsync(new()
-    //        {
-    //            Email = idEditor,
-    //            JenisLog = JenisLog.Edit,
-    //            Entitas = Entitas.Menu,
-    //            IdEntitas = menu[0].IdMenu
-    //        });
-    //        int rowsAffected = await appDbContext.SaveChangesAsync();
-
-    //        return rowsAffected > 0;
-    //    }
-    //    catch (Exception)
-    //    {
-    //        return null;
-    //    }
-    //}
-
-    //#endregion Varian Menu
 }

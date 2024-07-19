@@ -8,7 +8,7 @@ public class PesananFormBase : ComponentBase
 {
     [Parameter] public string Id { get; set; } = string.Empty;
 
-    [Parameter] public string IdEditor { get; set; } = null!;
+    [CascadingParameter] public AdminLayout Layout { get; set; } = null!;
 
     [Inject] protected IPesananService PesananService { get; set; } = null!;
 
@@ -24,7 +24,6 @@ public class PesananFormBase : ComponentBase
     protected Pesanan _pesanan = null!;
     protected List<Menu> _menu = [];
     protected Menu? _menuTerpilih;
-    //protected List<VarianMenu> _varianMenu = [];
     protected List<Diskon> _diskon = [];
     protected List<Promo> _promo = [];
 
@@ -35,9 +34,19 @@ public class PesananFormBase : ComponentBase
     protected override async Task OnInitializedAsync()
     {
         _new = string.IsNullOrEmpty(Id);
-        PesananService.IdEditor = IdEditor;
+        Layout.BreadcrumbItems =
+        [
+            new("Pesanan", "/pesanan/"),
+            new("Form", $"/pesanan/form/{Id}")
+        ];
+        Layout.Refresh();
+        await LoadDataAsync();
+        _loaded = true;
+    }
 
-        var response = await PesananService.GetFormAsync(Id);
+    protected async Task LoadDataAsync()
+    {
+        var response = await PesananService.GetFormAsync(Id, [nameof(Menu)]);
 
         if (response.Item1 == null)
         {
@@ -49,11 +58,9 @@ public class PesananFormBase : ComponentBase
         {
             _pesanan = response.Item1.Pesanan ?? new() { DetailPesanan = [], MenuPromoPesanan = [] };
             _menu = response.Item1.Menu;
-            //_varianMenu = response.Item1.VarianMenu;
             _diskon = response.Item1.Diskon;
             _promo = response.Item1.Promo;
         }
-        _loaded = true;
     }
 
     protected async Task<IEnumerable<Menu>> SearchMenuAsync(string value, CancellationToken token)
@@ -61,12 +68,6 @@ public class PesananFormBase : ComponentBase
         value ??= string.Empty;
         return await Task.FromResult(_menu.Where(x => $"{x.Id} {x.Kategori.GetDescription()} {x.Nama}".Search(value)).OrderBy(x => x.Nama));
     }
-
-    //protected async Task<IEnumerable<VarianMenu>> SearchVarianMenuAsync(string value, CancellationToken token)
-    //{
-    //    value ??= string.Empty;
-    //    return await Task.FromResult(_varianMenu.Where(x => x.IdMenu ==  $"{x.Id} {x.JenisMenu.GetDescription()} {x.Nama}".Search(value)).OrderBy(x => x.Nama));
-    //}
 
     protected void PilihMenu(Menu? e)
     {
@@ -106,6 +107,7 @@ public class PesananFormBase : ComponentBase
         await _form!.Validate();
         if (_form!.IsValid)
         {
+            _pesanan.Email = Layout.CurrentUser.Email;
             if (_new)
             {
                 var response = await PesananService.AddAsync(_pesanan);

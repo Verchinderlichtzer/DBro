@@ -22,11 +22,8 @@ else
             <MudStack Row Class="wp-100 mb-3">
                 <MudStack Class="flex-1">
                     <div class="w-125">
-                        <MudField Label="Id">@_pesanan.Id</MudField>
+                        <MudTextField ReadOnly Label="Id" Value="_pesanan.Id" />
                     </div>
-                    @* <div class="w-150">
-                        <MudField Label="Email">@_pesanan.Email</MudField>
-                    </div> *@
                     <MudStack Row>
                         <div class="w-225">
                             <MudDatePicker Label="Tanggal" @bind-Date="_pesanan.Tanggal" PickerVariant="PickerVariant.Dialog" DateFormat="dd MMMM yyyy" tabindex="-1" />
@@ -39,13 +36,13 @@ else
                 <MudStack Row Class="w-350">
                     <MudStack Class="flex-1">
                         <div>
-                            <MudField Label="Subtotal" Adornment="Adornment.Start" AdornmentText="Rp">@_pesanan.Subtotal.ToString("N0")</MudField>
+                            <MudTextField ReadOnly Label="Subtotal" Adornment="Adornment.Start" AdornmentText="Rp" Value="_pesanan.Subtotal" Format="N0" />
                         </div>
                         <div>
-                            <MudField Label="Total Diskon" Adornment="Adornment.Start" AdornmentText="Rp">@_pesanan.Potongan.ToString("N0")</MudField>
+                            <MudTextField ReadOnly Label="Potongan" Adornment="Adornment.Start" AdornmentText="Rp" Value="_pesanan.Potongan" Format="N0" />
                         </div>
                         <div>
-                            <MudField Label="Total" Adornment="Adornment.Start" AdornmentText="Rp">@_pesanan.Total.ToString("N0")</MudField>
+                            <MudTextField ReadOnly Label="Total" Adornment="Adornment.Start" AdornmentText="Rp" Value="_pesanan.Total" Format="N0" />
                         </div>
                     </MudStack>
                     <MudStack Class="flex-1">
@@ -53,7 +50,7 @@ else
                             <MudNumericField Immediate HideSpinButtons T="int" @bind-Value="_pesanan.Bayar" Format="N0" Label="Bayar" Adornment="Adornment.Start" AdornmentText="Rp" />
                         </div>
                         <div>
-                            <MudField Label="@(_pesanan.Sisa < 0 ? "Kurang" : "Kembali")" Adornment="Adornment.Start" AdornmentText="Rp" AdornmentColor="_pesanan.Sisa < 0 ? Color.Error : Color.Default">@Math.Abs(_pesanan.Sisa).ToString("N0")</MudField>
+                            <MudTextField ReadOnly Value="Math.Abs(_pesanan.Sisa)" Format="N0" Label="@(_pesanan.Sisa < 0 ? "Kurang" : "Kembali")" Adornment="Adornment.Start" AdornmentText="Rp" AdornmentColor="_pesanan.Sisa < 0 ? Color.Error : Color.Default" />
                         </div>
                     </MudStack>
                 </MudStack>
@@ -61,7 +58,7 @@ else
 
             <MudStack Row Class="mt-3">
 
-                <MudDataGrid Class="flex-2" Items="_pesanan.DetailPesanan" Elevation="2" Dense Bordered ShowColumnOptions="false">
+                <MudDataGrid Class="flex-2 border-solid border mud-border-dark" Items="_pesanan.DetailPesanan" Elevation="2" Dense Bordered ShowColumnOptions="false">
                     <ToolBarContent>
                         <MudText Typo="Typo.h6">Menu yang dipesan</MudText>
                         <MudSpacer />
@@ -85,23 +82,25 @@ else
                         </TemplateColumn>
                     </Columns>
                 </MudDataGrid>
-
-                <MudTable Class="flex-1" Items="_pesanan.MenuPromoPesanan" Dense Bordered>
-                    <ToolBarContent>
-                        <MudText Typo="Typo.h6">Promo didapat</MudText>
-                    </ToolBarContent>
-                    <HeaderContent>
-                        <MudTh>Menu</MudTh>
-                        <MudTh Class="w-0">Jumlah</MudTh>
-                    </HeaderContent>
-                    <RowTemplate>
-                        <MudTd DataLabel="Menu">@context.Menu.Nama</MudTd>
-                        <MudTd DataLabel="Jumlah">@context.Jumlah</MudTd>
-                    </RowTemplate>
-                </MudTable>
-
+                <div class="flex-1">
+                    @if (_pesanan.MenuPromoPesanan.Any())
+                    {
+                        <MudTable Class="border-solid border mud-border-dark" Items="_pesanan.MenuPromoPesanan" Dense Bordered>
+                            <ToolBarContent>
+                                <MudText Typo="Typo.h6">Promo didapat</MudText>
+                            </ToolBarContent>
+                            <HeaderContent>
+                                <MudTh>Menu</MudTh>
+                                <MudTh Class="w-0">Jumlah</MudTh>
+                            </HeaderContent>
+                            <RowTemplate>
+                                <MudTd DataLabel="Menu">@context.Menu.Nama</MudTd>
+                                <MudTd DataLabel="Jumlah">@context.Jumlah</MudTd>
+                            </RowTemplate>
+                        </MudTable>
+                    }
+                </div>
             </MudStack>
-
         </MudForm>
         
         <MudStack Row Class="mt-4">
@@ -119,23 +118,9 @@ else
             <MudSpacer />
             <MudStack Row Class="w-425">
                 <MudButton Variant="Variant.Filled" Size="Size.Small" Color="_new ? Color.Success : Color.Warning" OnClick="SaveAsync" Class="flex-1">Simpan</MudButton>
-                <MudButton Size="Size.Small" OnClick="@(e => NavManager.NavigateTo("/pesanan"))" Class="flex-1">Kembali</MudButton>
+                <MudButton Size="Size.Small" OnClick="@(e => NavManager.NavigateTo("/pesanan"))" Class="flex-1" Color="Color.Dark" Variant="Variant.Filled">Kembali</MudButton>
             </MudStack>
         </MudStack>
 
     </MudContainer>
 }
-
-@* <MudMessageBox @ref="_cancelConfirmation" Title="Konfirmasi Pembatalan Pesanan">
-    <MessageContent>
-        <MudPaper Elevation="0" MinWidth="300px" Class="mx-5">
-            @($"Batalkan pesanan nomor {_pesanan.Id}")
-        </MudPaper>
-    </MessageContent>
-    <NoButton>
-        <MudButton Variant="Variant.Filled" Class="ma-1" Color="Color.Error" Size="Size.Small">Ya</MudButton>
-    </NoButton>
-    <YesButton>
-        <MudButton Variant="Variant.Filled" Class="ma-1" Size="Size.Small">Tidak</MudButton>
-    </YesButton>
-</MudMessageBox> *@

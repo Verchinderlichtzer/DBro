@@ -14,8 +14,6 @@ public class SalesFormBase : ComponentBase
 
     [Parameter] public int JumlahPromo { get; set; }
 
-    [Parameter] public string IdEditor { get; set; } = null!;
-
     [CascadingParameter] protected MudDialogInstance MudDialog { get; set; } = null!;
 
     [Inject] protected ISalesService SalesService { get; set; } = null!;
@@ -33,7 +31,6 @@ public class SalesFormBase : ComponentBase
     protected override async Task OnInitializedAsync()
     {
         _new = DiskonIds.Count == 0 && PromoIds.Count == 0;
-        SalesService.IdEditor = IdEditor;
 
         var response = await SalesService.GetFormAsync(DiskonIds, PromoIds, [nameof(Menu)]);
         _menu = response.Item1.Menu;
@@ -62,18 +59,6 @@ public class SalesFormBase : ComponentBase
         value ??= string.Empty;
         return await Task.FromResult(_menu.Where(x => $"{x.Id} {x.Kategori} {x.Nama} {x.Harga}".Search(value)).OrderBy(x => x.Nama));
     }
-
-    //protected async Task<IEnumerable<Diskon>> SearchDiskonAsync(string value)
-    //{
-    //    value ??= string.Empty;
-    //    return await Task.FromResult(_sales.DiskonDTO.Where(x => x.Diskon.IdMenu.Search(value) || x.Diskon.Menu.Nama.Search(value) || x.Diskon.Nilai.ToString("P0").Search(value) || x.Diskon.TanggalMulai!.Value.ToString("dd/MM/yyyy MMMM").Search(value) || x.Diskon.TanggalAkhir!.Value.ToString("dd/MM/yyyy MMMM").Search(value)).OrderBy(x => x.Diskon.Menu.Nama));
-    //}
-
-    //protected async Task<IEnumerable<Promo>> SearchPromoAsync(string value)
-    //{
-    //    value ??= string.Empty;
-    //    return await Task.FromResult(_sales.PromoDTO.Where(x => x.IdMenuDibeli.Search(value) || x.IdMenuDidapat.Search(value) || x.MenuDibeli.Nama.Search(value) || x.MenuDidapat.Nama.Search(value) || x.JumlahDibeli.ToString().Search(value) || x.JumlahDidapat.ToString().Search(value) || x.TanggalMulai!.Value.ToString("dd/MM/yyyy MMMM").Search(value) || x.TanggalAkhir!.Value.ToString("dd/MM/yyyy MMMM").Search(value)).OrderBy(x => x.MenuDibeli.Nama));
-    //}
 
     protected void AddDiskon()
     {

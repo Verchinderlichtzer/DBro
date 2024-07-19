@@ -95,39 +95,15 @@ namespace DBro.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Aktivitas",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Tanggal = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Jenis = table.Column<byte>(type: "tinyint", nullable: false),
-                    Entitas = table.Column<byte>(type: "tinyint", nullable: false),
-                    IdEntitas = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Aktivitas", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Aktivitas_User_Email",
-                        column: x => x.Email,
-                        principalTable: "User",
-                        principalColumn: "Email",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Pesanan",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Tanggal = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Subtotal = table.Column<int>(type: "int", nullable: false),
                     Potongan = table.Column<int>(type: "int", nullable: false),
-                    Bayar = table.Column<int>(type: "int", nullable: false),
-                    Status = table.Column<byte>(type: "tinyint", nullable: false)
+                    Bayar = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -136,7 +112,8 @@ namespace DBro.API.Migrations
                         name: "FK_Pesanan_User_Email",
                         column: x => x.Email,
                         principalTable: "User",
-                        principalColumn: "Email");
+                        principalColumn: "Email",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -232,12 +209,7 @@ namespace DBro.API.Migrations
             migrationBuilder.InsertData(
                 table: "User",
                 columns: new[] { "Email", "Alamat", "JenisKelamin", "JenisUser", "Nama", "Password", "TanggalLahir", "Telepon" },
-                values: new object[] { "sujudihanif36@gmail.com", "Perumahan Bumi Anggrek Blok K No 80", (byte)1, (byte)0, "Sujudi Hanif", "IvCkErOjG9A8DPW7X23rJg==", new DateTime(2002, 6, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), "085739194810" });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Aktivitas_Email",
-                table: "Aktivitas",
-                column: "Email");
+                values: new object[] { "admin@gmail.com", "Bekasi", (byte)1, (byte)0, "Admin", "IvCkErOjG9A8DPW7X23rJg==", new DateTime(1974, 3, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), "0853 6466 2362" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_DetailPesanan_IdMenu",
@@ -285,9 +257,6 @@ namespace DBro.API.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Aktivitas");
-
             migrationBuilder.DropTable(
                 name: "DetailPesanan");
 

@@ -15,18 +15,4 @@
         JenisUser jenis = (cp.FindFirstValue(ClaimTypes.Role)!).ToEnum<JenisUser>();
         NavManager.NavigateTo(jenis == JenisUser.Admin || jenis == JenisUser.Karyawan ? "/dashboard" : "/home");
     }
-
-    // protected override async Task OnAfterRenderAsync(bool firstRender)
-    // {
-    //     ClaimsPrincipal cp = (await AuthenticationState).User;
-    //     if (!cp.Identity!.IsAuthenticated)
-    //     {
-    //         NavManager.NavigateTo("/login");
-    //     }
-    //     else
-    //     {
-    //         JenisUser jenis = (cp.FindFirstValue(ClaimTypes.Role)!).ToEnum<JenisUser>();
-    //         NavManager.NavigateTo(jenis == JenisUser.Pelanggan ? "/home" : "/dashboard");
-    //     }
-    // }
 }

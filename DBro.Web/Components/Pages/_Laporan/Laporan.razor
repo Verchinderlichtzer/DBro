@@ -1,5 +1,56 @@
-﻿<h3>Laporan</h3>
+﻿@page "/laporan"
+@layout AdminLayout
+@inherits LaporanBase
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
-@code {
+<PageTitle>Dashboard</PageTitle>
 
-}
+<MudContainer Class="d-flex flex-row gap-3">
+    <MudStack Class="flex-3">
+        <MudStack Class="border-solid border mud-border-dark pa-3">
+            <MudText Typo="Typo.h6" Class="text-center mt-n2">Master</MudText>
+            <MudRadioGroup InputClass="d-flex flex-column" @bind-Value="_jenisLaporan">
+                <MudRadio Value="@(JenisLaporan.MasterMenu)">Menu</MudRadio>
+                <MudRadio Value="@(JenisLaporan.MasterDiskon)">Diskon</MudRadio>
+                <MudRadio Value="@(JenisLaporan.MasterPromo)">Promo</MudRadio>
+            </MudRadioGroup>
+            <MudButton Variant="Variant.Filled" Size="Size.Small" Color="Color.Primary" OnClick="ShowLaporanMasterAsync" Class="wp-100">Tampil Laporan</MudButton>
+        </MudStack>
+        <MudStack Class="border-solid border mud-border-dark pa-3">
+            <MudText Typo="Typo.h6" Class="text-center mt-n2">Transaksi Pesanan</MudText>
+            <MudDateRangePicker Label="Periode" PickerVariant="PickerVariant.Dialog" @bind-DateRange="_rentangWaktu" DateFormat="dd MMMM yyyy" tabindex="-1" />
+            <MudButton Variant="Variant.Filled" Size="Size.Small" Color="Color.Primary" OnClick="ShowLaporanTransaksiPesananAsync" Class="wp-100">Tampil Laporan</MudButton>
+        </MudStack>
+        <MudStack Class="border-solid border mud-border-dark pa-3">
+            <MudText Typo="Typo.h6" Class="text-center mt-n2">Grafik Tahunan</MudText>
+            <MudSelect T="int" Dense @bind-Value="_tahunan" Label="Tahun" AnchorOrigin="Origin.BottomCenter">
+                @for (int i = DateTime.Now.Year; i >= 2020; i--)
+                {
+                    int year = i;
+                    <MudSelectItem Value="year">@year</MudSelectItem>
+                }
+            </MudSelect>
+            <MudButton Variant="Variant.Filled" Size="Size.Small" Color="Color.Primary" OnClick="ShowLaporanGrafikAsync" Class="wp-100">Tampil Laporan</MudButton>
+        </MudStack>
+    </MudStack>
+    <MudStack Class="border-solid border mud-border-dark flex-5 pa-3">
+        <MudText Typo="Typo.h6" Class="text-center mt-n2">Daftar Pesanan</MudText>
+        <div style="height: 30px;">
+            <MudTextField Immediate @bind-Value="_searchTerms" Placeholder="Cari pesanan..." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0" />
+        </div>
+        <div class="flex-1">
+            <MudTable T="Pesanan" Items="_pesanan" Hover="true" Breakpoint="Breakpoint.Sm" RowClass="cursor-pointer" Class="border-solid border mud-border-dark overflow-y-auto h-475" Dense Bordered Filter="FilterSearch" OnRowClick="e => ShowLaporanDetailPesananAsync(e.Item!.Id)">
+                <HeaderContent>
+                    <MudTh Class="w-150">Id</MudTh>
+                    <MudTh Class="w-175">Tanggal</MudTh>
+                    <MudTh>Email</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd>@context.Id</MudTd>
+                    <MudTd>@context.Tanggal!.Value.ToString("dd MMMM yyyy")</MudTd>
+                    <MudTd>@context.Email</MudTd>
+                </RowTemplate>
+            </MudTable>
+        </div>
+    </MudStack>
+</MudContainer>

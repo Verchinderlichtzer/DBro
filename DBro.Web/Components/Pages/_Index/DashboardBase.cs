@@ -40,10 +40,5 @@ public class DashboardBase : ComponentBase
         Layout.Refresh();
 
         _loaded = true;
-
-        //     var user = await ((AuthStateProvider)AuthenticationStateProvider).GetAuthenticationStateAsync();
-        //     var roleClaim = user.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role);
-
-        //     NavManager.NavigateTo(roleClaim != null && !string.IsNullOrEmpty(roleClaim.Value) ? "/dashboard-pengawas" : "/dashboard-peserta");
     }
 }

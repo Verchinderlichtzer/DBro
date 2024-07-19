@@ -6,13 +6,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
     public DbSet<User> User { get; set; }
     public DbSet<Menu> Menu { get; set; }
-
-    //public DbSet<VarianMenu> VarianMenu { get; set; }
-
     public DbSet<MenuPromoPesanan> MenuPromoPesanan { get; set; }
     public DbSet<Pesanan> Pesanan { get; set; }
     public DbSet<DetailPesanan> DetailPesanan { get; set; }
-    public DbSet<Aktivitas> Aktivitas { get; set; }
     public DbSet<Diskon> Diskon { get; set; }
     public DbSet<Promo> Promo { get; set; }
 
@@ -31,18 +27,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             e.HasKey(x => x.Email);
             e.HasIndex(x => x.Telepon).IsUnique();
         });
-
-        modelBuilder.Entity<Aktivitas>(e =>
-        {
-            e.HasOne(x => x.User).WithMany(x => x.Aktivitas).HasForeignKey(x => x.Email);
-        });
-
-        //modelBuilder.Entity<VarianMenu>(e =>
-        //{
-        //    e.HasOne(x => x.Menu).WithMany(x => x.VarianMenu).HasForeignKey(x => x.IdMenu);
-        //    e.HasIndex(x => x.Nama).IsUnique();
-        //    e.Ignore(x => x.Removable);
-        //});
 
         modelBuilder.Entity<Pesanan>(e =>
         {
@@ -84,13 +68,13 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.Entity<User>().HasData(
         new User
         {
-            Email = "sujudihanif36@gmail.com",
+            Email = "admin@gmail.com",
             Password = "IvCkErOjG9A8DPW7X23rJg==",
-            Nama = "Sujudi Hanif",
+            Nama = "Admin",
             JenisKelamin = JenisKelamin.Pria,
-            TanggalLahir = new(2002, 6, 11),
-            Alamat = "Perumahan Bumi Anggrek Blok K No 80",
-            Telepon = "085739194810"
+            TanggalLahir = new(1974, 3, 28),
+            Alamat = "Bekasi",
+            Telepon = "0853 6466 2362"
         });
 
         modelBuilder.Entity<Menu>().HasData(

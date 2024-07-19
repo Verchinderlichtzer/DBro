@@ -30,7 +30,7 @@ else
     </MudStack>
     <MudStack Row Class="mt-3">
         <div class="flex-1">
-            <MudDataGrid Items="_sales.Diskon" MultiSelection @bind-SelectedItems="_selectedDiskon" @bind-SelectedItems:after="() => _new = _selectedDiskon.Count == 0 && _selectedPromo.Count == 0" Elevation="2" Dense Bordered QuickFilter="FilterSearchDiskon" ShowColumnOptions="false" Height="calc(100vh - 200px)">
+            <MudDataGrid Class="border-solid border mud-border-dark" Items="_sales.Diskon" MultiSelection @bind-SelectedItems="_selectedDiskon" @bind-SelectedItems:after="() => _new = _selectedDiskon.Count == 0 && _selectedPromo.Count == 0" Elevation="2" Dense Bordered QuickFilter="FilterSearchDiskon" ShowColumnOptions="false" Height="calc(100vh - 200px)">
                 <ToolBarContent>
                     <MudStack Row Spacing="2">
                         <MudText Typo="Typo.h5">Daftar Diskon</MudText>
@@ -48,7 +48,7 @@ else
             </MudDataGrid>
         </div>
         <div class="flex-1">
-            <MudDataGrid Items="_sales.Promo" MultiSelection @bind-SelectedItems="_selectedPromo" @bind-SelectedItems:after="() => _new = _selectedDiskon.Count == 0 && _selectedPromo.Count == 0" Elevation="2" Dense Bordered QuickFilter="FilterSearchPromo" ShowColumnOptions="false" Height="calc(100vh - 200px)">
+            <MudDataGrid Class="border-solid border mud-border-dark" Items="_sales.Promo" MultiSelection @bind-SelectedItems="_selectedPromo" @bind-SelectedItems:after="() => _new = _selectedDiskon.Count == 0 && _selectedPromo.Count == 0" Elevation="2" Dense Bordered QuickFilter="FilterSearchPromo" ShowColumnOptions="false" Height="calc(100vh - 200px)">
                 <ToolBarContent>
                     <MudStack Row Spacing="2">
                         <MudText Typo="Typo.h5">Daftar Promo</MudText>

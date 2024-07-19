@@ -9,7 +9,7 @@
   <ItemGroup>
     <PackageReference Include="Blazored.FluentValidation" Version="2.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.7" />
-    <PackageReference Include="MudBlazor" Version="7.2.0" />
+    <PackageReference Include="MudBlazor" Version="7.3.0" />
   </ItemGroup>
 
   <ItemGroup>

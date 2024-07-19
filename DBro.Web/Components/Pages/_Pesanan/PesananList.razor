@@ -10,7 +10,7 @@
 }
 else
 {
-    <MudDataGrid Items="_pesananList" Elevation="2" Dense Bordered QuickFilter="FilterSearch" ShowColumnOptions="false">
+    <MudDataGrid Class="border-solid border mud-border-dark" Items="_pesananList" Elevation="2" Dense Bordered QuickFilter="FilterSearch" ShowColumnOptions="false">
         <ToolBarContent>
             <MudStack Row Spacing="2">
                 <MudText Typo="Typo.h5">Daftar Pesanan</MudText>
@@ -22,30 +22,20 @@ else
                 </MudTooltip>
             </MudStack>
             <MudSpacer />
-            <MudSwitch @bind-Value="_tampilPelangganLangsung" @bind-Value:after="async () => await LoadDataAsync()" Label="Pelanggan Langsung" />
-            <MudSpacer />
             <MudTextField Immediate @bind-Value="_searchTerms" Placeholder="Cari pesanan..." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0" />
         </ToolBarContent>
         <Columns>
-            <PropertyColumn Property="@(x => x.Email ?? "(Pelanggan Langsung)")" CellClassFunc="@(x => string.IsNullOrEmpty(x.Email) ? "italic opacity-50" : "")" />
-            <PropertyColumn Property="x => x.Tanggal" Format="dd MMMM yyyy" HeaderClass="w-150" />
-            <PropertyColumn Property="x => x.Subtotal" Format="N0" HeaderClass="w-0" />
-            <PropertyColumn Property="x => x.Potongan" Format="N0" HeaderClass="w-0" />
-            <PropertyColumn Property="x => x.Bayar" Format="N0" HeaderClass="w-0" />
-            <PropertyColumn Property="x => x.Status.GetDescription()" HeaderClass="w-0" />
+            <PropertyColumn Property="x => x.Id" />
+            <PropertyColumn Property="x => x.Tanggal" Format="dd MMMM yyyy" />
+            <PropertyColumn Property="x => x.Subtotal" Format="N0" />
+            <PropertyColumn Property="x => x.Potongan" Format="N0" />
+            <PropertyColumn Property="x => x.Bayar" Format="N0" />
             <TemplateColumn HeaderClass="w-0" Title="Opsi">
                 <CellTemplate>
                     <MudStack Row Spacing="1" Justify="Justify.Center">
-                        @if (!string.IsNullOrEmpty(context.Item.Email) && context.Item.Status == StatusPesanan.MenungguPersetujuan)
-                        {
-                            <MudIconButton Variant="Variant.Outlined" Size="Size.Small" Icon="@Icons.Material.Filled.Check" Color="Color.Success" OnClick="async e => await ApprovalAsync(context.Item, true)" />
-                            <MudIconButton Variant="Variant.Outlined" Size="Size.Small" Icon="@Icons.Material.Filled.Close" Color="Color.Error" OnClick="async e => await ApprovalAsync(context.Item, false)" />
-                        }
-                        else
-                        {
-                            <MudIconButton Variant="Variant.Filled" Size="Size.Small" Icon="@Icons.Material.Filled.Edit" Color="Color.Warning" OnClick="@(e => NavManager.NavigateTo($"/pesanan/form/{context.Item.Id}"))" />
-                            <MudIconButton Variant="Variant.Filled" Size="Size.Small" Icon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="e => DeleteAsync(context.Item)" />
-                        }
+                        <MudIconButton Variant="Variant.Filled" Size="Size.Small" Icon="@Icons.Material.Filled.Menu" Color="Color.Info" OnClick="@(e => NavManager.NavigateTo($"/pesanan/detail/{context.Item.Id}"))" />
+                        <MudIconButton Variant="Variant.Filled" Size="Size.Small" Icon="@Icons.Material.Filled.Edit" Color="Color.Warning" OnClick="@(e => NavManager.NavigateTo($"/pesanan/form/{context.Item.Id}"))" />
+                        <MudIconButton Variant="Variant.Filled" Size="Size.Small" Icon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="e => DeleteAsync(context.Item)" />
                     </MudStack>
                 </CellTemplate>
             </TemplateColumn>

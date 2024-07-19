@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DBro.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240713064755_First")]
+    [Migration("20240717092901_First")]
     partial class First
     {
         /// <inheritdoc />
@@ -24,38 +24,6 @@ namespace DBro.API.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("DBro.Shared.Models.Aktivitas", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<byte>("Entitas")
-                        .HasColumnType("tinyint");
-
-                    b.Property<string>("IdEntitas")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<byte>("Jenis")
-                        .HasColumnType("tinyint");
-
-                    b.Property<DateTime>("Tanggal")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Email");
-
-                    b.ToTable("Aktivitas");
-                });
 
             modelBuilder.Entity("DBro.Shared.Models.DetailPesanan", b =>
                 {
@@ -373,13 +341,11 @@ namespace DBro.API.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Potongan")
                         .HasColumnType("int");
-
-                    b.Property<byte>("Status")
-                        .HasColumnType("tinyint");
 
                     b.Property<int>("Subtotal")
                         .HasColumnType("int");
@@ -468,26 +434,15 @@ namespace DBro.API.Migrations
                     b.HasData(
                         new
                         {
-                            Email = "sujudihanif36@gmail.com",
-                            Alamat = "Perumahan Bumi Anggrek Blok K No 80",
+                            Email = "admin@gmail.com",
+                            Alamat = "Bekasi",
                             JenisKelamin = (byte)1,
                             JenisUser = (byte)0,
-                            Nama = "Sujudi Hanif",
+                            Nama = "Admin",
                             Password = "IvCkErOjG9A8DPW7X23rJg==",
-                            TanggalLahir = new DateTime(2002, 6, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Telepon = "085739194810"
+                            TanggalLahir = new DateTime(1974, 3, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Telepon = "0853 6466 2362"
                         });
-                });
-
-            modelBuilder.Entity("DBro.Shared.Models.Aktivitas", b =>
-                {
-                    b.HasOne("DBro.Shared.Models.User", "User")
-                        .WithMany("Aktivitas")
-                        .HasForeignKey("Email")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("DBro.Shared.Models.DetailPesanan", b =>
@@ -543,7 +498,9 @@ namespace DBro.API.Migrations
                 {
                     b.HasOne("DBro.Shared.Models.User", "User")
                         .WithMany("Pesanan")
-                        .HasForeignKey("Email");
+                        .HasForeignKey("Email")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });
@@ -589,8 +546,6 @@ namespace DBro.API.Migrations
 
             modelBuilder.Entity("DBro.Shared.Models.User", b =>
                 {
-                    b.Navigation("Aktivitas");
-
                     b.Navigation("Pesanan");
                 });
 #pragma warning restore 612, 618

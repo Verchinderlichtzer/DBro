@@ -31,7 +31,6 @@ public class MenuListBase : ComponentBase
             new("Menu", "/menu")
         ];
         Layout.Refresh();
-        MenuService.IdEditor = Layout.CurrentUser.Email;
 
         await LoadDataAsync();
         _loaded = true;
@@ -66,7 +65,7 @@ public class MenuListBase : ComponentBase
     protected async Task OpenFormAsync(Menu menu = null!)
     {
         bool isNew = menu == null;
-        var parameters = new DialogParameters { ["Id"] = menu?.Id, ["IdEditor"] = MenuService.IdEditor };
+        var parameters = new DialogParameters { ["Id"] = menu?.Id };
         var form = await DialogService.Show<MenuForm>(isNew ? "Tambah Menu" : $"Edit \"{menu!.Nama}\"", parameters).Result;
 
         if (form!.Data is Menu model)
@@ -76,7 +75,7 @@ public class MenuListBase : ComponentBase
 
     //protected async Task OpenVarianAsync(Menu menu)
     //{
-    //    var parameters = new DialogParameters { ["IdMenu"] = menu.Id, ["IdEditor"] = MenuService.IdEditor };
+    //    var parameters = new DialogParameters { ["IdMenu"] = menu.Id, [""] = MenuService. };
     //    var form = await DialogService.Show<VarianForm>($"Varian pada \"{menu.Nama}\"", parameters).Result;
 
     //    Menu model = (Menu)form.Data;

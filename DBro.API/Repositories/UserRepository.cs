@@ -15,11 +15,11 @@ public interface IUserRepository
 
     Task<(User, bool?)> FindAsync(string email, List<string> includes = null!);
 
-    Task<(User, string)> AddAsync(string idEditor, User user);
+    Task<(User, string)> AddAsync(User user);
 
-    Task<(bool?, string)> UpdateAsync(string idEditor, User user);
+    Task<(bool?, string)> UpdateAsync(User user);
 
-    Task<byte> DeleteAsync(string idEditor, string email);
+    Task<byte> DeleteAsync(string email);
 }
 
 public class UserRepository(AppDbContext appDbContext) : IUserRepository
@@ -32,7 +32,6 @@ public class UserRepository(AppDbContext appDbContext) : IUserRepository
 
             if (includes != null)
             {
-                if (includes.Contains(nameof(Aktivitas))) models = models.Include(x => x.Aktivitas);
                 if (includes.Contains(nameof(Pesanan))) models = models.Include(x => x.Pesanan);
             }
 
@@ -52,7 +51,6 @@ public class UserRepository(AppDbContext appDbContext) : IUserRepository
 
             if (includes != null)
             {
-                if (includes.Contains(nameof(Aktivitas))) model = model.Include(x => x.Aktivitas);
                 if (includes.Contains(nameof(Pesanan))) model = model.Include(x => x.Pesanan);
             }
 
@@ -66,21 +64,11 @@ public class UserRepository(AppDbContext appDbContext) : IUserRepository
         }
     }
 
-    public async Task<(User, string)> AddAsync(string idEditor, User user)
+    public async Task<(User, string)> AddAsync(User user)
     {
         try
         {
             var model = await appDbContext.User.AddAsync(user);
-            if (!string.IsNullOrEmpty(idEditor))
-            {
-                await appDbContext.Aktivitas.AddAsync(new()
-                {
-                    Email = idEditor,
-                    Jenis = JenisAktivitas.Tambah,
-                    Entitas = Entitas.User,
-                    IdEntitas = model.Entity.Email
-                });
-            }
             await appDbContext.SaveChangesAsync();
             return (model.Entity, null!);
         }
@@ -96,7 +84,7 @@ public class UserRepository(AppDbContext appDbContext) : IUserRepository
         }
     }
 
-    public async Task<(bool?, string)> UpdateAsync(string idEditor, User user)
+    public async Task<(bool?, string)> UpdateAsync(User user)
     {
         try
         {
@@ -110,13 +98,6 @@ public class UserRepository(AppDbContext appDbContext) : IUserRepository
                 model.Alamat = user.Alamat;
                 model.Telepon = user.Telepon;
                 model.JenisUser = user.JenisUser;
-                await appDbContext.Aktivitas.AddAsync(new()
-                {
-                    Email = idEditor,
-                    Jenis = JenisAktivitas.Edit,
-                    Entitas = Entitas.User,
-                    IdEntitas = model.Email
-                });
                 await appDbContext.SaveChangesAsync();
             }
             return (model != null, model != null ? null! : "User tidak ditemukan");
@@ -131,7 +112,7 @@ public class UserRepository(AppDbContext appDbContext) : IUserRepository
         }
     }
 
-    public async Task<byte> DeleteAsync(string idEditor, string email)
+    public async Task<byte> DeleteAsync(string email)
     {
         try
         {
@@ -142,24 +123,9 @@ public class UserRepository(AppDbContext appDbContext) : IUserRepository
             User model = (await appDbContext.User.FirstOrDefaultAsync(x => x.Email == email))!;
             if (model != null)
             {
-                if (model.JenisUser == JenisUser.Pelanggan)
-                {
-                    bool removable = await appDbContext.User.Include(x => x.Pesanan).Where(x => x.JenisUser == JenisUser.Pelanggan).AnyAsync(x => x.Email == email && x.Pesanan.Count == 0);
-                    if (!removable) return 2;
-                }
-                else
-                {
-                    bool removable = await appDbContext.User.Include(x => x.Aktivitas).Where(x => x.JenisUser == JenisUser.Karyawan).AnyAsync(x => x.Email == email && x.Aktivitas.Count == 0);
-                    if (!removable) return 3;
-                }
+                bool removable = await appDbContext.User.Include(x => x.Pesanan).Where(x => x.JenisUser == JenisUser.Karyawan).AnyAsync(x => x.Email == email && x.Pesanan.Count == 0);
+                if (!removable) return 3;
                 appDbContext.User.Remove(model);
-                await appDbContext.Aktivitas.AddAsync(new()
-                {
-                    Email = idEditor,
-                    Jenis = JenisAktivitas.Hapus,
-                    Entitas = Entitas.User,
-                    IdEntitas = email
-                });
                 await appDbContext.SaveChangesAsync();
                 return 0;
             }

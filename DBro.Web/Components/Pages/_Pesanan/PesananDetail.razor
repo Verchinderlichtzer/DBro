@@ -1,8 +1,8 @@
-﻿@page "/detail-keranjang/{idPesanan}"
-@layout CustomerLayout
-@inherits KeranjangDetailBase
+﻿@page "/pesanan/detail/{id}"
+@layout AdminLayout
+@inherits PesananDetailBase
 
-<PageTitle>Keranjang</PageTitle>
+<PageTitle>Pesanan</PageTitle>
 
 @if (!_loaded)
 {
@@ -11,7 +11,7 @@
 else
 {
     <MudContainer Class="my-8">
-        <MudText Typo="Typo.h4" Class="mb-3">Detail @IdPesanan</MudText>
+        <MudText Typo="Typo.h4" Class="mb-3">Detail @Id</MudText>
 
         <MudStack>
             <MudPaper Class="pa-3 mb-6">
@@ -45,14 +45,6 @@ else
                     </div>
                     <div>
                         <MudText Typo="Typo.subtitle1">: Rp @_pesanan.Bayar.ToString("N0")</MudText>
-                    </div>
-                </MudStack>
-                <MudStack Row>
-                    <div class="w-300">
-                        <MudText Typo="Typo.subtitle1">Status</MudText>
-                    </div>
-                    <div>
-                        <MudText Typo="Typo.subtitle1">: @_pesanan.Status.GetDescription()</MudText>
                     </div>
                 </MudStack>
             </MudPaper>

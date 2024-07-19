@@ -10,8 +10,6 @@ public class UserFormBase : ComponentBase
 {
     [Parameter] public string Email { get; set; } = null!;
 
-    [Parameter] public string IdEditor { get; set; } = null!;
-
     [CascadingParameter] protected MudDialogInstance MudDialog { get; set; } = null!;
 
     [Inject] protected IUserService UserService { get; set; } = null!;
@@ -30,7 +28,6 @@ public class UserFormBase : ComponentBase
     protected override async Task OnInitializedAsync()
     {
         _new = string.IsNullOrEmpty(Email);
-        UserService.IdEditor = IdEditor;
 
         if (!_new)
         {

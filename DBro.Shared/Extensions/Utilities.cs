@@ -10,25 +10,6 @@ namespace DBro.Shared.Extensions;
 public static partial class Utilities
 {
 
-    #region Current Project Only
-
-    public static List<string> GetColorSVG => [
-        "/images/colors/putih.svg",
-        "/images/colors/abu-abu.svg",
-        "/images/colors/hitam.svg",
-        "/images/colors/merah.svg",
-        "/images/colors/pink.svg",
-        "/images/colors/ungu.svg",
-        "/images/colors/biru.svg",
-        "/images/colors/biru_muda.svg",
-        "/images/colors/hijau.svg",
-        "/images/colors/lime.svg",
-        "/images/colors/kuning.svg",
-        "/images/colors/jingga.svg"
-        ];
-
-    #endregion Current Project Only
-
     #region Item Search
 
     public static bool Search(this string text, string searchTerms)
@@ -74,6 +55,7 @@ public static partial class Utilities
     public static DateTime ToDateTime(object? obj)
     {
         bool isSuccess = DateTime.TryParse(obj?.ToString() ?? string.Empty, out DateTime result);
+        //DateTime myDate = DateTime.ParseExact("2009-05-08 14:40:52,531", "yyyy-MM-dd HH:mm:ss,fff", System.Globalization.CultureInfo.InvariantCulture);
         return isSuccess ? result : DateTime.Now;
     }
 

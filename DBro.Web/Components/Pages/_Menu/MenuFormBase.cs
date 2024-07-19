@@ -9,8 +9,6 @@ public class MenuFormBase : ComponentBase
 {
     [Parameter] public string Id { get; set; } = null!;
 
-    [Parameter] public string IdEditor { get; set; } = null!;
-
     [CascadingParameter] protected MudDialogInstance MudDialog { get; set; } = null!;
 
     [Inject] protected IMenuService MenuService { get; set; } = null!;
@@ -32,7 +30,6 @@ public class MenuFormBase : ComponentBase
     protected override async Task OnInitializedAsync()
     {
         _new = string.IsNullOrEmpty(Id);
-        MenuService.IdEditor = IdEditor;
 
         if (!_new)
         {

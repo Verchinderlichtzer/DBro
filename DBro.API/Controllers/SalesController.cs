@@ -88,7 +88,7 @@ public class SalesController(ISalesRepository salesRepository, IMenuRepository m
         try
         {
             SalesDTO sales = JsonSerializer.Deserialize<SalesDTO>(jsonString)!;
-            var result = await salesRepository.AddsSalesAsync(Request.Headers["Id-Editor"]!, sales);
+            var result = await salesRepository.AddsSalesAsync(sales);
             sales = result.Item1;
             return sales != null ? CreatedAtAction(nameof(FindSales), new { diskonIds = string.Join(',', sales.Diskon.Select(x => x.Id)), promoIds = string.Join(',', sales.Promo.Select(x => x.Id)) }, JsonSerializer.Serialize(sales, _options)) : BadRequest(result.Item2);
         }
@@ -104,7 +104,7 @@ public class SalesController(ISalesRepository salesRepository, IMenuRepository m
         try
         {
             SalesDTO sales = JsonSerializer.Deserialize<SalesDTO>(jsonString)!;
-            var result = await salesRepository.UpdatesSalesAsync(Request.Headers["Id-Editor"]!, sales.Diskon, sales.Promo);
+            var result = await salesRepository.UpdatesSalesAsync(sales.Diskon, sales.Promo);
             return result.Item1 == true ? NoContent() : result.Item1 == false ? NotFound(result.Item2) : BadRequest(result.Item2);
         }
         catch (Exception)
@@ -120,7 +120,7 @@ public class SalesController(ISalesRepository salesRepository, IMenuRepository m
         {
             List<string> markedDiskon = diskonIds?.Mid(diskonIds.IndexOf('=') + 1).Split(',').Where(x => !string.IsNullOrEmpty(x)).ToList()!;
             List<string> markedPromo = promoIds?.Mid(promoIds.IndexOf('=') + 1).Split(',').Where(x => !string.IsNullOrEmpty(x)).ToList()!;
-            var result = await salesRepository.DeletesSalesAsync(Request.Headers["Id-Editor"]!, markedDiskon, markedPromo);
+            var result = await salesRepository.DeletesSalesAsync(markedDiskon, markedPromo);
 
             if (result == true)
                 return NoContent();

@@ -9,7 +9,6 @@ public class Menu
     public int Harga { get; set; }
     public byte[]? Gambar { get; set; }
 
-    //public List<VarianMenu> VarianMenu { get; set; } = null!;
     public List<MenuPromoPesanan> MenuPromoPesanan { get; set; } = null!;
     public List<DetailPesanan> DetailPesanan { get; set; } = null!;
     public List<Diskon> Diskon { get; set; } = null!;

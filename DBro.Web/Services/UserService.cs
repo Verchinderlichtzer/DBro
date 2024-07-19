@@ -5,8 +5,6 @@ namespace DBro.Web.Services;
 
 public interface IUserService
 {
-    public string IdEditor { get; set; } // Id User yang memanipulasi data
-
     Task<(List<User>, string)> GetAsync(List<string> includes = null!);
 
     Task<(User, string)> FindAsync(string email, List<string> includes = null!);
@@ -20,8 +18,6 @@ public interface IUserService
 
 public class UserService : IUserService
 {
-    public string IdEditor { get; set; } = string.Empty;
-
     private readonly HttpClient _httpClient;
 
     private readonly JsonSerializerOptions _options = new()
@@ -58,7 +54,7 @@ public class UserService : IUserService
 
     public async Task<(User, string)> AddAsync(User user)
     {
-        _httpClient.DefaultRequestHeaders.Add("Id-Editor", IdEditor);
+        
         var response = await _httpClient.PostAsJsonAsync("api/user", JsonSerializer.Serialize(user), _options);
         string result = await response.Content.ReadAsStringAsync();
         if (response.IsSuccessStatusCode)
@@ -73,7 +69,7 @@ public class UserService : IUserService
 
     public async Task<(bool, string)> UpdateAsync(User user)
     {
-        _httpClient.DefaultRequestHeaders.Add("Id-Editor", IdEditor);
+        
         var response = await _httpClient.PutAsJsonAsync("api/user", JsonSerializer.Serialize(user), _options);
         string result = await response.Content.ReadAsStringAsync();
         if (response.IsSuccessStatusCode)
@@ -88,7 +84,7 @@ public class UserService : IUserService
 
     public async Task<(bool, string)> DeleteAsync(string email)
     {
-        _httpClient.DefaultRequestHeaders.Add("Id-Editor", IdEditor);
+        
         var response = await _httpClient.DeleteAsync($"api/user/{email}");
         string result = await response.Content.ReadAsStringAsync();
         return (response.IsSuccessStatusCode, result);

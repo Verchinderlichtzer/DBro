@@ -1,13 +1,13 @@
 ﻿using MudBlazor;
 
-namespace DBro.Web.Components.Pages._Keranjang;
+namespace DBro.Web.Components.Pages._Pesanan;
 
 [Authorize]
-public class KeranjangDetailBase : ComponentBase
+public class PesananDetailBase : ComponentBase
 {
-    [Parameter] public string IdPesanan { get; set; } = string.Empty;
+    [Parameter] public string Id { get; set; } = string.Empty;
 
-    [CascadingParameter] public CustomerLayout Layout { get; set; } = null!;
+    [CascadingParameter] public AdminLayout Layout { get; set; } = null!;
 
     [Inject] protected IPesananService PesananService { get; set; } = null!;
 
@@ -20,14 +20,20 @@ public class KeranjangDetailBase : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
+        Layout.BreadcrumbItems =
+        [
+            new("Pesanan", "/pesanan"),
+            new("Detail", $"/pesanan/detail/{Id}")
+        ];
         Layout.Refresh();
+
         await LoadDataAsync();
         _loaded = true;
     }
 
     protected async Task LoadDataAsync()
     {
-        var response = await PesananService.FindAsync(IdPesanan, [nameof(Menu)]);
+        var response = await PesananService.FindAsync(Id, [nameof(Menu)]);
         if (response.Item1 != null)
         {
             _pesanan = response.Item1;

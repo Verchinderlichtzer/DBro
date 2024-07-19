@@ -11,11 +11,11 @@ public interface ISalesRepository
 
     Task<(SalesDTO, bool?)> FindsSalesAsync(List<string> diskonIds, List<string> promoIds, List<string> includes = null!);
 
-    Task<(SalesDTO, string)> AddsSalesAsync(string idEditor, SalesDTO sales);
+    Task<(SalesDTO, string)> AddsSalesAsync(SalesDTO sales);
 
-    Task<(bool?, string)> UpdatesSalesAsync(string idEditor, List<Diskon> diskon, List<Promo> promo);
+    Task<(bool?, string)> UpdatesSalesAsync(List<Diskon> diskon, List<Promo> promo);
 
-    Task<bool?> DeletesSalesAsync(string idEditor, List<string> diskonIds, List<string> promoIds);
+    Task<bool?> DeletesSalesAsync(List<string> diskonIds, List<string> promoIds);
 
     #endregion Sales
 
@@ -97,7 +97,7 @@ public class SalesRepository(AppDbContext appDbContext) : ISalesRepository
         }
     }
 
-    public async Task<(SalesDTO, string)> AddsSalesAsync(string idEditor, SalesDTO sales)
+    public async Task<(SalesDTO, string)> AddsSalesAsync(SalesDTO sales)
     {
         try
         {
@@ -121,13 +121,6 @@ public class SalesRepository(AppDbContext appDbContext) : ISalesRepository
                 await appDbContext.Promo.AddRangeAsync(sales.Promo);
                 p = $"Id Promo: {sales.Promo.Select(x => x.Id).CombineWords()}";
             }
-            await appDbContext.Aktivitas.AddAsync(new()
-            {
-                Email = idEditor,
-                Jenis = JenisAktivitas.Tambah,
-                Entitas = Entitas.Sales,
-                IdEntitas = new List<string> { d, p }.CombineWords(lastSeparator: ". ")
-            });
             await appDbContext.SaveChangesAsync();
             return (sales, null!);
         }
@@ -143,7 +136,7 @@ public class SalesRepository(AppDbContext appDbContext) : ISalesRepository
         }
     }
 
-    public async Task<(bool?, string)> UpdatesSalesAsync(string idEditor, List<Diskon> diskon, List<Promo> promo)
+    public async Task<(bool?, string)> UpdatesSalesAsync(List<Diskon> diskon, List<Promo> promo)
     {
         try
         {
@@ -177,13 +170,6 @@ public class SalesRepository(AppDbContext appDbContext) : ISalesRepository
                 }
                 p = $"Id Promo: {promo.Select(x => x.Id).CombineWords()}";
             }
-            await appDbContext.Aktivitas.AddAsync(new()
-            {
-                Email = idEditor,
-                Jenis = JenisAktivitas.Edit,
-                Entitas = Entitas.Sales,
-                IdEntitas = new List<string> { d, p }.CombineWords(lastSeparator: ". ")
-            });
             int rowsAffected = await appDbContext.SaveChangesAsync();
 
             return (rowsAffected > 0, rowsAffected > 0 ? null! : "Data tidak ditemukan");
@@ -198,7 +184,7 @@ public class SalesRepository(AppDbContext appDbContext) : ISalesRepository
         }
     }
 
-    public async Task<bool?> DeletesSalesAsync(string idEditor, List<string> diskonIds, List<string> promoIds)
+    public async Task<bool?> DeletesSalesAsync(List<string> diskonIds, List<string> promoIds)
     {
         try
         {
@@ -218,13 +204,6 @@ public class SalesRepository(AppDbContext appDbContext) : ISalesRepository
                 appDbContext.Promo.RemoveRange(promoModels);
                 p = $"Id Promo: {promoModels.Select(x => x.Id).CombineWords()}";
             }
-            await appDbContext.Aktivitas.AddAsync(new()
-            {
-                Email = idEditor,
-                Jenis = JenisAktivitas.Hapus,
-                Entitas = Entitas.Sales,
-                IdEntitas = new List<string> { d, p }.CombineWords(lastSeparator: ". ")
-            });
             int rowsAffected = await appDbContext.SaveChangesAsync();
             return rowsAffected > 0;
         }

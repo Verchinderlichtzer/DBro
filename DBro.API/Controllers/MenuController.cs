@@ -53,7 +53,7 @@ public class MenuController(IMenuRepository menuRepository) : ControllerBase
         try
         {
             Menu menu = JsonSerializer.Deserialize<Menu>(jsonString)!;
-            var result = await menuRepository.AddAsync(Request.Headers["Id-Editor"]!, menu);
+            var result = await menuRepository.AddAsync(menu);
             menu = result.Item1;
             return menu != null ? CreatedAtAction(nameof(FindMenu), new { id = menu.Id }, JsonSerializer.Serialize(menu, _options)) : BadRequest(result.Item2);
         }
@@ -69,7 +69,7 @@ public class MenuController(IMenuRepository menuRepository) : ControllerBase
         try
         {
             Menu menu = JsonSerializer.Deserialize<Menu>(jsonString)!;
-            var result = await menuRepository.UpdateAsync(Request.Headers["Id-Editor"]!, menu);
+            var result = await menuRepository.UpdateAsync(menu);
             return result.Item1 == true ? NoContent() : result.Item1 == false ? NotFound(result.Item2) : BadRequest(result.Item2);
         }
         catch (Exception)
@@ -83,7 +83,7 @@ public class MenuController(IMenuRepository menuRepository) : ControllerBase
     {
         try
         {
-            var result = await menuRepository.DeleteAsync(Request.Headers["Id-Editor"]!, id);
+            var result = await menuRepository.DeleteAsync(id);
 
             if (result == 0)
                 return NoContent();
@@ -109,7 +109,7 @@ public class MenuController(IMenuRepository menuRepository) : ControllerBase
     //    try
     //    {
     //        List<VarianMenu> varianMenu = JsonSerializer.Deserialize<List<VarianMenu>>(jsonString)!;
-    //        var result = await menuRepository.UpdatesVarianAsync(Request.Headers["Id-Editor"]!, varianMenu);
+    //        var result = await menuRepository.UpdatesVarianAsync(varianMenu);
     //        return result == true ? NoContent() : result == false ? NotFound("Varian menu tidak ditemukan") : BadRequest("Ada kesalahan saat mengubah data");
     //    }
     //    catch (Exception)

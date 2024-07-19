@@ -5,8 +5,6 @@ namespace DBro.Web.Services;
 
 public interface ISalesService
 {
-    public string IdEditor { get; set; } // Id User yang memanipulasi data
-
     #region Sales
 
     Task<(SalesDTO, string)> GetSalesAsync(List<string> includes = null!);
@@ -42,10 +40,6 @@ public interface ISalesService
 
 public class SalesService : ISalesService
 {
-    public string IdEditor { get; set; } = string.Empty;
-    public string JenisLog { get; set; } = string.Empty;
-    public string IdEntitas { get; set; } = string.Empty;
-
     private readonly HttpClient _httpClient;
 
     private readonly JsonSerializerOptions _options = new()
@@ -98,7 +92,7 @@ public class SalesService : ISalesService
 
     public async Task<(SalesDTO, string)> AddsSalesAsync(SalesDTO sales)
     {
-        _httpClient.DefaultRequestHeaders.Add("Id-Editor", IdEditor);
+        
         var response = await _httpClient.PostAsJsonAsync("api/sales", JsonSerializer.Serialize(sales), _options);
         string result = await response.Content.ReadAsStringAsync();
         if (response.IsSuccessStatusCode)
@@ -113,7 +107,7 @@ public class SalesService : ISalesService
 
     public async Task<(bool, string)> UpdatesSalesAsync(SalesDTO sales)
     {
-        _httpClient.DefaultRequestHeaders.Add("Id-Editor", IdEditor);
+        
         var response = await _httpClient.PutAsJsonAsync("api/sales", JsonSerializer.Serialize(sales), _options);
         string result = await response.Content.ReadAsStringAsync();
         if (response.IsSuccessStatusCode)
@@ -128,7 +122,7 @@ public class SalesService : ISalesService
 
     public async Task<(bool, string)> DeletesSalesAsync(List<string> diskonIds, List<string> promoIds)
     {
-        _httpClient.DefaultRequestHeaders.Add("Id-Editor", IdEditor);
+        
         string diskonIdList = diskonIds.Count > 0 ? $"diskonIds={string.Join(',', diskonIds)}" : string.Empty;
         string promoIdList = promoIds.Count > 0 ? $"promoIds={string.Join(',', promoIds)}" : string.Empty;
         var response = await _httpClient.DeleteAsync($"api/sales?diskonIds={diskonIdList}&promoIds={promoIdList}");

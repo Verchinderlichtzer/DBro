@@ -3,7 +3,6 @@ public class DetailPesanan
 {
     public string IdPesanan { get; set; } = null!;
     public string IdMenu { get; set; } = null!;
-    //public int? IdVarianMenu { get; set; }
 
     public int Harga { get; set; }
     public int Jumlah { get; set; }
@@ -11,9 +10,8 @@ public class DetailPesanan
 
     public Pesanan Pesanan { get; set; } = null!;
     public Menu Menu { get; set; } = null!;
-    //public VarianMenu VarianMenu { get; set; } = null!;
 
     public int Subtotal => Harga * Jumlah; // Sebelum Diskon
-    public int Potongan => (int)(Subtotal * Diskon); // Sebelum Diskon
+    public int Potongan => (int)(Subtotal * Diskon);
     public int Total => Subtotal - Potongan; // Sesudah Diskon
 }

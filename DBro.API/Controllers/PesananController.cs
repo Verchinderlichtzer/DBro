@@ -61,7 +61,7 @@ public class PesananController(IPesananRepository pesananRepository, IMenuReposi
             if (result.Item2 == true)
                 return Ok(JsonSerializer.Serialize(result.Item1, _options));
             else if (result.Item2 == false)
-                return NotFound("Keranjang belum dibuat");
+                return NotFound("Pesanan belum dibuat");
             return BadRequest("Ada kesalahan saat mengakses data");
         }
         catch (Exception)
@@ -76,7 +76,7 @@ public class PesananController(IPesananRepository pesananRepository, IMenuReposi
         try
         {
             Pesanan pesanan = JsonSerializer.Deserialize<Pesanan>(jsonString)!;
-            var result = await pesananRepository.AddAsync(Request.Headers["Id-Editor"]!, pesanan);
+            var result = await pesananRepository.AddAsync(pesanan);
             pesanan = result.Item1;
             return pesanan != null ? CreatedAtAction(nameof(FindPesanan), new { id = pesanan.Id }, JsonSerializer.Serialize(pesanan, _options)) : BadRequest(result.Item2);
         }
@@ -92,7 +92,7 @@ public class PesananController(IPesananRepository pesananRepository, IMenuReposi
         try
         {
             Pesanan pesanan = JsonSerializer.Deserialize<Pesanan>(jsonString)!;
-            var result = await pesananRepository.UpdateAsync(Request.Headers["Id-Editor"]!, pesanan);
+            var result = await pesananRepository.UpdateAsync(pesanan);
             return result.Item1 == true ? NoContent() : result.Item1 == false ? NotFound(result.Item2) : BadRequest(result.Item2);
         }
         catch (Exception)
@@ -106,7 +106,7 @@ public class PesananController(IPesananRepository pesananRepository, IMenuReposi
     {
         try
         {
-            var result = await pesananRepository.DeleteAsync(Request.Headers["Id-Editor"]!, id);
+            var result = await pesananRepository.DeleteAsync(id);
 
             if (result == 0)
                 return NoContent();
@@ -139,76 +139,4 @@ public class PesananController(IPesananRepository pesananRepository, IMenuReposi
     }
 
     #endregion Pesanan
-
-    #region Keranjang
-
-    [HttpGet("keranjang/{email}")]
-    public async Task<IActionResult> CekKeranjang(string email)
-    {
-        try
-        {
-            var result = await pesananRepository.CekKeranjangAsync(email);
-            if (result.Item2 == true)
-                return Ok(JsonSerializer.Serialize(result.Item1, _options));
-            else if (result.Item2 == false)
-                return NotFound("Pesanan tidak ditemukan");
-            return BadRequest("Ada kesalahan saat mengakses data");
-        }
-        catch (Exception)
-        {
-            return StatusCode(500, "Terjadi kesalahan pada server");
-        }
-    }
-
-    [HttpPost("keranjang")]
-    public async Task<IActionResult> TambahKeKeranjang([FromBody] string jsonString)
-    {
-        try
-        {
-            DetailPesanan detailPesanan = JsonSerializer.Deserialize<DetailPesanan>(jsonString)!;
-            var result = await pesananRepository.TambahKeKeranjangAsync(detailPesanan);
-            detailPesanan = result.Item1;
-            return detailPesanan != null ? CreatedAtAction(nameof(FindDetail), new { idPesanan = detailPesanan.IdPesanan, idMenu = detailPesanan.IdMenu }, JsonSerializer.Serialize(detailPesanan, _options)) : BadRequest(result.Item2);
-        }
-        catch (Exception)
-        {
-            return StatusCode(500, "Terjadi kesalahan pada server");
-        }
-    }
-
-    [HttpPut("keranjang")]
-    public async Task<IActionResult> PutDetailPesanan([FromBody] string jsonString)
-    {
-        try
-        {
-            DetailPesanan detail = JsonSerializer.Deserialize<DetailPesanan>(jsonString)!;
-            var result = await pesananRepository.UpdateDetailAsync(detail);
-            return result.Item1 == true ? NoContent() : result.Item1 == false ? NotFound(result.Item2) : BadRequest(result.Item2);
-        }
-        catch (Exception)
-        {
-            return StatusCode(500, "Terjadi kesalahan pada server");
-        }
-    }
-
-    [HttpDelete("keranjang/{idPesanan}/{idMenu}")]
-    public async Task<IActionResult> DeleteDetailPesanan(string idPesanan, string idMenu)
-    {
-        try
-        {
-            var result = await pesananRepository.DeleteDetailAsync(idPesanan, idMenu);
-
-            if (result == true)
-                return NoContent();
-            else if (result == false)
-                return NotFound("Pesanan tidak ditemukan");
-            return BadRequest("Ada kesalahan saat menghapus data");
-        }
-        catch (Exception)
-        {
-            return StatusCode(500, "Terjadi kesalahan pada server");
-        }
-    }
-
-    #endregion Keranjang
 }
