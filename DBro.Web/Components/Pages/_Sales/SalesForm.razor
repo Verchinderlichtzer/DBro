@@ -76,24 +76,6 @@
         </MudContainer>
     </DialogContent>
     <DialogActions>
-        <div>
-            <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Help" @onmouseenter="e => _isValidationRuleShow = true" @onmouseleave="e => _isValidationRuleShow = false" />
-            <MudPopover Open="_isValidationRuleShow" AnchorOrigin="Origin.TopCenter" TransformOrigin="Origin.BottomLeft" Fixed Class="px-4">
-                <MudStack Spacing="0" Class="pb-2">
-                    <MudText Typo="Typo.button" Class="pt-2">Id :</MudText>
-                    <div>▪ Tidak boleh duplikat</div>
-                    <div>▪ Tidak boleh kosong</div>
-                    <MudText Typo="Typo.button" Class="pt-2">Nama :</MudText>
-                    <div>▪ Tidak boleh kosong</div>
-                    <MudText Typo="Typo.button" Class="pt-2">Alamat :</MudText>
-                    <div>▪ Tidak boleh kosong</div>
-                    <MudText Typo="Typo.button" Class="pt-2">Telepon :</MudText>
-                    <div>▪ Tidak boleh kosong</div>
-                    <MudText Typo="Typo.button" Class="pt-2">Status :</MudText>
-                    <div>▪ Status sales akan berubah secara otomatis sesuai dengan peminjaman yang terjadi. Tidak disarankan mengubah status sales secara langsung.</div>
-                </MudStack>
-            </MudPopover>
-        </div>
         <MudSpacer />
         <MudStack Row Class="w-300">
             <MudButton Variant="Variant.Filled" Size="Size.Small" Color="_new ? Color.Success : Color.Warning" OnClick="SaveAsync" Class="flex-1">Simpan</MudButton>

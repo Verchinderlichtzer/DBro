@@ -12,7 +12,7 @@ public class MenuValidator : AbstractValidator<Menu>
             .NotEmpty().WithMessage("Nama tidak boleh kosong");
 
         RuleFor(x => x.Kategori)
-            .Must(x => x != Kategori.None).WithMessage("Jenis menu tidak boleh kosong");
+            .Must(x => x != Kategori.None).WithMessage("Kategori tidak boleh kosong");
 
         RuleFor(x => x.Harga)
             .NotEmpty().WithMessage("Harga tidak boleh kosong");

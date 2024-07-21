@@ -1,0 +1,38 @@
+﻿.grid-dashboard {
+    display: grid;
+    grid-template-areas:
+        "jumlah-menu jumlah-pesanan jumlah-diskon jumlah-promo"
+        "riwayat-pesanan grafik grafik grafik";
+    grid-template-columns: minmax(269px, 1fr) minmax(269px, 1fr) minmax(269px, 1fr) minmax(269px, 1fr);
+    grid-template-rows: 120px max-content;
+    gap: 20px;
+}
+
+.jumlah-menu {
+    grid-area: jumlah-menu;
+}
+
+.jumlah-pesanan {
+    grid-area: jumlah-pesanan;
+}
+
+.jumlah-diskon {
+    grid-area: jumlah-diskon;
+}
+
+.jumlah-promo {
+    grid-area: jumlah-promo;
+}
+
+.grafik {
+    grid-area: grafik;
+}
+
+.riwayat-pesanan {
+    grid-area: riwayat-pesanan;
+}
+
+.text-jumlah {
+    font-size: 22px;
+    height: 35px;
+}

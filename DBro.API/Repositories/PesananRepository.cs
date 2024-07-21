@@ -86,7 +86,7 @@ public class PesananRepository(AppDbContext appDbContext) : IPesananRepository
     {
         try
         {
-            pesanan.Id = GenerateId("PSN", 3, DateTime.Today, appDbContext.Pesanan.Where(x => x.Tanggal!.Value.Date == DateTime.Today).Select(x => x.Id));
+            pesanan.Id = GenerateId("PSN", 3, pesanan.Tanggal, await appDbContext.Pesanan.Where(x => x.Tanggal!.Value.Date == pesanan.Tanggal).Select(x => x.Id).ToListAsync());
 
             pesanan.DetailPesanan.ForEach(x => { x.Menu = null!; x.IdPesanan = pesanan.Id; });
             pesanan.MenuPromoPesanan.ForEach(x => { x.Menu = null!; x.IdPesanan = pesanan.Id; });

@@ -49,6 +49,11 @@ public class MenuFormBase : ComponentBase
 
     protected async Task UploadFile(IBrowserFile file)
     {
+        if (file == null)
+        {
+            Snackbar.Add("Ada kesalahan, mohon coba lagi", MudBlazor.Severity.Error);
+            return;
+        }
         if (file.ContentType != "image/png" && file.ContentType != "image/jpg" && file.ContentType != "image/jpeg" && file.ContentType != "image/webp")
         {
             Snackbar.Add("Ekstensi file tidak diperbolehkan", MudBlazor.Severity.Error);

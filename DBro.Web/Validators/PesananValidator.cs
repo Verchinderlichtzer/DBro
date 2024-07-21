@@ -9,7 +9,7 @@ public class PesananValidator : AbstractValidator<Pesanan>
         RuleLevelCascadeMode = CascadeMode.Stop;
 
         RuleFor(x => x.Bayar)
-            .Must((x, y) => y > x.Total).WithMessage("Pembayaran harus dibayar penuh");
+            .Must((x, y) => y >= x.Total).WithMessage("Pembayaran harus dibayar penuh");
     }
 
     public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>

@@ -35,7 +35,7 @@ public class LoginModel(IAuthService AuthService) : PageModel
 
         var tokenClaimsDTO = await AuthService.LoginAsync(LoginDTO);
 
-        if (!string.IsNullOrEmpty(tokenClaimsDTO.Token))
+        if (!string.IsNullOrEmpty(tokenClaimsDTO?.Token))
         {
             AuthenticationProperties authenticationProperties = new()
             {

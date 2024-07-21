@@ -25,11 +25,13 @@ else
             <MudTextField Immediate @bind-Value="_searchTerms" Placeholder="Cari pesanan..." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0" />
         </ToolBarContent>
         <Columns>
-            <PropertyColumn Property="x => x.Id" />
-            <PropertyColumn Property="x => x.Tanggal" Format="dd MMMM yyyy" />
-            <PropertyColumn Property="x => x.Subtotal" Format="N0" />
-            <PropertyColumn Property="x => x.Potongan" Format="N0" />
-            <PropertyColumn Property="x => x.Bayar" Format="N0" />
+            <PropertyColumn Property="x => x.Id" HeaderClass="w-150" />
+            <PropertyColumn Property="x => x.Tanggal" HeaderClass="w-150" Format="dd MMMM yyyy" />
+            <PropertyColumn Property="x => x.Subtotal" HeaderClass="w-0" Format="N0" />
+            <PropertyColumn Property="x => x.Potongan" HeaderClass="w-0" Format="N0" />
+            <PropertyColumn Property="x => x.Total" HeaderClass="w-0" Format="N0" />
+            <PropertyColumn Property="x => x.Bayar" HeaderClass="w-0" Format="N0" />
+            <PropertyColumn Property="x => x.User.Nama" Title="User" />
             <TemplateColumn HeaderClass="w-0" Title="Opsi">
                 <CellTemplate>
                     <MudStack Row Spacing="1" Justify="Justify.Center">

@@ -5,7 +5,102 @@
 
 <PageTitle>Dashboard</PageTitle>
 
-<MudStack>
-
-    <p>Email User yang sedang login : @Layout.CurrentUser.Email</p>
-</MudStack>
+<h1>Dashboard</h1>
+@if (!_loaded)
+{
+    <MudProgressCircular Indeterminate />
+}
+else
+{
+    <div class="grid-dashboard">
+        <div class="jumlah-menu">
+            <MudPaper Elevation="0" Class="mud-height-full rounded-lg border-dashed border-2">
+                <MudStack Row Class="mud-height-full">
+                    <div class="w-100 d-flex justify-end">
+                        <MudImage Src="/images/menu.svg" Width="80" />
+                    </div>
+                    <MudStack Class="flex-1" Spacing="0" Justify="Justify.Center" AlignItems="AlignItems.Center">
+                        <MudStack Class="flex-1" Justify="Justify.Center">
+                            <MudText Typo="@(_jumlahMenu < 1000000 ? Typo.h3 : _jumlahMenu > 999999 ? Typo.h4 : _jumlahMenu > 99999999 ? Typo.h5 : Typo.h6)">@_jumlahMenu</MudText>
+                        </MudStack>
+                        <div class="text-jumlah">MENU</div>
+                    </MudStack>
+                </MudStack>
+            </MudPaper>
+        </div>
+        <div class="jumlah-pesanan">
+            <MudPaper Elevation="0" Class="mud-height-full rounded-lg border-dashed border-2">
+                <MudStack Row Class="mud-height-full">
+                    <div class="w-100 d-flex justify-end">
+                        <MudImage Src="/images/pesanan.svg" Width="80" />
+                    </div>
+                    <MudStack Class="flex-1" Spacing="0" Justify="Justify.Center" AlignItems="AlignItems.Center">
+                        <MudStack Class="flex-1" Justify="Justify.Center">
+                            <MudText Typo="@(_jumlahPesanan < 1000000 ? Typo.h3 : _jumlahPesanan > 999999 ? Typo.h4 : _jumlahPesanan > 99999999 ? Typo.h5 : Typo.h6)">@_jumlahPesanan</MudText>
+                        </MudStack>
+                        <div class="text-jumlah">PESANAN</div>
+                    </MudStack>
+                </MudStack>
+            </MudPaper>
+        </div>
+        <div class="jumlah-diskon">
+            <MudPaper Elevation="0" Class="mud-height-full rounded-lg border-dashed border-2">
+                <MudStack Row Class="mud-height-full">
+                    <div class="w-100 d-flex justify-end">
+                        <MudImage Src="/images/diskon.svg" Width="80" />
+                    </div>
+                    <MudStack Class="flex-1" Spacing="0" Justify="Justify.Center" AlignItems="AlignItems.Center">
+                        <MudStack Class="flex-1" Justify="Justify.Center">
+                            <MudText Typo="@(_jumlahDiskon < 1000000 ? Typo.h3 : _jumlahDiskon > 999999 ? Typo.h4 : _jumlahDiskon > 99999999 ? Typo.h5 : Typo.h6)">@_jumlahDiskon</MudText>
+                        </MudStack>
+                        <div class="text-jumlah">DISKON</div>
+                    </MudStack>
+                </MudStack>
+            </MudPaper>
+        </div>
+        <div class="jumlah-promo">
+            <MudPaper Elevation="0" Class="mud-height-full rounded-lg border-dashed border-2">
+                <MudStack Row Class="mud-height-full">
+                    <div class="w-100 d-flex justify-end">
+                        <MudImage Src="/images/promo.svg" Width="80" />
+                    </div>
+                    <MudStack Class="flex-1" Spacing="0" Justify="Justify.Center" AlignItems="AlignItems.Center">
+                        <MudStack Class="flex-1" Justify="Justify.Center">
+                            <MudText Typo="@(_jumlahPromo < 1000000 ? Typo.h3 : _jumlahPromo > 999999 ? Typo.h4 : _jumlahPromo > 99999999 ? Typo.h5 : Typo.h6)">@_jumlahPromo</MudText>
+                        </MudStack>
+                        <div class="text-jumlah">PROMO</div>
+                    </MudStack>
+                </MudStack>
+            </MudPaper>
+        </div>
+        <div class="riwayat-pesanan">
+            <MudTable Items="_pesanan.Where(x => x.Email == Layout.CurrentUser.Email).ToList()" Breakpoint="Breakpoint.Sm" Dense>
+                <ToolBarContent>
+                    <MudText Typo="Typo.h6">Riwayat Pesanan</MudText>
+                </ToolBarContent>
+                <HeaderContent>
+                    <MudTh>Id</MudTh>
+                    <MudTh>Tanggal</MudTh>
+                    <MudTh>Total</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="Id">@context.Id</MudTd>
+                    <MudTd DataLabel="Tanggal">@context.Tanggal!.Value.ToString("dd/MM/yy")</MudTd>
+                    <MudTd DataLabel="Total">@context.Total.ToString("N0")</MudTd>
+                </RowTemplate>
+            </MudTable>
+        </div>
+        <div class="grafik">
+            <MudPaper Elevation="0" Class="mud-height-full pa-2 border-dashed border-2">
+                <div>
+                    <MudPaper Elevation="0" Class="hp-10">
+                        <MudText Typo="Typo.h6" Class="text-center">Grafik</MudText>
+                    </MudPaper>
+                    <MudPaper Elevation="0" Class="hp-90">
+                        <MudChart ChartOptions="new() { YAxisTicks = 1000000, YAxisFormat = _yAxisFormat, InterpolationOption = InterpolationOption.Straight }" Class="ml-11 my-1" ChartType="ChartType.Line" ChartSeries="_series" XAxisLabels="_xAxisLabels" Width="100%" />
+                    </MudPaper>
+                </div>
+            </MudPaper>
+        </div>
+    </div>
+}

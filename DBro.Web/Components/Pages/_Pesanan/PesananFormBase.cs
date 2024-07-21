@@ -1,6 +1,7 @@
 ﻿using DBro.Shared.Models;
 using FluentValidation;
 using MudBlazor;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace DBro.Web.Components.Pages._Pesanan;
 
@@ -17,6 +18,8 @@ public class PesananFormBase : ComponentBase
     [Inject] protected IDialogService DialogService { get; set; } = null!;
 
     [Inject] protected NavigationManager NavManager { get; set; } = null!;
+
+    [Inject] protected ISnackbar Snackbar { get; set; } = null!;
 
     protected MudForm? _form = new();
     protected MudAutocomplete<Menu> autocompleteMenu = new();
@@ -114,6 +117,8 @@ public class PesananFormBase : ComponentBase
                 if (response.Item1 != null)
                 {
                     _pesanan = response.Item1;
+                    _loaded = false;
+                    Snackbar.Add("Pesanan berhasil ditambah", MudBlazor.Severity.Success);
                     NavManager.NavigateTo("/pesanan");
                 }
                 await DialogService.ShowMessageBox("Error", response.Item2, yesText: "Ok");
@@ -123,6 +128,8 @@ public class PesananFormBase : ComponentBase
                 var response = await PesananService.UpdateAsync(_pesanan);
                 if (response.Item1)
                 {
+                    _loaded = false;
+                    Snackbar.Add("Pesanan berhasil diubah", MudBlazor.Severity.Success);
                     NavManager.NavigateTo("/pesanan");
                 }
                 await DialogService.ShowMessageBox("Error", response.Item2, yesText: "Ok");

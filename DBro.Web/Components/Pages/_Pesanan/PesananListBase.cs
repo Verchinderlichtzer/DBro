@@ -40,7 +40,7 @@ public class PesananListBase : ComponentBase
 
     protected async Task LoadDataAsync()
     {
-        var response = await PesananService.GetAsync();
+        var response = await PesananService.GetAsync([nameof(User)]);
         if (response.Item1 != null)
         {
             //_pesananList = response.Item1;

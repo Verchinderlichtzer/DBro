@@ -44,7 +44,7 @@ public class LaporanController : ControllerBase
     [HttpGet("master-menu")]
     public async Task<ActionResult> LaporanMasterMenu()
     {
-        var data = await _appDbContext.Menu.Select(x => new { x.Id, x.Kategori, x.Nama, x.Harga }).ToListAsync();
+        var data = await _appDbContext.Menu.Select(x => new { x.Id, Kategori = x.Kategori.GetDescription(), x.Nama, x.Harga }).ToListAsync();
         return await Lapor("MasterMenu", data);
     }
 

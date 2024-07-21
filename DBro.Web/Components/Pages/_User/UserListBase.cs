@@ -2,7 +2,7 @@
 
 namespace DBro.Web.Components.Pages._User;
 
-[Authorize]
+[Authorize("User")]
 public class UserListBase : ComponentBase
 {
     [CascadingParameter] public AdminLayout Layout { get; set; } = null!;

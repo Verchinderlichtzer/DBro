@@ -6,7 +6,7 @@
             <MudForm Model="_menu" @ref="_form" Validation="((MenuValidator)Validator).ValidateValue" @onkeypress="OnKeyPressAsync">
                 <MudStack Row>
                     <div class="flex-2">
-                        <MudSelect Dense @bind-Value="_menu.Kategori" Label="Jenis Menu">
+                        <MudSelect Dense @bind-Value="_menu.Kategori" Label="Kategori">
                             @foreach (Kategori x in Enum.GetValues(typeof(Kategori)))
                             {
                                 <MudSelectItem Value="x">
@@ -23,9 +23,9 @@
                                 <MudImage Src="@(_menu.Gambar != null ? string.Format($"data:image/gif;base64,{Convert.ToBase64String(_menu.Gambar)}") : "/images/piring_kosong.png")" Fluid Alt="Gambar" ObjectFit="ObjectFit.Cover" Class="rounded-lg" />
                             </div>
                             <div>
-                                <MudFileUpload T="IBrowserFile" Accept=".jpg, .png, .webp" FilesChanged="UploadFile">
+                                <MudFileUpload T="IBrowserFile" FilesChanged="UploadFile">
                                     <ActivatorContent>
-                                        <MudButton HtmlTag="label" Variant="Variant.Filled" Size="Size.Small" Color="Color.Success" StartIcon="@Icons.Material.Filled.CloudUpload" @onmouseenter="e => _isKetentuanUploadShow = true" @onmouseleave="e => _isKetentuanUploadShow = false">
+                                        <MudButton Variant="Variant.Filled" Size="Size.Small" Color="Color.Success" StartIcon="@Icons.Material.Filled.CloudUpload" @onmouseenter="e => _isKetentuanUploadShow = true" @onmouseleave="e => _isKetentuanUploadShow = false">
                                             Upload
                                         </MudButton>
                                     </ActivatorContent>
@@ -45,24 +45,6 @@
         </MudContainer>
     </DialogContent>
     <DialogActions>
-        <div>
-            <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Help" @onmouseenter="e => _isValidationRuleShow = true" @onmouseleave="e => _isValidationRuleShow = false" />
-            <MudPopover Open="_isValidationRuleShow" AnchorOrigin="Origin.TopCenter" TransformOrigin="Origin.BottomLeft" Fixed Class="px-4">
-                <MudStack Spacing="0" Class="pb-2">
-                    <MudText Typo="Typo.button" Class="pt-2">Id :</MudText>
-                    <div>▪ Tidak boleh duplikat</div>
-                    <div>▪ Tidak boleh kosong</div>
-                    <MudText Typo="Typo.button" Class="pt-2">Nama :</MudText>
-                    <div>▪ Tidak boleh kosong</div>
-                    <MudText Typo="Typo.button" Class="pt-2">Alamat :</MudText>
-                    <div>▪ Tidak boleh kosong</div>
-                    <MudText Typo="Typo.button" Class="pt-2">Deskripsi :</MudText>
-                    <div>▪ Tidak boleh kosong</div>
-                    <MudText Typo="Typo.button" Class="pt-2">Status :</MudText>
-                    <div>▪ Status menu akan berubah secara otomatis sesuai dengan peminjaman yang terjadi. Tidak disarankan mengubah status menu secara langsung.</div>
-                </MudStack>
-            </MudPopover>
-        </div>
         <MudSpacer />
         <MudStack Row Class="w-300">
             <MudButton Variant="Variant.Filled" Size="Size.Small" Color="_new ? Color.Success : Color.Warning" OnClick="SaveAsync" Class="flex-1">Simpan</MudButton>

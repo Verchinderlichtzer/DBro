@@ -47,7 +47,7 @@ else
                     </MudStack>
                     <MudStack Class="flex-1">
                         <div>
-                            <MudNumericField Immediate HideSpinButtons T="int" @bind-Value="_pesanan.Bayar" Format="N0" Label="Bayar" Adornment="Adornment.Start" AdornmentText="Rp" />
+                            <MudNumericField Immediate HideSpinButtons T="int" @bind-Value="_pesanan.Bayar" Format="N0" Label="Bayar" Adornment="Adornment.Start" AdornmentText="Rp" For="() => _pesanan.Bayar" />
                         </div>
                         <div>
                             <MudTextField ReadOnly Value="Math.Abs(_pesanan.Sisa)" Format="N0" Label="@(_pesanan.Sisa < 0 ? "Kurang" : "Kembali")" Adornment="Adornment.Start" AdornmentText="Rp" AdornmentColor="_pesanan.Sisa < 0 ? Color.Error : Color.Default" />
@@ -104,17 +104,6 @@ else
         </MudForm>
         
         <MudStack Row Class="mt-4">
-            <div>
-                <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Help" @onmouseenter="e => _isValidationRuleShow = true" @onmouseleave="e => _isValidationRuleShow = false" />
-                <MudPopover Open="_isValidationRuleShow" AnchorOrigin="Origin.TopCenter" TransformOrigin="Origin.BottomLeft" Fixed Class="px-4">
-                    <MudStack Spacing="0" Class="pb-2">
-                        <MudText Typo="Typo.button" Class="pt-2">Bayar :</MudText>
-                        <div>▪ Tidak boleh kosong</div>
-                        <MudText Typo="Typo.button" Class="pt-2">Status :</MudText>
-                        <div>▪ Status pesanan akan berubah secara otomatis sesuai dengan pesanan yang terjadi. Tidak disarankan mengubah status pesanan secara langsung.</div>
-                    </MudStack>
-                </MudPopover>
-            </div>
             <MudSpacer />
             <MudStack Row Class="w-425">
                 <MudButton Variant="Variant.Filled" Size="Size.Small" Color="_new ? Color.Success : Color.Warning" OnClick="SaveAsync" Class="flex-1">Simpan</MudButton>
