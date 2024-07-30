@@ -209,7 +209,7 @@ namespace DBro.API.Migrations
             migrationBuilder.InsertData(
                 table: "User",
                 columns: new[] { "Email", "Alamat", "JenisKelamin", "JenisUser", "Nama", "Password", "TanggalLahir", "Telepon" },
-                values: new object[] { "admin@gmail.com", "Bekasi", (byte)1, (byte)0, "Admin", "IvCkErOjG9A8DPW7X23rJg==", new DateTime(1974, 3, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), "0853 6466 2362" });
+                values: new object[] { "admin@gmail.com", "Bekasi", (byte)1, (byte)0, "Admin", "OTBnuUPex7mRFGGakAC5Qw==", new DateTime(1974, 3, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), "0853 6466 2362" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_DetailPesanan_IdMenu",

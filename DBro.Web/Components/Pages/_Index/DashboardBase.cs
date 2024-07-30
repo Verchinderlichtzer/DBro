@@ -44,7 +44,7 @@ public class DashboardBase : ComponentBase
     {
         Layout.BreadcrumbItems =
         [
-            new("Mobil", "/mobil")
+            new("Dashboard", "/dashboard")
         ];
         Layout.Refresh();
 

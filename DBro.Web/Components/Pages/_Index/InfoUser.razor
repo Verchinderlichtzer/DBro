@@ -1,0 +1,34 @@
+﻿@page "/info-user/{email}"
+@layout AdminLayout
+@inherits InfoUserBase
+
+<PageTitle>Info User</PageTitle>
+
+@if (!_loaded)
+{
+    <MudProgressCircular Indeterminate />
+}
+else
+{
+    <MudContainer>
+        <MudText Typo="Typo.h4" Class="mb-3">Info User</MudText>
+        <MudForm Model="_user" @ref="_form" @onkeypress="OnKeyPressAsync">
+            <MudTextField AutoFocus OnlyValidateIfDirty InputType="InputType.Email" Label="Email" @bind-Value="_user.Email" MaxLength="64" For="() => _user.Email" ReadOnly />
+            <MudTextField OnlyValidateIfDirty Label="Nama" @bind-Value="_user.Nama" MaxLength="64" For="() => _user.Nama" />
+            <MudTextField OnlyValidateIfDirty Label="Password" @bind-Value="_user.Password" MaxLength="64" InputType="InputType.Password" />
+            <MudStack Class="mt-4">
+                <MudText>Jenis Kelamin :</MudText>
+                <MudRadioGroup T="JenisKelamin" @bind-Value="_user.JenisKelamin" Class="mt-n1 ml-2" For="() => _user.JenisKelamin">
+                    <MudRadio Value="JenisKelamin.Pria" Color="Color.Success" Dense>Laki-laki</MudRadio>
+                    <MudRadio Value="JenisKelamin.Wanita" Color="Color.Error" Dense>Perempuan</MudRadio>
+                </MudRadioGroup>
+            </MudStack>
+            <MudDatePicker Label="Tanggal Lahir" @bind-Date="_user.TanggalLahir" PickerVariant="PickerVariant.Dialog" DateFormat="dd MMM yyyy" tabindex="-1" />
+            <MudTextField OnlyValidateIfDirty Lines="4" Label="Alamat" @bind-Value="_user.Alamat" MaxLength="450" For="() => _user.Alamat" />
+            <MudTextField OnlyValidateIfDirty Label="Telepon" @bind-Value="_user.Telepon" MaxLength="32" For="() => _user.Telepon" />
+        </MudForm>
+        <MudStack Row Class="wp-100 mt-6">
+            <MudButton Variant="Variant.Filled" Color="Color.Warning" OnClick="SaveAsync" Class="flex-1">Simpan</MudButton>
+        </MudStack>
+    </MudContainer>
+}

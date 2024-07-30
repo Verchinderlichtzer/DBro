@@ -29,7 +29,7 @@ public partial class AdminLayout
     {
         PaletteLight = new PaletteLight()
         {
-            Primary = Colors.Orange.Default,
+            Primary = Colors.DeepOrange.Default,
             Secondary = Colors.Cyan.Darken2,
             Tertiary = Colors.DeepPurple.Darken1,
             Warning = Colors.Orange.Darken1,

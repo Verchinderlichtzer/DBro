@@ -439,7 +439,7 @@ namespace DBro.API.Migrations
                             JenisKelamin = (byte)1,
                             JenisUser = (byte)0,
                             Nama = "Admin",
-                            Password = "IvCkErOjG9A8DPW7X23rJg==",
+                            Password = "OTBnuUPex7mRFGGakAC5Qw==",
                             TanggalLahir = new DateTime(1974, 3, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Telepon = "0853 6466 2362"
                         });

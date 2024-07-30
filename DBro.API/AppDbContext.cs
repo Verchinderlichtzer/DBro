@@ -69,7 +69,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         new User
         {
             Email = "admin@gmail.com",
-            Password = "IvCkErOjG9A8DPW7X23rJg==",
+            Password = "OTBnuUPex7mRFGGakAC5Qw==",
             Nama = "Admin",
             JenisKelamin = JenisKelamin.Pria,
             TanggalLahir = new(1974, 3, 28),
