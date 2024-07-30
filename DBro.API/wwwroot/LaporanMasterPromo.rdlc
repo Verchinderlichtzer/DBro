@@ -9,13 +9,6 @@
       </ConnectionProperties>
       <rd:DataSourceID>d257b550-9ad8-413c-b21e-a6deb187e19c</rd:DataSourceID>
     </DataSource>
-    <DataSource Name="DataSetDBro">
-      <ConnectionProperties>
-        <DataProvider>System.Data.DataSet</DataProvider>
-        <ConnectString>/* Local Connection */</ConnectString>
-      </ConnectionProperties>
-      <rd:DataSourceID>106e1413-0c94-4193-a69e-e63964290924</rd:DataSourceID>
-    </DataSource>
   </DataSources>
   <DataSets>
     <DataSet Name="DataSetMasterPromo">

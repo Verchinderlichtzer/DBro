@@ -56,7 +56,7 @@
                                             <MudNumericField Immediate T="int" @bind-Value="promo.Promo.JumlahDibeli" Label="Beli" Min="1" Max="99" />
                                         </div>
                                         <div class="flex-1">
-                                            <MudAutocomplete Label="Beli" T="Menu" @bind-Value="promo.Promo.MenuDibeli" @bind-Value:after="() => {promo.Promo.IdMenuDibeli = promo.Promo.MenuDibeli.Id; promo.Promo.MenuDidapat ??= promo.Promo.MenuDibeli;}" Dense CoerceText SearchFunc="SearchMenuAsync" ToStringFunc="x => x == null ? null : x.Nama" MaxItems="128" />
+                                            <MudAutocomplete Label="Beli" T="Menu" @bind-Value="promo.Promo.MenuDibeli" @bind-Value:after="() => {promo.Promo.IdMenuDibeli = promo.Promo.MenuDibeli.Id; promo.Promo.IdMenuDidapat = promo.Promo.MenuDibeli.Id; promo.Promo.MenuDidapat ??= promo.Promo.MenuDibeli;}" Dense CoerceText SearchFunc="SearchMenuAsync" ToStringFunc="x => x == null ? null : x.Nama" MaxItems="128" />
                                         </div>
                                         <div class="w-50">
                                             <MudNumericField Immediate T="int" @bind-Value="promo.Promo.JumlahDidapat" Label="Gratis" Min="1" Max="99" />

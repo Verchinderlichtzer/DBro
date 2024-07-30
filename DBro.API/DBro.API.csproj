@@ -7,6 +7,36 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\LaporanDetailPesanan.rdlc" />
+    <Content Remove="wwwroot\LaporanGrafik.rdlc" />
+    <Content Remove="wwwroot\LaporanMasterDiskon.rdlc" />
+    <Content Remove="wwwroot\LaporanMasterMenu.rdlc" />
+    <Content Remove="wwwroot\LaporanMasterPromo.rdlc" />
+    <Content Remove="wwwroot\LaporanTransaksiPesanan.rdlc" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="wwwroot\LaporanDetailPesanan.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot\LaporanGrafik.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot\LaporanMasterDiskon.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot\LaporanMasterMenu.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot\LaporanMasterPromo.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot\LaporanTransaksiPesanan.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.7" />
     <PackageReference Include="Microsoft.CodeAnalysis" Version="4.10.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.7" />
@@ -30,24 +60,6 @@
     <Content Update="wwwroot\DataSetDBro.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>DataSetDBro.Designer.cs</LastGenOutput>
-    </Content>
-    <Content Update="wwwroot\LaporanDetailPesanan.rdlc">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Update="wwwroot\LaporanGrafik.rdlc">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Update="wwwroot\LaporanMasterPromo.rdlc">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Update="wwwroot\LaporanTransaksiPesanan.rdlc">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Update="wwwroot\LaporanMasterDiskon.rdlc">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Update="wwwroot\LaporanMasterMenu.rdlc">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 
