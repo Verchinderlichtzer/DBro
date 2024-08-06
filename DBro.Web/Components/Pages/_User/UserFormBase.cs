@@ -65,6 +65,7 @@ public class UserFormBase : ComponentBase
             }
             else
             {
+                _user.Password = Decrypt(_user.Password);
                 var response = await UserService.UpdateAsync(_user);
                 if (response.Item1)
                 {
